@@ -2,7 +2,6 @@ package frc.robot.subsystems.drive;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -14,28 +13,27 @@ import frc.robot.subsystems.drive.accelerometer.AccelerometerIO;
 import frc.robot.subsystems.drive.accelerometer.AccelerometerInputsAutoLogged;
 import frc.robot.subsystems.drive.gyro.GyroIO;
 import frc.robot.subsystems.drive.gyro.GyroInputsAutoLogged;
-import frc.robot.util.SecondOrderKinematics;
-import frc.robot.util.SwerveModuleLateralAcceleration;
 
 public class Drive extends SubsystemBase {
 
     private final SwerveModuleIO[] m_modules;
     private final SwerveModuleInputsAutoLogged[] m_inputs;
 
+    // OLD SOK CODE
     // SOK vars
-    private final SecondOrderKinematics m_SecondOrderKinematics;
-    private SwerveModuleLateralAcceleration[] m_moduleAccelerations = new SwerveModuleLateralAcceleration[] {
-            new SwerveModuleLateralAcceleration(), new SwerveModuleLateralAcceleration(), new SwerveModuleLateralAcceleration(),
-            new SwerveModuleLateralAcceleration() };
-    private Rotation2d[] m_moduleSteerThetaVels = new Rotation2d[] { new Rotation2d(), new Rotation2d(),
-            new Rotation2d(),
-            new Rotation2d() };
-    private Rotation2d[] m_moduleSteerOldTheta = new Rotation2d[] { new Rotation2d(), new Rotation2d(),
-            new Rotation2d(),
-            new Rotation2d() };
-    private Rotation2d m_oldRobotTheta = new Rotation2d();
-    private Rotation2d m_robotThetaVel = new Rotation2d();
-    private final double m_deltaTime = 0.02;
+    // private final SecondOrderKinematics m_SecondOrderKinematics;
+    // private SwerveModuleLateralAcceleration[] m_moduleAccelerations = new SwerveModuleLateralAcceleration[] {
+    //         new SwerveModuleLateralAcceleration(), new SwerveModuleLateralAcceleration(), new SwerveModuleLateralAcceleration(),
+    //         new SwerveModuleLateralAcceleration() };
+    // private Rotation2d[] m_moduleSteerThetaVels = new Rotation2d[] { new Rotation2d(), new Rotation2d(),
+    //         new Rotation2d(),
+    //         new Rotation2d() };
+    // private Rotation2d[] m_moduleSteerOldTheta = new Rotation2d[] { new Rotation2d(), new Rotation2d(),
+    //         new Rotation2d(),
+    //         new Rotation2d() };
+    // private Rotation2d m_oldRobotTheta = new Rotation2d();
+    // private Rotation2d m_robotThetaVel = new Rotation2d();
+    // private final double m_deltaTime = 0.02;
 
     private AccelerometerIO m_accel;
     private final AccelerometerInputsAutoLogged m_accelInputs;
@@ -63,7 +61,8 @@ public class Drive extends SubsystemBase {
         m_poseEstimator = new SwerveDrivePoseEstimator(Constants.DriveConstants.kDriveKinematics, m_gyro.getAngle(),
                 getSwerveModulePositions(), startPose);
 
-        m_SecondOrderKinematics = new SecondOrderKinematics();
+        // OLD SOK CODE
+        //m_SecondOrderKinematics = new SecondOrderKinematics();
 
         m_accel = accel;
         m_accelInputs = new AccelerometerInputsAutoLogged();

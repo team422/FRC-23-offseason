@@ -1,6 +1,7 @@
 package frc.robot.util;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import org.ejml.simple.SimpleMatrix;
 
@@ -39,11 +40,46 @@ public class SecondOrderKinematics {
 
     }
 
+    /**
+     * Performs inverse kinematics to return the module accelerations from a desired
+     * chassis acceleration.
+     *
+     * <p>
+     * This function also supports variable centers of rotation. During normal
+     * operations, the
+     * center of rotation is usually the same as the physical center of the robot;
+     * therefore, the
+     * argument is defaulted to that use case. However, if you wish to change the
+     * center of rotation
+     * for evasive maneuvers, vision alignment, or for any other use case, you can
+     * do so.
+     *
+     * <p>
+     * In the case that the desired chassis accelerations are zero (i.e. the robot
+     * will be stationary),
+     * the previously calculated module angle will be maintained.
+     *
+     * @param chassisAccleration     The desired chassis acceleration.
+     * @param centerOfRotationMeters The center of rotation. For example, if you set
+     *                               the center of
+     *                               rotation at one corner of the robot and provide
+     *                               a chassis acceleration that only has a dtheta
+     *                               component, the robot will rotate around that
+     *                               corner.
+     * @return An array containing the module Acclerations. Use caution because
+     *         these module accelerations are not
+     *         normalized. Sometimes, a user input may cause one of the module
+     *         accelerations to go above the
+     *         attainable max acceleration. Use the
+     *         {@link #desaturateWheelAccelerations(SwerveModuleAcceleration[], double)
+     *         DesaturateWheelAccelerations} function to rectify this issue.
+     */
+
     public SwerveModuleAcceleration[] toSwerveModuleAccelerations(
-            ChassisAccelerations chassisAccelerations, Translation2d centerOfRotationMeters) {
-        if (chassisAccelerations.axMetersPerSecondSquared == 0 && chassisAccelerations.ayMetersPerSecondSquared == 0
-                && chassisAccelerations.alphaRadiansPerSecondSquared == 0
-                && chassisAccelerations.omegaRadiansPerSecond == 0) {
+            ChassisAcceleration chassisAcceleration, Translation2d centerOfRotationMeters) {
+        if (chassisAcceleration.axMetersPerSecondSquared == 0 && chassisAcceleration.ayMetersPerSecondSquared == 0
+                && chassisAcceleration.alphaRadiansPerSecondSquared == 0
+                && chassisAcceleration.omegaRadiansPerSecond == 0) {
             SwerveModuleAcceleration[] newAccelerations = new SwerveModuleAcceleration[m_numModules];
             for (int i = 0; i < m_numModules; i++) {
                 newAccelerations[i] = new SwerveModuleAcceleration(0.0, new Rotation2d());
@@ -65,13 +101,13 @@ public class SecondOrderKinematics {
 
         SimpleMatrix chassisAccelerationVector = new SimpleMatrix(4, 1);
         chassisAccelerationVector.setColumn(
-            0, 
-            0, 
-            chassisAccelerations.axMetersPerSecondSquared,
-            chassisAccelerations.ayMetersPerSecondSquared, 
-            chassisAccelerations.omegaRadiansPerSecond, 
-            chassisAccelerations.alphaRadiansPerSecondSquared);
-        
+                0,
+                0,
+                chassisAcceleration.axMetersPerSecondSquared,
+                chassisAcceleration.ayMetersPerSecondSquared,
+                chassisAcceleration.omegaRadiansPerSecond,
+                chassisAcceleration.alphaRadiansPerSecondSquared);
+
         SimpleMatrix moduleAccelertionMatrix = m_forwardKinematics.mult(chassisAccelerationVector);
 
         m_moduleAccelerations = new SwerveModuleAcceleration[m_numModules];
@@ -88,4 +124,102 @@ public class SecondOrderKinematics {
         return m_moduleAccelerations;
     }
 
+    /**
+     * Performs inverse kinematics. See
+     * {@link #toSwerveModuleAccelerations(ChassisAcceleration, Translation2d)}
+     * toSwerveModuleAccelerations for more information.
+     *
+     * @param chassisAcclerations The desired chassis speed.
+     * @return An array containing the module states.
+     */
+    public SwerveModuleAcceleration[] toSwerveModuleAccelerations(ChassisAcceleration chassisAcceleration) {
+        return toSwerveModuleAccelerations(chassisAcceleration, new Translation2d());
+    }
+
+    /**
+     * Performs forward kinematics to return the resulting chassis acceleration from
+     * the
+     * given module accelerations.
+     *
+     * @param wheelAccelerations The state of the modules (as a
+     *                           SwerveModuleAcceleration type) as
+     *                           measured from
+     *                           respective encoders and gyros. The order of the
+     *                           swerve
+     *                           module states should be same as
+     *                           passed into the constructor of this class.
+     * @return The resulting chassis acceleration.
+     */
+    public ChassisAcceleration toChassisAccelerations(SwerveModuleAcceleration... wheelAccelerations) {
+        if (wheelAccelerations.length != m_numModules) {
+            throw new IllegalArgumentException("Number of wheel accelerations must match number of modules");
+        }
+        SimpleMatrix moduleAccelerationsMatrix = new SimpleMatrix(m_numModules * 2, 1);
+
+        for (int i = 0; i < m_numModules; i++) {
+            moduleAccelerationsMatrix.set(i * 2 + 0, 0, wheelAccelerations[i].accelMetersPerSecondSquared
+                    * wheelAccelerations[i].velocityThetaRadiansPerSecond.getCos());
+            moduleAccelerationsMatrix.set(i * 2 + 1, 0, wheelAccelerations[i].accelMetersPerSecondSquared
+                    * wheelAccelerations[i].velocityThetaRadiansPerSecond.getSin());
+        }
+
+        SimpleMatrix chassisAccelerationMatrix = m_forwardKinematics.mult(moduleAccelerationsMatrix);
+        return new ChassisAcceleration(
+                chassisAccelerationMatrix.get(0, 0),
+                chassisAccelerationMatrix.get(1, 0),
+                chassisAccelerationMatrix.get(2, 0),
+                chassisAccelerationMatrix.get(3, 0));
+    }
+
+    /**
+     * Renormalizes the wheel accelerations if any individual acceleration is above
+     * the specified maximum.
+     *
+     * @param moduleAccelerations                   Reference to array of module
+     *                                              accelerations. The array will be
+     *                                              mutated with the
+     *                                              normalized accelerations!
+     * @param maxAccelerationMetersPerSecondSquared The absolute max acceleration
+     *                                              that a module can reach.
+     */
+
+    public static void desaturateWheelAccelerations(
+            SwerveModuleAcceleration[] moduleAccelerations, double maxAccelerationMetersPerSecondSquared) {
+        double realMaxAcceleration = Collections.max(Arrays.asList(moduleAccelerations)).accelMetersPerSecondSquared;
+        if (realMaxAcceleration > maxAccelerationMetersPerSecondSquared) {
+            for (SwerveModuleAcceleration moduleAcceleration : moduleAccelerations) {
+                moduleAcceleration.accelMetersPerSecondSquared = moduleAcceleration.accelMetersPerSecondSquared
+                        / realMaxAcceleration * maxAccelerationMetersPerSecondSquared;
+            }
+        }
+    }
+
+    /**
+     * This method is used to modify the module states with the given module
+     * accelerations
+     * 
+     * @param moduleAccelerations The module accelerations to modify the module
+     *                            states with
+     * @param moduleStates        The module states to modify
+     * @param dtSeconds           delta time in seconds, usually 0.02s or tick time
+     * 
+     * @return The modified module states
+     */
+    public SwerveModuleState[] modifyModuleStatesWithAccels(SwerveModuleAcceleration[] moduleAccelerations,
+            SwerveModuleState[] moduleStates, double dtSeconds) {
+        if (moduleAccelerations.length != moduleStates.length) {
+            throw new IllegalArgumentException("Number of wheel accelerations must match number of wheel states");
+        }
+        if (moduleAccelerations.length != m_numModules) {
+            throw new IllegalArgumentException("Number of wheel accelerations must match number of modules");
+        }
+
+        for (int i = 0; i < moduleAccelerations.length; i++) {
+            moduleStates[i].speedMetersPerSecond += moduleAccelerations[i].accelMetersPerSecondSquared * dtSeconds;
+            moduleStates[i].angle = moduleStates[i].angle
+                    .rotateBy(moduleAccelerations[i].velocityThetaRadiansPerSecond.times(dtSeconds));
+        }
+
+        return moduleStates;
+    }
 }

@@ -1,7 +1,6 @@
 package frc.robot.subsystems.drive.accelerometer;
 
 import edu.wpi.first.wpilibj.interfaces.Accelerometer;
-import edu.wpi.first.wpilibj.interfaces.Accelerometer.Range;
 import frc.robot.util.Pigeon2Accel;
 
 public class AccelerometerIOWPI implements AccelerometerIO {

@@ -1,3 +1,5 @@
+//NOTE: CURRENTLY UNUSED, BUT MAY BE USED IN THE FUTURE, DO NOT DELETE
+
 package frc.robot.util;
 
 public class SwerveModuleLateralAcceleration implements Comparable<SwerveModuleLateralAcceleration> {

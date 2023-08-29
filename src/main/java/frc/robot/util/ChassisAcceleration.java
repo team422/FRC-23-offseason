@@ -1,12 +1,12 @@
 package frc.robot.util;
 
-public class ChassisAccelerations {
+public class ChassisAcceleration {
     public double axMetersPerSecondSquared;
     public double ayMetersPerSecondSquared;
     public double alphaRadiansPerSecondSquared;
     public double omegaRadiansPerSecond;
 
-    public ChassisAccelerations() {
+    public ChassisAcceleration() {
     }
 
     /**
@@ -17,7 +17,7 @@ public class ChassisAccelerations {
      * @param alphaRadiansPerSecondSquared Angular acceleration.
      * @param omegaRadiansPerSecond        Angular velocity.
      */
-    public ChassisAccelerations(double axMetersPerSecondSquared, double ayMetersPerSecondSquared,
+    public ChassisAcceleration(double axMetersPerSecondSquared, double ayMetersPerSecondSquared,
             double alphaRadiansPerSecondSquared,
             double omegaRadiansPerSecond) {
         this.axMetersPerSecondSquared = axMetersPerSecondSquared;
