@@ -91,6 +91,8 @@ public class Drive extends SubsystemBase {
     @Override
     public void periodic() {
         // This method will be called once per scheduler run
+
+        //NOTE TO FUTURE SOK CODERS: Fill in C.A. variables here, accel x/y can be obtained from acclerometer, and gyro velo/accel can be obtained from difference quotients or something idfk its 3 am
     }
 
     @Override
