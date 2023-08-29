@@ -39,6 +39,19 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        return null; //CHANGE THIS OR DIE TMR
+        return null;
     }
+
+    public void onEnabled() {
+    }
+
+    public void disabledPeriodic() {
+    }
+
+    public void onDisabled() {
+    }
+
+    public void updateRobotState() {
+    }
+    
 }
