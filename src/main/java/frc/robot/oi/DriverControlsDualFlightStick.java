@@ -10,4 +10,19 @@ public class DriverControlsDualFlightStick implements DriverControls {
       m_leftJoystick = new CommandJoystick(leftJoystick);
       m_rightJoystick = new CommandJoystick(rightJoystick);
     }
+
+    @Override
+    public double getDriveForward() {
+      return -Math.signum(m_leftJoystick.getY()) * Math.pow(m_leftJoystick.getY(), 2);
+    }
+  
+    @Override
+    public double getDriveLeft() {
+      return -Math.signum(m_leftJoystick.getX()) * Math.pow(m_leftJoystick.getX(), 2);
+    }
+  
+    @Override
+    public double getDriveRotation() {
+      return -Math.signum(m_rightJoystick.getX()) * Math.pow(m_rightJoystick.getX(), 2);
+    }
 }

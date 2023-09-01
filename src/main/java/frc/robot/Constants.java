@@ -4,17 +4,23 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import frc.robot.util.TunableNumber;
 
 /**
- * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
- * constants. This class should not be used for any other purpose. All constants should be declared
+ * The Constants class provides a convenient place for teams to hold robot-wide
+ * numerical or boolean
+ * constants. This class should not be used for any other purpose. All constants
+ * should be declared
  * globally (i.e. public static). Do not put anything functional in this class.
  *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
+ * <p>
+ * It is advised to statically import this class (or one of its inner classes)
+ * wherever the
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
@@ -29,22 +35,26 @@ public final class Constants {
             public static final int kZ = 2;
         }
 
-
-        //wheel dims
+        // wheel dims
         public static final double kWheelDiameter = Units.inchesToMeters(3.7);
         public static final double kWheelBase = Units.inchesToMeters(23);
         public static final double kTrackWidth = Units.inchesToMeters(23);
 
-        //module offsets
+        // module offsets
         public static Translation2d[] kModuleTranslations = {
-            new Translation2d(kWheelBase / 2.0, kTrackWidth / 2.0), // front left
-            new Translation2d(kWheelBase / 2.0, -kTrackWidth / 2.0), // front right
-            new Translation2d(-kWheelBase / 2.0, kTrackWidth / 2.0), // rear left
-            new Translation2d(-kWheelBase / 2.0, -kTrackWidth / 2.0) // rear right
+                new Translation2d(kWheelBase / 2.0, kTrackWidth / 2.0), // front left
+                new Translation2d(kWheelBase / 2.0, -kTrackWidth / 2.0), // front right
+                new Translation2d(-kWheelBase / 2.0, kTrackWidth / 2.0), // rear left
+                new Translation2d(-kWheelBase / 2.0, -kTrackWidth / 2.0) // rear right
         };
-        
-        public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(kModuleTranslations);
 
+        public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(kModuleTranslations);
+        public static final Rotation2d pitchAngle = Rotation2d.fromDegrees(0);
+        public static final Pose2d startPose = new Pose2d(3, 5, new Rotation2d());;
+
+        public static final double kDriveDeadband = 0;
+        public static final double kMaxAngularSpeedRadiansPerSecond = Units.degreesToRadians(450);
+        public static final double kMaxSpeedMetersPerSecond = 3.85;
     }
 
     public static final class ModuleConstants {
@@ -52,10 +62,40 @@ public final class Constants {
         public static final TunableNumber kDriveI = new TunableNumber("Drive I", 0.0);
         public static final TunableNumber kDriveD = new TunableNumber("Drive D", 0.00);
         public static final TunableNumber kDriveFF = new TunableNumber("Drive FF", 2.96);
-    
+
         public static final TunableNumber kTurningP = new TunableNumber("TurnP", 0.6);
         public static final TunableNumber kTurningI = new TunableNumber("Turn I", 0.00);
         public static final TunableNumber kTurningD = new TunableNumber("Turn D", 0.005);
-    
+
+    }
+
+    public static final class Ports {
+        public static final int pigeonPort = 422;
+
+        // Left Front Ports
+        public static final int leftFrontDrivingMotorPort = 12;
+        public static final int leftFrontTurningMotorPort = 7;
+        public static final int leftFrontCanCoderPort = 18;
+
+        // Right Front Ports
+        public static final int rightFrontDriveMotorPort = 6;
+        public static final int rightFrontTurningMotorPort = 39;
+        public static final int rightFrontCanCoderPort = 17;
+
+        // Left Rear Ports
+        public static final int leftRearDriveMotorPort = 9;
+        public static final int leftRearTurningMotorPort = 11;
+        public static final int leftRearCanCoderPort = 16;
+
+        // Right Rear Ports
+        public static final int rightRearDriveMotorPort = 8;
+        public static final int rightRearTurningMotorPort = 3;
+        public static final int rightRearCanCoderPort = 15;
+
+    }
+
+    public static final class OIConstants {
+        public static final int kDriverLeftDriveStickPort = 0;
+        public static final int kDriverRightDriveStickPort = 1;
     }
 }
