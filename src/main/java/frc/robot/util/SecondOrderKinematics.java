@@ -77,7 +77,7 @@ public class SecondOrderKinematics {
 
     public SwerveModuleAcceleration[] toSwerveModuleAccelerations(
             ChassisAcceleration chassisAcceleration, Translation2d centerOfRotationMeters) {
-        if (chassisAcceleration.axMetersPerSecondSquared == 0 && chassisAcceleration.ayMetersPerSecondSquared == 0
+        if (chassisAcceleration.a_xMetersPerSecondSquared == 0 && chassisAcceleration.a_yMetersPerSecondSquared == 0
                 && chassisAcceleration.alphaRadiansPerSecondSquared == 0
                 && chassisAcceleration.omegaRadiansPerSecond == 0) {
             SwerveModuleAcceleration[] newAccelerations = new SwerveModuleAcceleration[m_numModules];
@@ -103,8 +103,8 @@ public class SecondOrderKinematics {
         chassisAccelerationVector.setColumn(
                 0,
                 0,
-                chassisAcceleration.axMetersPerSecondSquared,
-                chassisAcceleration.ayMetersPerSecondSquared,
+                chassisAcceleration.a_xMetersPerSecondSquared,
+                chassisAcceleration.a_yMetersPerSecondSquared,
                 chassisAcceleration.omegaRadiansPerSecond,
                 chassisAcceleration.alphaRadiansPerSecondSquared);
 
@@ -158,9 +158,9 @@ public class SecondOrderKinematics {
 
         for (int i = 0; i < m_numModules; i++) {
             moduleAccelerationsMatrix.set(i * 2 + 0, 0, wheelAccelerations[i].accelMetersPerSecondSquared
-                    * wheelAccelerations[i].velocityThetaRadiansPerSecond.getCos());
+                    * wheelAccelerations[i].omegaRadiansPerSecond.getCos());
             moduleAccelerationsMatrix.set(i * 2 + 1, 0, wheelAccelerations[i].accelMetersPerSecondSquared
-                    * wheelAccelerations[i].velocityThetaRadiansPerSecond.getSin());
+                    * wheelAccelerations[i].omegaRadiansPerSecond.getSin());
         }
 
         SimpleMatrix chassisAccelerationMatrix = m_forwardKinematics.mult(moduleAccelerationsMatrix);
@@ -217,7 +217,7 @@ public class SecondOrderKinematics {
         for (int i = 0; i < moduleAccelerations.length; i++) {
             moduleStates[i].speedMetersPerSecond += moduleAccelerations[i].accelMetersPerSecondSquared * dtSeconds;
             moduleStates[i].angle = moduleStates[i].angle
-                    .rotateBy(moduleAccelerations[i].velocityThetaRadiansPerSecond.times(dtSeconds));
+                    .rotateBy(moduleAccelerations[i].omegaRadiansPerSecond.times(dtSeconds));
         }
 
         return moduleStates;
