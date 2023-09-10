@@ -15,30 +15,21 @@ public class WristIOSim implements WristIO {
     boolean m_brakeEnabled;
 
     public WristIOSim() {
-        // m_sim = new SingleJointedArmSim(DCMotor.getNEO(WristConstants.kNumSimMotors),
-        // WristConstants.kGearRatio, 0.01, Units.inchesToMeters(7.85),
-        // WristConstants.kMinAngle.getRadians(), WristConstants.kMaxAngle.getRadians(), false);
-        
-        System.out.println("here");
         DCMotor gearbox = DCMotor.getNEO(WristConstants.kNumSimMotors);
         double gearing = WristConstants.kGearRatio;
-        double jKgMetersSquared = 0.01;
+        double jKgMetersSquared = 1;
         double armLengthMeters = Units.inchesToMeters(7.85);
         double minAngleRads = WristConstants.kMinAngle.getRadians();
         double maxAngleRads = WristConstants.kMaxAngle.getRadians();
         boolean simulateGravity = false;
 
-        System.out.println("here2");
         m_sim = new SingleJointedArmSim(gearbox, gearing, jKgMetersSquared,
             armLengthMeters, minAngleRads, maxAngleRads, simulateGravity);
-        System.out.println("here?");
-
-        // m_motorsSim = new DCMotor[WristConstants.kNumSimMotors];
-        // Arrays.fill(m_motorsSim, DCMotor.getNEO(1));
     }
 
     @Override
     public void updateInputs(WristInputs inputs) {
+        m_sim.update(0.02);
         inputs.motorSpeed = getSpeed();
         inputs.brake = getBrakeMode();
         inputs.angleRad = getAngle().getRadians();
@@ -46,7 +37,8 @@ public class WristIOSim implements WristIO {
 
     @Override
     public void setVoltage(double voltage) {
-        m_sim.setInputVoltage(-voltage / 2);
+        m_voltage = voltage;
+        m_sim.setInputVoltage(voltage);
     }
 
     @Override

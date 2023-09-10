@@ -7,6 +7,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import edu.wpi.first.hal.HAL;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIOSim;
 
@@ -27,6 +28,7 @@ public class IntakeTest {
 
     @BeforeEach
     void setup() {
+        assert HAL.initialize(500, 0); // initialize the HAL, crash if failed
         m_intake = new Intake(new IntakeIOSim());
     }
 

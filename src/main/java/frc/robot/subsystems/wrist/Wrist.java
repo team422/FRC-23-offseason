@@ -31,20 +31,11 @@ public class Wrist extends SubsystemBase {
         m_io.updateInputs(m_inputs);
 
         double currAngle = m_inputs.angleRad;
-        if (Robot.isSimulation()) {
-            currAngle = -currAngle;
-        }
         
         double pidVoltage = m_controller.calculate(currAngle, m_desiredAngle.getRadians());
 
-        if (Rotation2d.fromRadians(m_inputs.angleRad).getCos() < .2) {
-            pidVoltage /= 2;
-        }
-
         // only sim rn so feedforward stuff doesnt exist yet
-        if (Robot.isSimulation()) {
-            m_io.setVoltage(pidVoltage);
-        }
+        m_io.setVoltage(pidVoltage);
     }
 
     public boolean withinTolerance() {

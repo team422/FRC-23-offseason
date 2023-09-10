@@ -17,8 +17,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 public final class Constants {
     public final static class WristConstants {
         public final static int kNumSimMotors = 4;
-        public final static double kGearRatio = 0;
+        public final static double kGearRatio = 34.8444444444;
         public static final Rotation2d kMaxAngle = Rotation2d.fromDegrees(95);
-        public static final Rotation2d kMinAngle = Rotation2d.fromDegrees(-80);
+        public static final Rotation2d kMinAngle = Rotation2d.fromDegrees(-100);
     }
 }
