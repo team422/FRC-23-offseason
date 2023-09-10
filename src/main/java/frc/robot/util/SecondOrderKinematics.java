@@ -108,12 +108,12 @@ public class SecondOrderKinematics {
                 chassisAcceleration.omegaRadiansPerSecond,
                 chassisAcceleration.alphaRadiansPerSecondSquared);
 
-        SimpleMatrix moduleAccelertionMatrix = m_forwardKinematics.mult(chassisAccelerationVector);
+        SimpleMatrix moduleAccelerationMatrix = m_forwardKinematics.mult(chassisAccelerationVector);
 
         m_moduleAccelerations = new SwerveModuleAcceleration[m_numModules];
         for (int i = 0; i < m_numModules; i++) {
-            double x = moduleAccelertionMatrix.get(i * 2 + 0, 0);
-            double y = moduleAccelertionMatrix.get(i * 2 + 1, 0);
+            double x = moduleAccelerationMatrix.get(i * 2 + 0, 0);
+            double y = moduleAccelerationMatrix.get(i * 2 + 1, 0);
 
             double speed = Math.hypot(x, y);
             Rotation2d angle = new Rotation2d(x, y);

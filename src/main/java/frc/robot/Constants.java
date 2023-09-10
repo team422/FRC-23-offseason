@@ -37,8 +37,8 @@ public final class Constants {
 
         // wheel dims
         public static final double kWheelDiameter = Units.inchesToMeters(3.7);
-        public static final double kWheelBase = Units.inchesToMeters(23);
-        public static final double kTrackWidth = Units.inchesToMeters(23);
+        public static final double kWheelBase = Units.inchesToMeters(17.25);
+        public static final double kTrackWidth = Units.inchesToMeters(17.25);
 
         // module offsets
         public static Translation2d[] kModuleTranslations = {
@@ -73,24 +73,24 @@ public final class Constants {
         public static final int pigeonPort = 422;
 
         // Left Front Ports
-        public static final int leftFrontDrivingMotorPort = 12;
-        public static final int leftFrontTurningMotorPort = 7;
-        public static final int leftFrontCanCoderPort = 18;
+        public static final int leftFrontDrivingMotorPort = 401;
+        public static final int leftFrontTurningMotorPort = 69;
+        public static final int leftFrontCanCoderPort = 42;
 
         // Right Front Ports
-        public static final int rightFrontDriveMotorPort = 6;
-        public static final int rightFrontTurningMotorPort = 39;
-        public static final int rightFrontCanCoderPort = 17;
+        public static final int rightFrontDriveMotorPort = 666;
+        public static final int rightFrontTurningMotorPort = 444116;
+        public static final int rightFrontCanCoderPort = 420;
 
         // Left Rear Ports
-        public static final int leftRearDriveMotorPort = 9;
-        public static final int leftRearTurningMotorPort = 11;
-        public static final int leftRearCanCoderPort = 16;
+        public static final int leftRearDriveMotorPort = 422;
+        public static final int leftRearTurningMotorPort = 422;
+        public static final int leftRearCanCoderPort = 422;
 
         // Right Rear Ports
-        public static final int rightRearDriveMotorPort = 8;
-        public static final int rightRearTurningMotorPort = 3;
-        public static final int rightRearCanCoderPort = 15;
+        public static final int rightRearDriveMotorPort = 422;
+        public static final int rightRearTurningMotorPort = 422;
+        public static final int rightRearCanCoderPort = 422;
 
     }
 

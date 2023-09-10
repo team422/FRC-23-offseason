@@ -39,29 +39,31 @@ public class RobotContainer {
     public RobotContainer() {
             // Configure the button bindings
             configureButtonBindings();
+            configureSubsystems();
     }
 
     private void configureSubsystems() {
-        SwerveModuleIO[] m_swerveModuleIOs = {
-            new SwerveModuleIOMK4iSparkMax(Constants.Ports.leftFrontDrivingMotorPort,
-                Ports.leftFrontTurningMotorPort,
-                Ports.leftFrontCanCoderPort),
-            new SwerveModuleIOMK4iSparkMax(Constants.Ports.rightFrontDriveMotorPort,
-                Ports.rightFrontTurningMotorPort,
-                Ports.rightFrontCanCoderPort),
-            new SwerveModuleIOMK4iSparkMax(Constants.Ports.leftRearDriveMotorPort,
-                Ports.leftRearTurningMotorPort,
-                Ports.leftRearCanCoderPort),
-            new SwerveModuleIOMK4iSparkMax(Constants.Ports.rightRearDriveMotorPort,
-                Ports.rightRearTurningMotorPort,
-                Ports.rightRearCanCoderPort) };
-        GyroIOPigeon pigeon = new GyroIOPigeon(Constants.Ports.pigeonPort, Constants.DriveConstants.pitchAngle);
-        m_drive = new Drive(pigeon,
-            new AccelerometerIOWPI(new Pigeon2Accel(Constants.Ports.pigeonPort)),
-            Constants.DriveConstants.startPose,
-            m_swerveModuleIOs);
+        if (Robot.isReal()) {
+            SwerveModuleIO[] m_swerveModuleIOs = {
+                new SwerveModuleIOMK4iSparkMax(Constants.Ports.leftFrontDrivingMotorPort,
+                    Ports.leftFrontTurningMotorPort,
+                    Ports.leftFrontCanCoderPort),
+                new SwerveModuleIOMK4iSparkMax(Constants.Ports.rightFrontDriveMotorPort,
+                    Ports.rightFrontTurningMotorPort,
+                    Ports.rightFrontCanCoderPort),
+                new SwerveModuleIOMK4iSparkMax(Constants.Ports.leftRearDriveMotorPort,
+                    Ports.leftRearTurningMotorPort,
+                    Ports.leftRearCanCoderPort),
+                new SwerveModuleIOMK4iSparkMax(Constants.Ports.rightRearDriveMotorPort,
+                    Ports.rightRearTurningMotorPort,
+                    Ports.rightRearCanCoderPort) };
+            GyroIOPigeon pigeon = new GyroIOPigeon(Constants.Ports.pigeonPort, Constants.DriveConstants.pitchAngle);
+            m_drive = new Drive(pigeon,
+                new AccelerometerIOWPI(new Pigeon2Accel(Constants.Ports.pigeonPort)),
+                Constants.DriveConstants.startPose,
+                m_swerveModuleIOs);
+        } 
     }
-
     /**
       * Use this method to define your button->command mappings. Buttons can be
       * created by
