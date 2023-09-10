@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean
  * constants. This class should not be used for any other purpose. All constants should be declared
@@ -13,4 +15,10 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    public final static class WristConstants {
+        public final static int kNumSimMotors = 4;
+        public final static double kGearRatio = 0;
+        public static final Rotation2d kMaxAngle = Rotation2d.fromDegrees(95);
+        public static final Rotation2d kMinAngle = Rotation2d.fromDegrees(-80);
+    }
 }
