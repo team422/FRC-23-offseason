@@ -169,7 +169,6 @@ public class SwerveModuleIOMK4iSparkMax implements SwerveModuleIO {
 
       @Override
       public void updateInputs(SwerveModuleInputs inputs) {
-        // TODO Auto-generated method stub
         inputs.driveDistanceMeters = getDriveDistanceMeters();
         inputs.driveVelocityMetersPerSecond = getDriveVelocityMetersPerSecond();
         inputs.turnAngleRads = getAngle().getRadians();

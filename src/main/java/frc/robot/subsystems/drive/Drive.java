@@ -4,9 +4,11 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
@@ -48,6 +50,8 @@ public class Drive extends SubsystemBase {
     private final GyroIO m_gyro;
     private final GyroInputsAutoLogged m_gyroInputs;
 
+    private double m_simGyroLastUpdated;
+
     /** Creates a new Drive. */
     public Drive(GyroIO gyro, AccelerometerIO accel, Pose2d startPose, SwerveModuleIO... modules) {
         m_modules = modules;
@@ -82,11 +86,11 @@ public class Drive extends SubsystemBase {
     }
 
     public SwerveModuleState[] getModuleStates() {
-        SwerveModuleState[] positions = new SwerveModuleState[m_modules.length];
+        SwerveModuleState[] states = new SwerveModuleState[m_modules.length];
         for (int i = 0; i < m_modules.length; i++) {
-            positions[i] = m_modules[i].getState();
+            states[i] = m_modules[i].getState();
         }
-        return positions;
+        return states;
     }
 
     public ChassisSpeeds getChassisSpeeds() {
@@ -110,17 +114,35 @@ public class Drive extends SubsystemBase {
         }
 
         m_poseEstimator.update(m_gyro.getAngle(), getSwerveModulePositions());
+
+        Logger.getInstance().recordOutput("Drive/Pose", getPose());
         Logger.getInstance().recordOutput("Drive/ModuleStates", getModuleStates());
+        Logger.getInstance().recordOutput("Drive/ModuleAbsoluteStates", getModuleAbsoluteStates());
+
     }
 
     @Override
     public void simulationPeriodic() {
-        // This method will be called once per scheduler run during simulation
+        double gyroDelta = getChassisSpeeds().omegaRadiansPerSecond;
+        double ts = Timer.getFPGATimestamp();
+
+        double deltaTime = ts - m_simGyroLastUpdated;
+
+        m_gyro.addAngle(Rotation2d.fromRadians(gyroDelta * deltaTime));
+        m_simGyroLastUpdated = ts;
     }
 
     public Pose2d getPose() {
         return m_poseEstimator.getEstimatedPosition();
     }
+
+    public SwerveModuleState[] getModuleAbsoluteStates() {
+        SwerveModuleState[] positions = new SwerveModuleState[m_modules.length];
+        for (int i = 0; i < m_modules.length; i++) {
+          positions[i] = m_modules[i].getAbsoluteState();
+        }
+        return positions;
+      }
 
     public void resetPose(Pose2d pose) {
         m_poseEstimator.resetPosition(m_gyro.getAngle(), getSwerveModulePositions(), pose);
@@ -132,11 +154,10 @@ public class Drive extends SubsystemBase {
 
     public void drive(ChassisSpeeds speeds){
         SwerveModuleState[] states = DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds);
-        SwerveModuleState[] adjustedStates = new SwerveModuleState[states.length];
         for (int i = 0; i < states.length; i++) {
-            adjustedStates[i] = new SwerveModuleState(states[i].speedMetersPerSecond, states[i].angle.minus(m_gyro.getAngle()));
+            states[i] = SwerveModuleState.optimize(states[i], m_modules[i].getAngle());
         }
-        setModuleStates(adjustedStates);
+        setModuleStates(states);
     }
 
     public void setModuleStates(SwerveModuleState[] moduleStates){

@@ -4,6 +4,15 @@
 
 package frc.robot;
 
+import java.io.IOException;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.RobotState;
 import edu.wpi.first.wpilibj.XboxController;
@@ -12,12 +21,14 @@ import frc.robot.commands.drive.TeleopDrive;
 import frc.robot.oi.DriverControls;
 import frc.robot.oi.DriverControlsDualFlightStick;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.accelerometer.AccelerometerIOSim;
 import frc.robot.subsystems.drive.accelerometer.AccelerometerIOWPI;
 import frc.robot.subsystems.drive.gyro.GyroIOPigeon;
 import frc.robot.util.Pigeon2Accel;
 import frc.robot.Constants.Ports;
 import frc.robot.subsystems.drive.SwerveModuleIO;
 import frc.robot.subsystems.drive.SwerveModuleIOMK4iSparkMax;
+import frc.robot.subsystems.drive.SwerveModuleIOSim;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -31,68 +42,90 @@ import frc.robot.subsystems.drive.SwerveModuleIOMK4iSparkMax;
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private Drive m_drive;
+    private AprilTagFieldLayout m_layout;
     // private RobotState m_robotState;
 
     /**
-            * The container for the robot. Contains subsystems, OI devices, and commands.
-            */
+     * The container for the robot. Contains subsystems, OI devices, and commands.
+     */
     public RobotContainer() {
-            // Configure the button bindings
-            configureButtonBindings();
-            configureSubsystems();
+        configureSubsystems();
+        // Configure the button bindings
+        configureButtonBindings();
+        configureAprilTags();
+    }
+
+    public void configureAprilTags() {
+        try {
+            m_layout = AprilTagFields.k2023ChargedUp.loadAprilTagLayoutField();
+        } catch (IOException e) {
+            System.out.println("AprilTag field layout not found:" + e);
+        }
+    }
+
+    private void configureAllianceSettings() {
+        var origin = DriverStation.getAlliance() == Alliance.Blue
+                ? OriginPosition.kBlueAllianceWallRightSide
+                : OriginPosition.kRedAllianceWallRightSide;
+        m_layout.setOrigin(origin);
     }
 
     private void configureSubsystems() {
         if (Robot.isReal()) {
             SwerveModuleIO[] m_swerveModuleIOs = {
-                new SwerveModuleIOMK4iSparkMax(Constants.Ports.leftFrontDrivingMotorPort,
-                    Ports.leftFrontTurningMotorPort,
-                    Ports.leftFrontCanCoderPort),
-                new SwerveModuleIOMK4iSparkMax(Constants.Ports.rightFrontDriveMotorPort,
-                    Ports.rightFrontTurningMotorPort,
-                    Ports.rightFrontCanCoderPort),
-                new SwerveModuleIOMK4iSparkMax(Constants.Ports.leftRearDriveMotorPort,
-                    Ports.leftRearTurningMotorPort,
-                    Ports.leftRearCanCoderPort),
-                new SwerveModuleIOMK4iSparkMax(Constants.Ports.rightRearDriveMotorPort,
-                    Ports.rightRearTurningMotorPort,
-                    Ports.rightRearCanCoderPort) };
+                    new SwerveModuleIOMK4iSparkMax(Constants.Ports.leftFrontDrivingMotorPort,
+                            Ports.leftFrontTurningMotorPort,
+                            Ports.leftFrontCanCoderPort),
+                    new SwerveModuleIOMK4iSparkMax(Constants.Ports.rightFrontDriveMotorPort,
+                            Ports.rightFrontTurningMotorPort,
+                            Ports.rightFrontCanCoderPort),
+                    new SwerveModuleIOMK4iSparkMax(Constants.Ports.leftRearDriveMotorPort,
+                            Ports.leftRearTurningMotorPort,
+                            Ports.leftRearCanCoderPort),
+                    new SwerveModuleIOMK4iSparkMax(Constants.Ports.rightRearDriveMotorPort,
+                            Ports.rightRearTurningMotorPort,
+                            Ports.rightRearCanCoderPort) };
             GyroIOPigeon pigeon = new GyroIOPigeon(Constants.Ports.pigeonPort, Constants.DriveConstants.pitchAngle);
             m_drive = new Drive(pigeon,
-                new AccelerometerIOWPI(new Pigeon2Accel(Constants.Ports.pigeonPort)),
-                Constants.DriveConstants.startPose,
-                m_swerveModuleIOs);
-        } 
+                    new AccelerometerIOWPI(new Pigeon2Accel(Constants.Ports.pigeonPort)),
+                    Constants.DriveConstants.startPose,
+                    m_swerveModuleIOs);
+        } else {
+            m_drive = new Drive(new GyroIOPigeon(22, new Rotation2d()), new AccelerometerIOSim(), new Pose2d(),
+                    new SwerveModuleIOSim(), new SwerveModuleIOSim(), new SwerveModuleIOSim(), new SwerveModuleIOSim());
+        }
     }
+
     /**
-      * Use this method to define your button->command mappings. Buttons can be
-      * created by
-      * instantiating a {@link GenericHID} or one of its subclasses ({@link
-      * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
-      * it to a {@link
-      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
-      */
+     * Use this method to define your button->command mappings. Buttons can be
+     * created by
+     * instantiating a {@link GenericHID} or one of its subclasses ({@link
+     * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
+     * it to a {@link
+     * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+     */
     private void configureButtonBindings() {
         DriverControls driverControls = new DriverControlsDualFlightStick(
-            Constants.OIConstants.kDriverLeftDriveStickPort,
-            Constants.OIConstants.kDriverRightDriveStickPort);
+                Constants.OIConstants.kDriverLeftDriveStickPort,
+                Constants.OIConstants.kDriverRightDriveStickPort);
         TeleopDrive teleopDrive = new TeleopDrive(m_drive, driverControls::getDriveForward,
-            driverControls::getDriveLeft, driverControls::getDriveRotation,
-            Constants.DriveConstants.kDriveDeadband);
+                driverControls::getDriveLeft, driverControls::getDriveRotation,
+                Constants.DriveConstants.kDriveDeadband);
         m_drive.setDefaultCommand(teleopDrive);
     }
 
     /**
-      * Use this to pass the autonomous command to the main {@link Robot} class.
-      *
-      * @return the command to run in autonomous
-      */
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
         return null;
     }
 
     public void onEnabled() {
+        configureAllianceSettings();
     }
 
     public void disabledPeriodic() {
