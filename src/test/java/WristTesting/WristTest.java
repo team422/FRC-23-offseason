@@ -2,7 +2,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.beans.Transient;
 
-import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.wrist.Wrist;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 public class WristTest {
     static final double delta = 1e-2;
-    Intake m_intake;
+    Wrist m_Wrist;
     
     @BeforeEach
     void setup() {
