@@ -1,3 +1,5 @@
+package WristTesting;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.beans.Transient;
@@ -10,18 +12,26 @@ import org.junit.jupiter.api.Test;
 
 public class WristTest {
     static final double delta = 1e-2;
-    Wrist m_Wrist;
+    Wrist m_wrist;
     
     @BeforeEach
     void setup() {
 
     }
 
-    void sleep(double seconds){
+    void sleepSeconds(int seconds){
         int i = 0;
         while(i < seconds * 50){
-            m_intake.periodic();
-            m_intake.simulationPeriodic();
+            sleep(1);
+            i++;
+        }
+    }
+
+    void sleep(int ticks) {
+        int i = 0;
+        while (i < ticks) {
+            m_wrist.periodic();
+            m_wrist.simulationPeriodic();
             i++;
         }
     }
@@ -34,7 +44,7 @@ public class WristTest {
     // @Test
     // void testBrake(){
     //     m_intake.brake(true);
-    //     sleep(0.02);
+    //     sleep(1);
     //     assertEquals(true, m_intake.isBrake());
     // }
 

@@ -44,4 +44,7 @@ public class Wrist {
         m_IO.setMotorBrake(brake);
     }
 
+    public void simulationPeriodic() {
+    }
+
 }

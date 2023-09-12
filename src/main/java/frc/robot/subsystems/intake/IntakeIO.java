@@ -18,4 +18,6 @@ public interface IntakeIO extends LoggedIO<IntakeInputs> {
     public void setMotorSpeed(double speed);
 
     public void setIntakeVoltage(double Voltage);
+
+    public void updateInputs(IntakeInputs inputs);
 }
