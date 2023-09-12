@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.beans.Transient;
 
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeIOSim;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +18,7 @@ public class IntakeTest {
     
     @BeforeEach
     void setup() {
-        m_intake = new Intake();
+        m_intake = new Intake(new IntakeIOSim());
     }
 
     void sleepSeconds(int seconds){
@@ -36,17 +38,16 @@ public class IntakeTest {
         }
     }
 
-    // @Test 
-    // void testSpeed() {
-    //     double prevSpeed = -1e10;
-    //     for (double i = -1; i < 1; i += 0.1) {
-    //         m_intake.setSpeed(i);
-    //         sleepSeconds(1);
-    //         assertEquals(m_intake.getSpeed() > prevSpeed, true);
-    //         prevSpeed = m_intake.getSpeed();
-    //         System.out.println(prevSpeed + "=speed, i=" + i);
-    //     }
-    // }
+    @Test 
+    void testSpeed() {
+        double prevSpeed = -1e10;
+        for (double i = -12; i < 12; i++) {
+            m_intake.setDesiredVoltage(i);
+            sleepSeconds(2);
+            assertEquals(m_intake.getSpeed() > prevSpeed, true);
+            prevSpeed = m_intake.getSpeed();
+        }
+    }
 
     // @Test
     // void testBrake(){

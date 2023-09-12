@@ -1,6 +1,7 @@
 package frc.robot.oi;
 
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class DriverControlsDualFlightStick implements DriverControls {
     public CommandJoystick m_leftJoystick;
@@ -24,5 +25,15 @@ public class DriverControlsDualFlightStick implements DriverControls {
     @Override
     public double getDriveRotation() {
       return -Math.signum(m_rightJoystick.getX()) * Math.pow(m_rightJoystick.getX(), 2);
+    }
+
+    @Override
+    public Trigger intakeButtonIn() {
+      return m_rightJoystick.button(1);
+    }
+
+    @Override
+    public Trigger intakeButtonOut() {
+      return m_rightJoystick.button(2);
     }
 }

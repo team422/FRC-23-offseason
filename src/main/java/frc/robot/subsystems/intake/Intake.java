@@ -1,27 +1,48 @@
 package frc.robot.subsystems.intake;
 
-import edu.wpi.first.wpilibj2.command.Subsystem;
+import org.littletonrobotics.junction.Logger;
 
-public class Intake implements Subsystem {
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+public class Intake extends SubsystemBase {
 
     private IntakeIO m_IO;
     private IntakeInputsAutoLogged m_inputs;
+    public double m_desiredVoltage;
 
-    public Intake() {
-        // m_IO = io;
-        // m_inputs = new IntakeInputsAutoLogged();
+    public Intake(IntakeIO io) {
+        m_IO = io;
+        m_inputs = new IntakeInputsAutoLogged();
+        m_desiredVoltage = 0;
     }
 
     public void periodic(){
         m_IO.updateInputs(m_inputs);
+        Logger.getInstance().processInputs("Intake", m_inputs);
+        m_IO.setDesiredVoltage(m_desiredVoltage);
     }
 
-    public void setSpeed(double speed){}
-
-    public void brake() {
+    public void setDesiredVoltage(double voltage) {
+        m_desiredVoltage = voltage;
     }
 
     public double getSpeed() {
-        return 0;
+        return m_IO.getSpeed();
+    }
+
+    public Command setIntakeVoltage(double voltage) {
+        return runEnd(() -> this.setDesiredVoltage(voltage), 
+                      () -> this.setDesiredVoltage(0));
+    }
+
+    public static final double kIntakeVoltage = 0.1;
+
+    public Command intakeIn() {
+        return setIntakeVoltage(kIntakeVoltage);
+    }
+
+    public Command intakeOut() {
+        return setIntakeVoltage(-kIntakeVoltage);
     }
 }

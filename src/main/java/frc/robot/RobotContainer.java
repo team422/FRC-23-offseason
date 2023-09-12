@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.commands.drive.TeleopDrive;
 import frc.robot.oi.DriverControls;
 import frc.robot.oi.DriverControlsDualFlightStick;
@@ -23,6 +24,9 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.accelerometer.AccelerometerIOSim;
 import frc.robot.subsystems.drive.accelerometer.AccelerometerIOWPI;
 import frc.robot.subsystems.drive.gyro.GyroIOPigeon;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeIO;
+import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.util.Pigeon2Accel;
 import frc.robot.Constants.Ports;
 import frc.robot.subsystems.drive.SwerveModuleIO;
@@ -41,6 +45,7 @@ import frc.robot.subsystems.drive.SwerveModuleIOSim;
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private Drive m_drive;
+    private Intake m_intake;
     private AprilTagFieldLayout m_layout;
     // private RobotState m_robotState;
 
@@ -89,9 +94,11 @@ public class RobotContainer {
                     new AccelerometerIOWPI(new Pigeon2Accel(Constants.Ports.pigeonPort)),
                     Constants.DriveConstants.startPose,
                     m_swerveModuleIOs);
+            // m_intake = new Intake(new IntakeIOSim()); //make real intake class later
         } else {
             m_drive = new Drive(new GyroIOPigeon(22, new Rotation2d()), new AccelerometerIOSim(), new Pose2d(),
                     new SwerveModuleIOSim(), new SwerveModuleIOSim(), new SwerveModuleIOSim(), new SwerveModuleIOSim());
+            m_intake = new Intake(new IntakeIOSim());
         }
     }
 
@@ -111,6 +118,12 @@ public class RobotContainer {
                 driverControls::getDriveLeft, driverControls::getDriveRotation,
                 Constants.DriveConstants.kDriveDeadband);
         m_drive.setDefaultCommand(teleopDrive);
+
+        Command intakeSuckCommand = m_intake.intakeIn();
+        Command intakeVomitCommand = m_intake.intakeOut();
+
+        driverControls.intakeButtonIn().onTrue(intakeSuckCommand);
+        driverControls.intakeButtonOut().onFalse(intakeVomitCommand);
     }
 
     /**
