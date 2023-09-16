@@ -55,7 +55,7 @@ public class WristTest {
 
         for (Rotation2d setPoint : setPointsRad) {
             m_wrist.setAngle(setPoint);
-            sleep(5);
+            sleep(2);
             // System.out.println(Units.radiansToDegrees(m_wrist.m_inputs.angleRad));
             assertTrue(m_wrist.withinTolerance());
             m_wrist.setAngle(Rotation2d.fromDegrees(0));

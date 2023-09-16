@@ -1,7 +1,6 @@
 package frc.robot.subsystems.intake;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.intake.IntakeInputsAutoLogged;
 
 public class Intake extends SubsystemBase {
     private IntakeIO m_io;
