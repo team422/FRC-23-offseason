@@ -14,6 +14,8 @@ public interface SwerveModuleIO extends LoggedIO<SwerveModuleIO.SwerveModuleInpu
         public double turnRadsPerSecond;
         public double driveDistanceMeters;
         public double driveVelocityMetersPerSecond;
+        public double xDriveVelocityMetersPerSecond;
+        public double yDriveVelocityMetersPerSecond;
     }
     
     public SwerveModulePosition getPosition();

@@ -56,6 +56,9 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
         inputs.driveDistanceMeters = m_currPos.distanceMeters;
         inputs.driveVelocityMetersPerSecond = m_currState.speedMetersPerSecond;
         inputs.turnRadsPerSecond = (m_currPos.angle.getRotations() - oldAngleRads) / 0.02;
+
+        inputs.xDriveVelocityMetersPerSecond = Math.cos(inputs.turnAngleRads) * inputs.driveVelocityMetersPerSecond;
+        inputs.yDriveVelocityMetersPerSecond = Math.sin(inputs.turnAngleRads) * inputs.driveVelocityMetersPerSecond;
     }
 
     @Override
