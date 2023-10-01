@@ -14,8 +14,7 @@ public class IntakeIOSim implements IntakeIO {
 
     @Override
     public void updateInputs(IntakeInputs inputs) {
-        inputs.motorSpeed = getSpeed();
-        inputs.brake = getBrakeMode();
+        inputs.intakeSpeed = getSpeed();
     }
 
     @Override
@@ -26,15 +25,5 @@ public class IntakeIOSim implements IntakeIO {
     @Override
     public double getSpeed() {
         return m_motorSim.getSpeed(40, m_voltage);
-    }
-
-    @Override
-    public void brake(boolean enabled) {
-        m_brakeEnabled = enabled;
-    }
-
-    @Override
-    public boolean getBrakeMode() {
-        return m_brakeEnabled;
     }
 }

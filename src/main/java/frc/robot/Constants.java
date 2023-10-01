@@ -21,6 +21,7 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
     public final static class DriveConstants {
+        // TODO: copied from frc-23, CHANGE BEFORE DEPLOYING TO ROBOT
         public static final double kDriveDeadband = 0.1;
 
         public static final double kWheelDiameter = Units.inchesToMeters(3.7);
@@ -56,6 +57,7 @@ public final class Constants {
     }
 
     public final static class WristConstants {
+        // TODO: copied from frc-23, CHANGE BEFORE DEPLOYING TO ROBOT
         public final static int kNumSimMotors = 4;
         public final static double kGearRatio = 34.8444444444;
         public static final Rotation2d kMaxAngle = Rotation2d.fromDegrees(95);

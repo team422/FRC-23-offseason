@@ -16,11 +16,11 @@ public class Intake extends SubsystemBase {
         m_io.updateInputs(m_inputs);
     }
 
-    public void setSpeed(double speed) {
-        m_io.setVoltage(speed);
+    public void setVoltage(double voltage) {
+        m_io.setVoltage(voltage);
     }
 
-    public void brake(boolean enabled) {
-        m_io.brake(enabled);
+    public double getSpeed() {
+        return m_inputs.intakeSpeed;
     }
 }

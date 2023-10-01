@@ -6,7 +6,6 @@ package frc.robot;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
@@ -28,7 +27,6 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        // Configure the button bindings
         configureButtonBindings();
         configureSubsystems();
     }
@@ -43,14 +41,6 @@ public class RobotContainer {
     }
 
     private void configureSubsystems() {
-        // temporary testing stuff for sim
-        Wrist wrist = new Wrist(new WristIOSim(), new ProfiledPIDController(0, 0, 0, new Constraints(0, 0)));
-        Drive drive = new Drive(new GyroIOSim(), new Pose2d(), new SwerveModuleIOSim[] {
-            new SwerveModuleIOSim(),
-            new SwerveModuleIOSim(),
-            new SwerveModuleIOSim(),
-            new SwerveModuleIOSim()
-        });
     }
 
     /**

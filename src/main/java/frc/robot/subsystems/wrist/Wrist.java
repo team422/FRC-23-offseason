@@ -2,7 +2,6 @@ package frc.robot.subsystems.wrist;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Robot;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 public class Wrist extends SubsystemBase {
@@ -30,7 +29,7 @@ public class Wrist extends SubsystemBase {
     public void periodic() {
         m_io.updateInputs(m_inputs);
 
-        double currAngle = m_inputs.angleRad;
+        double currAngle = m_inputs.angle.getRadians();
         
         double pidVoltage = m_controller.calculate(currAngle, m_desiredAngle.getRadians());
 
@@ -39,6 +38,6 @@ public class Wrist extends SubsystemBase {
     }
 
     public boolean withinTolerance() {
-        return Math.abs(m_desiredAngle.getRadians() - m_inputs.angleRad) < m_controller.getPositionTolerance();
+        return Math.abs(m_desiredAngle.getRadians() - m_inputs.angle.getRadians()) < m_controller.getPositionTolerance();
     }
 }

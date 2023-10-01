@@ -30,9 +30,10 @@ public class WristIOSim implements WristIO {
     @Override
     public void updateInputs(WristInputs inputs) {
         m_sim.update(0.02);
-        inputs.motorSpeed = getSpeed();
+        inputs.wristSpeed = getSpeed();
         inputs.brake = getBrakeMode();
-        inputs.angleRad = getAngle().getRadians();
+        inputs.angle = getAngle();
+        inputs.currentAmps = m_sim.getCurrentDrawAmps();
     }
 
     @Override

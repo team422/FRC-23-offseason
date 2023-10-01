@@ -6,15 +6,11 @@ import frc.lib.advantagekit.LoggedIO;
 public interface IntakeIO extends LoggedIO<IntakeIO.IntakeInputs> {
     @AutoLog
     public static class IntakeInputs {
-        public double motorSpeed;
-        public boolean brake;
+        public double intakeSpeed;
+        public double intakeOutputCurrent;
     }
 
-    public void setVoltage(double voltage);
+    public void setVoltage(double voltage); // FART BALLS
 
     public double getSpeed();
-
-    public void brake(boolean enabled);
-
-    public boolean getBrakeMode();
 }
