@@ -12,13 +12,14 @@ import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.SwerveModuleIO;
 import frc.robot.subsystems.drive.SwerveModuleIOSim;
 import frc.robot.subsystems.drive.SwerveModuleInputsAutoLogged;
+import frc.robot.subsystems.drive.accelerometer.AccelerometerIO;
+import frc.robot.subsystems.drive.accelerometer.AccelerometerIOSim;
 import frc.robot.subsystems.drive.gyro.GyroIO;
-import frc.robot.subsystems.drive.gyro.GyroIOSim;
+import frc.robot.subsystems.drive.gyro.GyroIOPigeon;
 
 public class DriveTest {
     static final double DELTA = 1e-4;
@@ -46,11 +47,12 @@ public class DriveTest {
     @BeforeEach
     public void setup() {
         assert HAL.initialize(500, 0); // initialize the HAL, crash if failed
-        GyroIO gyro = new GyroIOSim();
+        GyroIO gyro = new GyroIOPigeon(22, new Rotation2d());
+        AccelerometerIO accel = new AccelerometerIOSim();
         Pose2d startPose = new Pose2d(3, 5, new Rotation2d());
         SwerveModuleIO[] modules = new SwerveModuleIOSim[4];
         Arrays.fill(modules, new SwerveModuleIOSim());
-        m_drive = new Drive(gyro, startPose, modules);
+        m_drive = new Drive(gyro, accel, startPose, modules);
     }
 
     @Test
@@ -64,7 +66,7 @@ public class DriveTest {
             m_drive.drive(speed);
             sleep(2);
             assertSameSpeeds(m_drive.m_inputs);
-            // System.out.println(speed.vxMetersPerSecond + " " + m_drive.m_inputs[0].driveVelocityMetersPerSecond);
+            System.out.println(speed.vxMetersPerSecond + " " + m_drive.m_inputs[0].driveVelocityMetersPerSecond);
             assertEquals(speed.vxMetersPerSecond, m_drive.m_inputs[0].driveVelocityMetersPerSecond, DELTA);
 
             m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
@@ -86,10 +88,10 @@ public class DriveTest {
             
             // i have no idea why but it works fine for x but the velocity is always positive for y
             if (speed.vyMetersPerSecond < 0.0) {
-                // System.out.println(speed.vyMetersPerSecond + " " + -m_drive.m_inputs[0].driveVelocityMetersPerSecond);
+                System.out.println(speed.vyMetersPerSecond + " " + -m_drive.m_inputs[0].driveVelocityMetersPerSecond);
                 assertEquals(speed.vyMetersPerSecond, -m_drive.m_inputs[0].driveVelocityMetersPerSecond, DELTA);
             } else {
-                // System.out.println(speed.vyMetersPerSecond + " " + m_drive.m_inputs[0].driveVelocityMetersPerSecond);
+                System.out.println(speed.vyMetersPerSecond + " " + m_drive.m_inputs[0].driveVelocityMetersPerSecond);
                 assertEquals(speed.vyMetersPerSecond, m_drive.m_inputs[0].driveVelocityMetersPerSecond, DELTA);
             }
 
@@ -113,9 +115,9 @@ public class DriveTest {
             sleep(2);
 
             assertSameSpeeds(m_drive.m_inputs);
-            // System.out.println(speed.vxMetersPerSecond + " " + m_drive.m_inputs[0].xDriveVelocityMetersPerSecond);
+            System.out.println(speed.vxMetersPerSecond + " " + m_drive.m_inputs[0].xDriveVelocityMetersPerSecond);
             assertEquals(speed.vxMetersPerSecond, m_drive.m_inputs[0].xDriveVelocityMetersPerSecond, DELTA);
-            // System.out.println(speed.vyMetersPerSecond + " " + m_drive.m_inputs[0].yDriveVelocityMetersPerSecond);
+            System.out.println(speed.vyMetersPerSecond + " " + m_drive.m_inputs[0].yDriveVelocityMetersPerSecond);
             assertEquals(speed.vyMetersPerSecond, m_drive.m_inputs[0].yDriveVelocityMetersPerSecond, DELTA);
 
             m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));

@@ -4,10 +4,12 @@ import org.littletonrobotics.junction.AutoLog;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import frc.lib.advantagekit.LoggedIO;
+import frc.robot.subsystems.drive.gyro.GyroIO.GyroInputs;
 
-public interface GyroIO extends LoggedIO<GyroIO.GyroInputs> {
+public interface GyroIO extends LoggedIO<GyroInputs> {
     @AutoLog
     public static class GyroInputs {
+        // both are in degrees
         public double angle;
         public double pitch;
     }

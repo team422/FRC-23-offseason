@@ -6,63 +6,72 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 public class SwerveModuleIOSim implements SwerveModuleIO {
-    private SwerveModuleState m_currState;
-    private SwerveModuleState m_desiredState;
-    private SwerveModulePosition m_currPos;
+
+    private SwerveModuleState m_curState;
+    private SwerveModuleState m_desState;
+    private SwerveModulePosition m_curPos;
 
     public SwerveModuleIOSim() {
-        m_currState = new SwerveModuleState();
-        m_desiredState = new SwerveModuleState();
-        m_currPos = new SwerveModulePosition();
-    }
-
-    public SwerveModulePosition getPosition() {
-        return m_currPos;
-    }
-
-    public void resetDistance() {
-        m_currPos.distanceMeters = 0;
-    }
-
-    public void syncTurningEncoder() {
-    }
-
-    public void resetEncoders() {
-    }
-
-    public Rotation2d getAngle() {
-        return m_currPos.angle;
-    }
-
-    public void setDesiredState(SwerveModuleState swerveModuleState) {
-        m_desiredState = swerveModuleState;
-    }
-
-    public SwerveModuleState getState() {
-        return m_currState;
+        m_curState = new SwerveModuleState();
+        m_desState = new SwerveModuleState();
+        m_curPos = new SwerveModulePosition();        
     }
 
     @Override
     public void updateInputs(SwerveModuleInputs inputs) {
-        double oldAngleRads = m_currPos.angle.getRadians();
-        double updatedAngle = MathUtil.interpolate(m_currState.angle.getRadians(), m_desiredState.angle.getRadians(), 1);
-        m_currState.angle = Rotation2d.fromRadians(updatedAngle);
-        m_currState.speedMetersPerSecond = m_desiredState.speedMetersPerSecond;
+        double oldAngleRads = m_curPos.angle.getRadians();
+        double updatedAngle = MathUtil.interpolate(m_curState.angle.getRadians(), m_desState.angle.getRadians(), 1);
+        m_curState.angle = Rotation2d.fromRadians(updatedAngle);
+        m_curState.speedMetersPerSecond = m_desState.speedMetersPerSecond;
 
-        m_currPos.distanceMeters += m_currState.speedMetersPerSecond * 0.02;
-        m_currPos.angle = m_currState.angle;
+        m_curPos.distanceMeters += (m_curState.speedMetersPerSecond * 0.02);
+        m_curPos.angle = m_curState.angle;
+        inputs.turnAngle = m_curPos.angle;
 
-        inputs.turnAngleRads = m_currPos.angle.getRadians();
-        inputs.driveDistanceMeters = m_currPos.distanceMeters;
-        inputs.driveVelocityMetersPerSecond = m_currState.speedMetersPerSecond;
-        inputs.turnRadsPerSecond = (m_currPos.angle.getRotations() - oldAngleRads) / 0.02;
+        inputs.driveDistanceMeters = m_curPos.distanceMeters;
+        inputs.driveVelocityMetersPerSecond = m_curState.speedMetersPerSecond;
+        inputs.turnRadsPerSecond = (m_curPos.angle.getRotations() - oldAngleRads) / 0.02;
 
-        inputs.xDriveVelocityMetersPerSecond = Math.cos(inputs.turnAngleRads) * inputs.driveVelocityMetersPerSecond;
-        inputs.yDriveVelocityMetersPerSecond = Math.sin(inputs.turnAngleRads) * inputs.driveVelocityMetersPerSecond;
+        inputs.xDriveVelocityMetersPerSecond = Math.cos(inputs.turnAngle.getRadians()) * inputs.driveVelocityMetersPerSecond;
+        inputs.yDriveVelocityMetersPerSecond = Math.sin(inputs.turnAngle.getRadians()) * inputs.driveVelocityMetersPerSecond;
+    }
+
+    @Override
+    public SwerveModulePosition getPosition() {
+        return m_curPos;
+    }
+
+    @Override
+    public void resetDistance() {
+        m_curPos.distanceMeters = 0;
+    }
+
+    @Override
+    public void syncTurningEncoder() {        
+    }
+
+    @Override
+    public void resetEncoders() {        
+    }
+
+    @Override
+    public Rotation2d getAngle() {
+        return m_curPos.angle;
+    }
+
+    @Override
+    public void setDesiredState(SwerveModuleState swerveModuleState) {
+        m_desState = swerveModuleState;
+    }
+
+    @Override
+    public SwerveModuleState getState() {
+        return m_curState;
     }
 
     @Override
     public SwerveModuleState getAbsoluteState() {
         return getState();
-    }    
+    }
+    
 }

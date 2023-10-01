@@ -4,43 +4,108 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.controller.ProfiledPIDController;
+import java.io.IOException;
+
+import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.accelerometer.AccelerometerIOSim;
+import frc.robot.subsystems.drive.accelerometer.AccelerometerIOWPI;
+import frc.robot.subsystems.drive.gyro.GyroIOPigeon;
+import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.util.Pigeon2Accel;
+import frc.robot.Constants.Ports;
+import frc.robot.subsystems.drive.SwerveModuleIO;
+import frc.robot.subsystems.drive.SwerveModuleIOMK4iSparkMax;
 import frc.robot.subsystems.drive.SwerveModuleIOSim;
-import frc.robot.subsystems.drive.gyro.GyroIOSim;
-import frc.robot.subsystems.wrist.Wrist;
-import frc.robot.subsystems.wrist.WristIOSim;
 
 /**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * This class is where the bulk of the robot should be declared. Since
+ * Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in
+ * the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of
+ * the robot (including
  * subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-
-    /** The container for the robot. Contains subsystems, OI devices, and commands. */
-    public RobotContainer() {
-        configureButtonBindings();
-        configureSubsystems();
-    }
+    private Drive m_drive;
+    private Intake m_intake;
+    private AprilTagFieldLayout m_layout;
+    // private RobotState m_robotState;
 
     /**
-     * Use this method to define your button->command mappings. Buttons can be created by
-     * instantiating a {@link GenericHID} or one of its subclasses ({@link
-     * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing it to a {@link
-     * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+     * The container for the robot. Contains subsystems, OI devices, and commands.
      */
-    private void configureButtonBindings() {
+    public RobotContainer() {
+        configureSubsystems();
+        // Configure the button bindings
+        configureButtonBindings();
+        configureAprilTags();
+    }
+
+    public void configureAprilTags() {
+        try {
+            m_layout = AprilTagFields.k2023ChargedUp.loadAprilTagLayoutField();
+        } catch (IOException e) {
+            System.out.println("AprilTag field layout not found:" + e);
+        }
+    }
+
+    private void configureAllianceSettings() {
+        var origin = DriverStation.getAlliance() == Alliance.Blue
+                ? OriginPosition.kBlueAllianceWallRightSide
+                : OriginPosition.kRedAllianceWallRightSide;
+        m_layout.setOrigin(origin);
     }
 
     private void configureSubsystems() {
+        if (Robot.isReal()) {
+            SwerveModuleIO[] m_swerveModuleIOs = {
+                    new SwerveModuleIOMK4iSparkMax(Constants.Ports.leftFrontDrivingMotorPort,
+                            Ports.leftFrontTurningMotorPort,
+                            Ports.leftFrontCanCoderPort),
+                    new SwerveModuleIOMK4iSparkMax(Constants.Ports.rightFrontDriveMotorPort,
+                            Ports.rightFrontTurningMotorPort,
+                            Ports.rightFrontCanCoderPort),
+                    new SwerveModuleIOMK4iSparkMax(Constants.Ports.leftRearDriveMotorPort,
+                            Ports.leftRearTurningMotorPort,
+                            Ports.leftRearCanCoderPort),
+                    new SwerveModuleIOMK4iSparkMax(Constants.Ports.rightRearDriveMotorPort,
+                            Ports.rightRearTurningMotorPort,
+                            Ports.rightRearCanCoderPort) };
+            GyroIOPigeon pigeon = new GyroIOPigeon(Constants.Ports.pigeonPort, Constants.DriveConstants.pitchAngle);
+            m_drive = new Drive(pigeon,
+                    new AccelerometerIOWPI(new Pigeon2Accel(Constants.Ports.pigeonPort)),
+                    Constants.DriveConstants.startPose,
+                    m_swerveModuleIOs);
+            // m_intake = new Intake(new IntakeIOSim()); //make real intake class later
+        } else {
+            m_drive = new Drive(new GyroIOPigeon(22, new Rotation2d()), new AccelerometerIOSim(), new Pose2d(),
+                    new SwerveModuleIOSim(), new SwerveModuleIOSim(), new SwerveModuleIOSim(), new SwerveModuleIOSim());
+            m_intake = new Intake(new IntakeIOSim());
+        }
+    }
+
+    /**
+     * Use this method to define your button->command mappings. Buttons can be
+     * created by
+     * instantiating a {@link GenericHID} or one of its subclasses ({@link
+     * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then passing
+     * it to a {@link
+     * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
+     */
+    private void configureButtonBindings() {
     }
 
     /**
@@ -50,6 +115,20 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        return null; //CHANGE THIS OR DIE TMR
+        return null;
     }
+
+    public void onEnabled() {
+        configureAllianceSettings();
+    }
+
+    public void disabledPeriodic() {
+    }
+
+    public void onDisabled() {
+    }
+
+    public void updateRobotState() {
+    }
+
 }

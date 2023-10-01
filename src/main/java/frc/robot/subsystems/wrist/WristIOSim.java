@@ -10,12 +10,11 @@ public class WristIOSim implements WristIO {
 
     SingleJointedArmSim m_sim;
 
-    DCMotor[] m_motorsSim;
     double m_voltage;
     boolean m_brakeEnabled;
 
     public WristIOSim() {
-        DCMotor gearbox = DCMotor.getNEO(WristConstants.kNumSimMotors);
+        DCMotor gearbox = DCMotor.getNEO(1);
         double gearing = WristConstants.kGearRatio;
         double jKgMetersSquared = 1;
         double armLengthMeters = Units.inchesToMeters(7.85);
