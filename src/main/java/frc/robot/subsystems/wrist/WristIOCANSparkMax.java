@@ -1,4 +1,4 @@
-package frc.robot.wrist;
+package frc.robot.subsystems.wrist;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
