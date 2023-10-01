@@ -20,35 +20,15 @@ import frc.robot.subsystems.drive.gyro.GyroInputsAutoLogged;
 public class Drive extends SubsystemBase {
 
     private final SwerveModuleIO[] m_modules;
-    private final SwerveModuleInputsAutoLogged[] m_inputs;
-
-    // OLD SOK CODE
-    // SOK vars
-    // private final SecondOrderKinematics m_SecondOrderKinematics;
-    // private SwerveModuleLateralAcceleration[] m_moduleAccelerations = new
-    // SwerveModuleLateralAcceleration[] {
-    // new SwerveModuleLateralAcceleration(), new SwerveModuleLateralAcceleration(),
-    // new SwerveModuleLateralAcceleration(),
-    // new SwerveModuleLateralAcceleration() };
-    // private Rotation2d[] m_moduleSteerThetaVels = new Rotation2d[] { new
-    // Rotation2d(), new Rotation2d(),
-    // new Rotation2d(),
-    // new Rotation2d() };
-    // private Rotation2d[] m_moduleSteerOldTheta = new Rotation2d[] { new
-    // Rotation2d(), new Rotation2d(),
-    // new Rotation2d(),
-    // new Rotation2d() };
-    // private Rotation2d m_oldRobotTheta = new Rotation2d();
-    // private Rotation2d m_robotThetaVel = new Rotation2d();
-    // private final double m_deltaTime = 0.02;
+    public final SwerveModuleInputsAutoLogged[] m_inputs;
 
     private AccelerometerIO m_accel;
-    private final AccelerometerInputsAutoLogged m_accelInputs;
+    public final AccelerometerInputsAutoLogged m_accelInputs;
 
     private final SwerveDrivePoseEstimator m_poseEstimator;
 
     private final GyroIO m_gyro;
-    private final GyroInputsAutoLogged m_gyroInputs;
+    public final GyroInputsAutoLogged m_gyroInputs;
 
     private double m_simGyroLastUpdated;
 
@@ -69,9 +49,6 @@ public class Drive extends SubsystemBase {
 
         m_poseEstimator = new SwerveDrivePoseEstimator(Constants.DriveConstants.kDriveKinematics, m_gyro.getAngle(),
                 getSwerveModulePositions(), startPose);
-
-        // OLD SOK CODE
-        // m_SecondOrderKinematics = new SecondOrderKinematics();
 
         m_accel = accel;
         m_accelInputs = new AccelerometerInputsAutoLogged();
@@ -101,7 +78,6 @@ public class Drive extends SubsystemBase {
     public void periodic() {
         // This method will be called once per scheduler run
 
-        // NOTE TO FUTURE SOK CODERS: Fill in C.A. variables here, accel x/y can be obtained from acclerometer, and gyro velo/accel can be obtained from difference quotients or something idfk its 3 am
 
         // Update Gyro Inputs/Logs
         m_gyro.updateInputs(m_gyroInputs);

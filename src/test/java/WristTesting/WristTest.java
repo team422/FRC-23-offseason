@@ -1,5 +1,3 @@
-//will be fixed in mega-merge
-
 // package WristTesting;
 
 // import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -11,6 +9,12 @@
 // import org.junit.jupiter.api.BeforeEach;
 // import org.junit.jupiter.api.Test;
 
+// import edu.wpi.first.math.controller.ProfiledPIDController;
+// import edu.wpi.first.math.geometry.Rotation2d;
+// import frc.robot.subsystems.wrist.WristIOSim;
+// import frc.robot.subsystems.wrist.Wrist;
+// import frc.robot.Constants;
+// import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 
 // public class WristTest {
 //     static final double delta = 1e-2;
@@ -43,11 +47,11 @@
     
 //     }
 
-    // @Test
-    // void testBrake(){
-    //     m_intake.brake(true);
-    //     sleep(1);
-    //     assertEquals(true, m_intake.isBrake());
-    // }
+//     // @Test
+//     // void testBrake(){
+//     // m_intake.brake(true);
+//     // sleep(1);
+//     // assertEquals(true, m_intake.isBrake());
+//     // }
 
 // }

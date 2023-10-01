@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Intake extends SubsystemBase {
 
     private IntakeIO m_IO;
-    private IntakeInputsAutoLogged m_inputs;
+    public IntakeInputsAutoLogged m_inputs;
     public double m_desiredVoltage;
 
     public Intake(IntakeIO io) {

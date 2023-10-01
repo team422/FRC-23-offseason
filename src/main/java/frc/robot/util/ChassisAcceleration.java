@@ -20,6 +20,9 @@ public class ChassisAcceleration {
     public ChassisAcceleration(double a_xMetersPerSecondSquared, double a_yMetersPerSecondSquared,
             double alphaRadiansPerSecondSquared,
             double omegaRadiansPerSecond) {
+
+        // NOTE TO FUTURE SOK CODERS: To find in C.A. variables, accel x/y can be obtained from acclerometer, and gyro velo/accel can be obtained from difference quotients or something idfk its 3 am
+
         this.a_xMetersPerSecondSquared = a_xMetersPerSecondSquared;
         this.a_yMetersPerSecondSquared = a_yMetersPerSecondSquared;
         this.alphaRadiansPerSecondSquared = alphaRadiansPerSecondSquared;

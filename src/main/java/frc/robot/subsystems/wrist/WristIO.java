@@ -7,7 +7,7 @@ import frc.robot.subsystems.wrist.WristIO.WristInputs;
 
 public interface WristIO extends LoggedIO<WristInputs>{
     @AutoLog
-    public static class WristInputs{
+    public static class WristInputs {
         public double[] motorSpeed;
         public double wristVoltage;
         public boolean brakeEnabled;
