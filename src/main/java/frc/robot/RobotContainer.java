@@ -24,6 +24,9 @@ import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIOSim;
 import frc.robot.util.Pigeon2Accel;
 import frc.robot.Constants.Ports;
+import frc.robot.commands.drive.TeleopDrive;
+import frc.robot.oi.DriverControls;
+import frc.robot.oi.DriverControlsDualFlightStick;
 import frc.robot.subsystems.drive.SwerveModuleIO;
 import frc.robot.subsystems.drive.SwerveModuleIOMK4iSparkMax;
 import frc.robot.subsystems.drive.SwerveModuleIOSim;
@@ -106,6 +109,15 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
+        
+        DriverControls driverControls = new DriverControlsDualFlightStick(
+            Constants.OIConstants.kDriverLeftDriveStickPort,
+            Constants.OIConstants.kDriverRightDriveStickPort);
+        TeleopDrive teleopDrive = new TeleopDrive(m_drive, driverControls::getDriveForward,
+                driverControls::getDriveLeft, driverControls::getDriveRotation,
+                Constants.DriveConstants.kDriveDeadband);
+        m_drive.setDefaultCommand(teleopDrive);
+    
     }
 
     /**
