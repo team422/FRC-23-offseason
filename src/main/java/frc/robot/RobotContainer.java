@@ -21,9 +21,15 @@ import frc.robot.subsystems.drive.accelerometer.AccelerometerIOSim;
 import frc.robot.subsystems.drive.accelerometer.AccelerometerIOWPI;
 import frc.robot.subsystems.drive.gyro.GyroIOPigeon;
 import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.intake.IntakeIOCANSparkMax;
 import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.subsystems.wrist.Wrist;
+import frc.robot.subsystems.wrist.WristIOCANSparkMax;
+import frc.robot.subsystems.wrist.WristIOSim;
 import frc.robot.util.Pigeon2Accel;
 import frc.robot.Constants.Ports;
+import frc.robot.Constants.WristConstants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.commands.drive.TeleopDrive;
 import frc.robot.oi.DriverControls;
 import frc.robot.oi.DriverControlsDualFlightStick;
@@ -44,6 +50,7 @@ public class RobotContainer {
     // The robot's subsystems and commands are defined here...
     private Drive m_drive;
     private Intake m_intake;
+    private Wrist m_wrist;
     private AprilTagFieldLayout m_layout;
     // private RobotState m_robotState;
 
@@ -52,7 +59,6 @@ public class RobotContainer {
      */
     public RobotContainer() {
         configureSubsystems();
-        // Configure the button bindings
         configureButtonBindings();
         configureAprilTags();
     }
@@ -75,28 +81,39 @@ public class RobotContainer {
     private void configureSubsystems() {
         if (Robot.isReal()) {
             SwerveModuleIO[] m_swerveModuleIOs = {
-                    new SwerveModuleIOMK4iSparkMax(Constants.Ports.leftFrontDrivingMotorPort,
+                    new SwerveModuleIOMK4iSparkMax(Ports.leftFrontDrivingMotorPort,
                             Ports.leftFrontTurningMotorPort,
                             Ports.leftFrontCanCoderPort),
-                    new SwerveModuleIOMK4iSparkMax(Constants.Ports.rightFrontDriveMotorPort,
+                    new SwerveModuleIOMK4iSparkMax(Ports.rightFrontDriveMotorPort,
                             Ports.rightFrontTurningMotorPort,
                             Ports.rightFrontCanCoderPort),
-                    new SwerveModuleIOMK4iSparkMax(Constants.Ports.leftRearDriveMotorPort,
+                    new SwerveModuleIOMK4iSparkMax(Ports.leftRearDriveMotorPort,
                             Ports.leftRearTurningMotorPort,
                             Ports.leftRearCanCoderPort),
-                    new SwerveModuleIOMK4iSparkMax(Constants.Ports.rightRearDriveMotorPort,
+                    new SwerveModuleIOMK4iSparkMax(Ports.rightRearDriveMotorPort,
                             Ports.rightRearTurningMotorPort,
                             Ports.rightRearCanCoderPort) };
-            GyroIOPigeon pigeon = new GyroIOPigeon(Constants.Ports.pigeonPort, Constants.DriveConstants.pitchAngle);
+            GyroIOPigeon pigeon = new GyroIOPigeon(Ports.pigeonPort, Constants.DriveConstants.pitchAngle);
             m_drive = new Drive(pigeon,
-                    new AccelerometerIOWPI(new Pigeon2Accel(Constants.Ports.pigeonPort)),
+                    new AccelerometerIOWPI(new Pigeon2Accel(Ports.pigeonPort)),
                     Constants.DriveConstants.startPose,
                     m_swerveModuleIOs);
-            // m_intake = new Intake(new IntakeIOSim()); //make real intake class later
+
+            m_intake = new Intake(new IntakeIOCANSparkMax(Ports.intakePort, IntakeConstants.kGearRatio),
+                    IntakeConstants.kIntakeVoltage, IntakeConstants.kIntakeHoldVoltage);
+
+            m_wrist = new Wrist(new WristIOCANSparkMax(Ports.wristPort, WristConstants.kWristEncoderCPR),
+                    WristConstants.wristPIDController, WristConstants.kMinAngle, WristConstants.kMaxAngle,
+                    WristConstants.kToleranceRad);
         } else {
             m_drive = new Drive(new GyroIOPigeon(22, new Rotation2d()), new AccelerometerIOSim(), new Pose2d(),
                     new SwerveModuleIOSim(), new SwerveModuleIOSim(), new SwerveModuleIOSim(), new SwerveModuleIOSim());
-            m_intake = new Intake(new IntakeIOSim());
+
+            m_intake = new Intake(new IntakeIOSim(),
+                    IntakeConstants.kIntakeVoltage, IntakeConstants.kIntakeHoldVoltage);
+
+            m_wrist = new Wrist(new WristIOSim(), WristConstants.wristPIDController, WristConstants.kMinAngle, WristConstants.kMaxAngle,
+                    WristConstants.kToleranceRad);
         }
     }
 

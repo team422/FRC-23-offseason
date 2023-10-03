@@ -7,9 +7,10 @@ public class IntakeIOCANSparkMax implements IntakeIO {
     private CANSparkMax m_intakeMotor;
     private RelativeEncoder m_encoder;
 
-    public IntakeIOCANSparkMax(int port, int intakeEncoderCPR) {
+    public IntakeIOCANSparkMax(int port, double gearRatio) {
         m_intakeMotor = new CANSparkMax(port, CANSparkMax.MotorType.kBrushless);
         m_encoder = m_intakeMotor.getEncoder();
+        m_encoder.setPositionConversionFactor(gearRatio);
     }
 
     @Override
@@ -26,5 +27,10 @@ public class IntakeIOCANSparkMax implements IntakeIO {
     @Override
     public double getSpeed() {
         return m_encoder.getVelocity();
+    }
+
+    @Override
+    public boolean hasGamePiece() {
+        return Math.round(m_intakeMotor.getOutputCurrent()) > 15 && Math.round(getSpeed()) == 0;
     }
 }

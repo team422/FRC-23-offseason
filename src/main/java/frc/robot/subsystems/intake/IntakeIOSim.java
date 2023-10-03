@@ -26,4 +26,10 @@ public class IntakeIOSim implements IntakeIO {
     public double getSpeed() {
         return m_motorSim.getSpeed(40, m_voltage);
     }
+
+    @Override
+    public boolean hasGamePiece() {
+        // implementation in frc-23 used robotstate and i dont like it
+        return false;
+    }
 }

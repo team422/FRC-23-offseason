@@ -10,7 +10,9 @@ public interface IntakeIO extends LoggedIO<IntakeIO.IntakeInputs> {
         public double intakeOutputCurrent;
     }
 
-    public void setVoltage(double voltage); // FART BALLS
+    public void setVoltage(double voltage);
 
     public double getSpeed();
+
+    public boolean hasGamePiece();
 }

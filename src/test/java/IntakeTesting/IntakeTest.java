@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import edu.wpi.first.hal.HAL;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIOSim;
+import frc.robot.Constants.IntakeConstants;
 
 public class IntakeTest {
     static final double DELTA = 1e-4;
@@ -27,7 +28,7 @@ public class IntakeTest {
     @BeforeEach
     void setup() {
         assert HAL.initialize(500, 0); // initialize the HAL, crash if failed
-        m_intake = new Intake(new IntakeIOSim());
+        m_intake = new Intake(new IntakeIOSim(), IntakeConstants.kIntakeVoltage, IntakeConstants.kIntakeHoldVoltage);
     }
 
     @Test

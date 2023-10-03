@@ -4,10 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import frc.robot.util.TunableNumber;
 
@@ -71,10 +73,29 @@ public final class Constants {
 
     public final static class WristConstants {
         // TODO: copied from frc-23, CHANGE BEFORE DEPLOYING TO ROBOT
-
-        public final static double kGearRatio = 34.8444444444;
+        public static final double kGearRatio = 34.8444444444;
+        public static final int kWristEncoderCPR = 4096;
         public static final Rotation2d kMaxAngle = Rotation2d.fromDegrees(95);
         public static final Rotation2d kMinAngle = Rotation2d.fromDegrees(-100);
+        public static final double kToleranceRad = Units.degreesToRadians(2);
+
+        // Wrist PID, currently untuned
+        public static final TunableNumber kP = new TunableNumber("Wrist P", 1);
+        public static final TunableNumber kI = new TunableNumber("Wrist I", 1);
+        public static final TunableNumber kD = new TunableNumber("Wrist D", 1);
+        public static final TunableNumber kWristVelo = new TunableNumber("Wrist Velo", 20);
+        public static final TunableNumber kWristAccel = new TunableNumber("Wrist Accel", 15.0);
+        public static final ProfiledPIDController wristPIDController = new ProfiledPIDController(
+            kP.get(), kI.get(), kD.get(),
+            new Constraints(kWristVelo.get(), kWristAccel.get()));
+    }
+
+    public static final class IntakeConstants {
+        // TODO: copied from frc-23, CHANGE BEFORE DEPOLOYING TO ROBOT
+        public static final double kGearRatio = 1.0;
+
+        public static final double kIntakeVoltage = 11;
+        public static final double kIntakeHoldVoltage = 3;
     }
 
     public static final class Ports {
@@ -99,6 +120,10 @@ public final class Constants {
         public static final int rightRearDriveMotorPort = 422;
         public static final int rightRearTurningMotorPort = 422;
         public static final int rightRearCanCoderPort = 422;
+
+        public static final int wristPort = 9982;
+
+        public static final int intakePort = 1337;
 
     }
 
