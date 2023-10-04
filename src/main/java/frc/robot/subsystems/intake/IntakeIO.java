@@ -8,6 +8,7 @@ public interface IntakeIO extends LoggedIO<IntakeIO.IntakeInputs> {
     public static class IntakeInputs {
         public double intakeSpeed;
         public double intakeOutputCurrent;
+        public double intakeOutputVoltage;
     }
 
     public void setVoltage(double voltage);

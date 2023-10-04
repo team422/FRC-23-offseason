@@ -15,6 +15,7 @@ public class IntakeIOSim implements IntakeIO {
     @Override
     public void updateInputs(IntakeInputs inputs) {
         inputs.intakeSpeed = getSpeed();
+        inputs.intakeOutputVoltage = m_voltage;
     }
 
     @Override

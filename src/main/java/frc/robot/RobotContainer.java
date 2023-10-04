@@ -28,6 +28,7 @@ import frc.robot.subsystems.wrist.WristIOCANSparkMax;
 import frc.robot.subsystems.wrist.WristIOSim;
 import frc.robot.util.Pigeon2Accel;
 import frc.robot.Constants.Ports;
+import frc.robot.Constants.Setpoints;
 import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.commands.drive.TeleopDrive;
@@ -134,7 +135,14 @@ public class RobotContainer {
                 driverControls::getDriveLeft, driverControls::getDriveRotation,
                 Constants.DriveConstants.kDriveDeadband);
         m_drive.setDefaultCommand(teleopDrive);
-    
+
+        driverControls.intakeButton().whileTrue(m_intake.intakeCommand());
+        driverControls.outtakeButton().whileTrue(m_intake.outtakeCommand());
+
+        driverControls.wristButtonCube().onTrue(m_wrist.setAngleCommand(Setpoints.kWristGrabCube));
+        driverControls.wristButtonShoot().onTrue(m_wrist.setAngleCommand(Setpoints.kWristShoot));
+        driverControls.wristButtonStow().onTrue(m_wrist.setAngleCommand(Setpoints.kWristStow));
+
     }
 
     /**

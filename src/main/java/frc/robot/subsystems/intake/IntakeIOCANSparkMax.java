@@ -17,6 +17,7 @@ public class IntakeIOCANSparkMax implements IntakeIO {
     public void updateInputs(IntakeInputs inputs) {
         inputs.intakeSpeed = getSpeed();
         inputs.intakeOutputCurrent = m_intakeMotor.getOutputCurrent();
+        inputs.intakeOutputVoltage = m_intakeMotor.getAppliedOutput();
     }
 
     @Override

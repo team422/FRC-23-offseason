@@ -201,4 +201,36 @@ public class DriveTest {
             assertEquals(startPose.getY(), m_drive.getPose().getY(), DELTA);
         }
     }
+
+    @Test
+    public void rotationSpeedTest() {
+        // currently broken but still wanted to push progress
+
+        sleep(1);
+        System.out.println(m_drive.m_inputs[0].turnAngle);
+
+        m_drive.drive(new ChassisSpeeds(0, 0, 1.0));
+        sleep(10);
+        System.out.println(m_drive.m_inputs[0].turnAngle + " " + m_drive.m_inputs[0].turnRadsPerSecond);
+
+        /*
+        ChassisSpeeds[] speeds = new ChassisSpeeds[359 * 2]; // its overkill but idc
+        for (int i = 0; i < 359 * 2; i++) {
+            double omegaSpeed = i / 2;
+            speeds[i] = new ChassisSpeeds(0.0, 0.0, omegaSpeed);
+        }
+
+        for (ChassisSpeeds speed : speeds) {
+            m_drive.drive(speed);
+            sleep(5);
+
+            System.out.println(m_drive.m_inputs[0].turnAngle);
+            System.out.println(speed.omegaRadiansPerSecond + " " + m_drive.m_inputs[0].turnRadsPerSecond);
+            assertSameSpeeds(m_drive.m_inputs);
+            assertEquals(speed.omegaRadiansPerSecond, m_drive.m_inputs[0].turnRadsPerSecond, DELTA);
+
+            m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+            sleep(3);
+        } */
+    }
 }

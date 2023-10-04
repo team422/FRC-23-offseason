@@ -131,4 +131,11 @@ public final class Constants {
         public static final int kDriverLeftDriveStickPort = 0;
         public static final int kDriverRightDriveStickPort = 1;
     }
+
+    public static final class Setpoints {
+        // TODO: i made these up, PLEASE FOR THE LOVE OF GOD CHANGE THEM BEFORE DEPLOYING TO ROBOT
+        public static final Rotation2d kWristGrabCube = Rotation2d.fromDegrees(0);
+        public static final Rotation2d kWristShoot = Rotation2d.fromDegrees(30);
+        public static final Rotation2d kWristStow = Rotation2d.fromDegrees(90);
+    }
 }

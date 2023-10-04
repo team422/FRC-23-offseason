@@ -4,12 +4,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.MathUtil;
-import frc.robot.subsystems.wrist.WristIO.WristInputs;
 
 public class Wrist extends SubsystemBase {
     private final WristIO m_io;
-    public final WristInputs m_inputs;
+    public final WristInputsAutoLogged m_inputs;
 
     private final ProfiledPIDController m_controller;
     private final Rotation2d kMinAngle;
@@ -32,6 +34,9 @@ public class Wrist extends SubsystemBase {
         double currAngle = m_inputs.angle.getRadians();
         double pidVoltage = m_controller.calculate(currAngle, m_desiredAngle.getRadians());
         m_io.setVoltage(pidVoltage);
+
+        Logger.getInstance().recordOutput("Wrist/SetpointDegrees", m_desiredAngle.getDegrees());
+        Logger.getInstance().recordOutput("Wrist/CurrentDegrees", m_inputs.angle.getDegrees());
     }
 
     public void setAngle(Rotation2d angle) {

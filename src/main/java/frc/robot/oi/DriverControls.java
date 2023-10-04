@@ -9,7 +9,13 @@ public interface DriverControls {
   
     public double getDriveRotation();
 
-    public Trigger intakeButtonIn();
+    public Trigger intakeButton();
 
-    public Trigger intakeButtonOut();
+    public Trigger outtakeButton();
+
+    public Trigger wristButtonCube();
+
+    public Trigger wristButtonShoot();
+
+    public Trigger wristButtonStow();
 }
