@@ -4,11 +4,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Arrays;
+import java.util.Random;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import edu.wpi.first.hal.HAL;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -53,6 +56,12 @@ public class DriveTest {
         SwerveModuleIO[] modules = new SwerveModuleIOSim[4];
         Arrays.fill(modules, new SwerveModuleIOSim());
         m_drive = new Drive(gyro, accel, startPose, modules);
+    }
+
+    @AfterEach
+    public void end() {
+        m_drive.drive(new ChassisSpeeds(0, 0, 0));
+        sleep(2);
     }
 
     @Test
@@ -203,34 +212,59 @@ public class DriveTest {
     }
 
     @Test
-    public void rotationSpeedTest() {
+    public void rotationTest() {
         // currently broken but still wanted to push progress
 
-        sleep(1);
-        System.out.println(m_drive.m_inputs[0].turnAngle);
-
-        m_drive.drive(new ChassisSpeeds(0, 0, 1.0));
-        sleep(10);
-        System.out.println(m_drive.m_inputs[0].turnAngle + " " + m_drive.m_inputs[0].turnRadsPerSecond);
-
-        /*
-        ChassisSpeeds[] speeds = new ChassisSpeeds[359 * 2]; // its overkill but idc
-        for (int i = 0; i < 359 * 2; i++) {
-            double omegaSpeed = i / 2;
-            speeds[i] = new ChassisSpeeds(0.0, 0.0, omegaSpeed);
+        ChassisSpeeds[] speeds = new ChassisSpeeds[30];
+        
+        Random rand = new Random(); // im feelin spicy today
+        for (int i = 0; i < speeds.length; i++) {
+            double randSpeed = rand.nextDouble(20);
+            speeds[i] = new ChassisSpeeds(0.0, 0.0, randSpeed);
         }
 
         for (ChassisSpeeds speed : speeds) {
+            Rotation2d startAngle = m_drive.getGyroIO().getAngle();
             m_drive.drive(speed);
-            sleep(5);
+            sleepCycles((int)((2 * Math.PI) / speed.omegaRadiansPerSecond * 50));
 
-            System.out.println(m_drive.m_inputs[0].turnAngle);
-            System.out.println(speed.omegaRadiansPerSecond + " " + m_drive.m_inputs[0].turnRadsPerSecond);
-            assertSameSpeeds(m_drive.m_inputs);
-            assertEquals(speed.omegaRadiansPerSecond, m_drive.m_inputs[0].turnRadsPerSecond, DELTA);
+            assertEquals(startAngle.getRadians(), m_drive.getGyroIO().getAngle().getRadians(), speed.omegaRadiansPerSecond);
 
+            m_drive.drive(new ChassisSpeeds(0, 0, 0));
+            sleep(3);
+        }
+    }
+
+    @Test
+    public void complexPoseEstimationTest() {
+        // pose estimation + rotation scary
+
+        ChassisSpeeds[] speeds = new ChassisSpeeds[422];
+        double currDeltaX = -21.1;
+        double currDeltaY = -42.2;
+        double currDeltaTheta = -10.55;
+        for (int i = 0; i < speeds.length; i++, currDeltaX += 0.1, currDeltaY += 0.2, currDeltaTheta += 0.05) {
+            speeds[i] = new ChassisSpeeds(currDeltaX, currDeltaY, currDeltaTheta);
+        }
+
+        for (ChassisSpeeds speed : speeds) {
+            Pose2d startPose = m_drive.getPose();
+            Rotation2d startAngle = m_drive.getGyroIO().getAngle();
+            m_drive.drive(speed);
+            sleep(2);
             m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
             sleep(3);
-        } */
+
+            ChassisSpeeds counterSpeeds = new ChassisSpeeds(-speed.vxMetersPerSecond, -speed.vyMetersPerSecond, -speed.omegaRadiansPerSecond);
+            m_drive.drive(counterSpeeds);
+            sleep(2);
+            m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+            sleep(3);
+            
+            assertEquals(startPose.getX(), m_drive.getPose().getX(), DELTA);
+            assertEquals(startPose.getY(), m_drive.getPose().getY(), DELTA);
+            assertEquals(startAngle.getRadians(), m_drive.getGyroIO().getAngle().getRadians(), DELTA);
+        }
+
     }
 }
