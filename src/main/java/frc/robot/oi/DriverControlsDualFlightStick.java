@@ -13,12 +13,12 @@ public class DriverControlsDualFlightStick implements DriverControls {
     }
 
     @Override
-    public double getDriveForward() {
+    public double getDriveX() {
         return -Math.signum(m_leftJoystick.getY()) * Math.pow(m_leftJoystick.getY(), 2);
     }
 
     @Override
-    public double getDriveLeft() {
+    public double getDriveY() {
         return -Math.signum(m_leftJoystick.getX()) * Math.pow(m_leftJoystick.getX(), 2);
     }
 

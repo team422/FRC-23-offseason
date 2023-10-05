@@ -103,9 +103,9 @@ public class RobotContainer {
             m_intake = new Intake(new IntakeIOCANSparkMax(Ports.intakePort, IntakeConstants.kGearRatio),
                     IntakeConstants.kIntakeVoltage, IntakeConstants.kIntakeHoldVoltage);
 
-            m_wrist = new Wrist(new WristIOCANSparkMax(Ports.wristPort, WristConstants.kWristEncoderCPR),
-                    WristConstants.wristPIDController, WristConstants.kMinAngle, WristConstants.kMaxAngle,
-                    WristConstants.kToleranceRad);
+            m_wrist = new Wrist(new WristIOCANSparkMax(Ports.wristPort, WristConstants.kOffset),
+                    WristConstants.wristPIDController, WristConstants.wristFeedforward, WristConstants.kMinAngle,
+                    WristConstants.kMaxAngle, WristConstants.kToleranceRad);
         } else {
             m_drive = new Drive(new GyroIOPigeon(22, new Rotation2d()), new AccelerometerIOSim(), new Pose2d(),
                     new SwerveModuleIOSim(), new SwerveModuleIOSim(), new SwerveModuleIOSim(), new SwerveModuleIOSim());
@@ -113,8 +113,8 @@ public class RobotContainer {
             m_intake = new Intake(new IntakeIOSim(),
                     IntakeConstants.kIntakeVoltage, IntakeConstants.kIntakeHoldVoltage);
 
-            m_wrist = new Wrist(new WristIOSim(), WristConstants.wristPIDController, WristConstants.kMinAngle, WristConstants.kMaxAngle,
-                    WristConstants.kToleranceRad);
+            m_wrist = new Wrist(new WristIOSim(), WristConstants.wristPIDController, WristConstants.wristFeedforward,
+                    WristConstants.kMinAngle, WristConstants.kMaxAngle, WristConstants.kToleranceRad);
         }
     }
 
@@ -131,17 +131,21 @@ public class RobotContainer {
         DriverControls driverControls = new DriverControlsDualFlightStick(
             Constants.OIConstants.kDriverLeftDriveStickPort,
             Constants.OIConstants.kDriverRightDriveStickPort);
-        TeleopDrive teleopDrive = new TeleopDrive(m_drive, driverControls::getDriveForward,
-                driverControls::getDriveLeft, driverControls::getDriveRotation,
+        TeleopDrive teleopDrive = new TeleopDrive(m_drive, driverControls::getDriveX,
+                driverControls::getDriveY, driverControls::getDriveRotation,
                 Constants.DriveConstants.kDriveDeadband);
         m_drive.setDefaultCommand(teleopDrive);
 
         driverControls.intakeButton().whileTrue(m_intake.intakeCommand());
         driverControls.outtakeButton().whileTrue(m_intake.outtakeCommand());
 
-        driverControls.wristButtonCube().onTrue(m_wrist.setAngleCommand(Setpoints.kWristGrabCube));
-        driverControls.wristButtonShoot().onTrue(m_wrist.setAngleCommand(Setpoints.kWristShoot));
-        driverControls.wristButtonStow().onTrue(m_wrist.setAngleCommand(Setpoints.kWristStow));
+        if (Robot.isSimulation()) {
+            // all of these are unbound in real
+            // DO NOT REBIND THESE UNTIL WE HAVE A MIN ANGLE AND MAX ANGLE AND OFFSET IS SET
+            driverControls.wristButtonCube().onTrue(m_wrist.setAngleCommand(Setpoints.kWristGrabCube));
+            driverControls.wristButtonShoot().onTrue(m_wrist.setAngleCommand(Setpoints.kWristShoot));
+            driverControls.wristButtonStow().onTrue(m_wrist.setAngleCommand(Setpoints.kWristStow));
+        }
 
     }
 

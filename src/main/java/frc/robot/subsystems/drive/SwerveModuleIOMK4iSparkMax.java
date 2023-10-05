@@ -171,9 +171,9 @@ public class SwerveModuleIOMK4iSparkMax implements SwerveModuleIO {
       public void updateInputs(SwerveModuleInputs inputs) {
         inputs.driveDistanceMeters = getDriveDistanceMeters();
         inputs.driveVelocityMetersPerSecond = getDriveVelocityMetersPerSecond();
-        inputs.turnAngle = getAngle();
+        inputs.turnAngleRad = getAngle().getRadians();
         inputs.turnRadsPerSecond = Units.degreesToRadians(m_driveEncoder.getVelocity());
-        inputs.xDriveVelocityMetersPerSecond = Math.cos(inputs.turnAngle.getRadians()) * inputs.driveVelocityMetersPerSecond;
-        inputs.yDriveVelocityMetersPerSecond = Math.sin(inputs.turnAngle.getRadians()) * inputs.driveVelocityMetersPerSecond;
+        inputs.xDriveVelocityMetersPerSecond = Math.cos(inputs.turnAngleRad) * inputs.driveVelocityMetersPerSecond;
+        inputs.yDriveVelocityMetersPerSecond = Math.sin(inputs.turnAngleRad) * inputs.driveVelocityMetersPerSecond;
       }
 }

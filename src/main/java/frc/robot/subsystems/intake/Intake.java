@@ -30,6 +30,7 @@ public class Intake extends SubsystemBase {
             m_intakeFramesGamePiece = 0;
         }
 
+        Logger.getInstance().processInputs("Intake", m_inputs);
         Logger.getInstance().recordOutput("Intake/Current", m_inputs.intakeOutputCurrent);
         Logger.getInstance().recordOutput("Intake/Speed", m_inputs.intakeSpeed);
         Logger.getInstance().recordOutput("Intake/Voltage", m_inputs.intakeOutputVoltage);

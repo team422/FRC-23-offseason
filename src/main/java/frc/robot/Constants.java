@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -72,12 +73,13 @@ public final class Constants {
     }
 
     public final static class WristConstants {
-        // TODO: copied from frc-23, CHANGE BEFORE DEPLOYING TO ROBOT
+        // TODO: copied from frc-23, change later
         public static final double kGearRatio = 34.8444444444;
         public static final int kWristEncoderCPR = 4096;
         public static final Rotation2d kMaxAngle = Rotation2d.fromDegrees(95);
         public static final Rotation2d kMinAngle = Rotation2d.fromDegrees(-100);
         public static final double kToleranceRad = Units.degreesToRadians(2);
+        public static final double kOffset = 0.0;
 
         // Wrist PID, currently untuned
         public static final TunableNumber kP = new TunableNumber("Wrist P", 1);
@@ -88,10 +90,17 @@ public final class Constants {
         public static final ProfiledPIDController wristPIDController = new ProfiledPIDController(
             kP.get(), kI.get(), kD.get(),
             new Constraints(kWristVelo.get(), kWristAccel.get()));
+
+        // Wrist Feedforward, currently untuned
+        public static final TunableNumber kWristks = new TunableNumber("Wrist ks", 0.05);
+        public static final TunableNumber kWristkg = new TunableNumber("Wrist kg", 0.6);
+        public static final TunableNumber kWristkv = new TunableNumber("Wrist kv", 0.0);
+        public static final ArmFeedforward wristFeedforward = new ArmFeedforward(
+            kWristkg.get(), kWristkv.get(), kWristks.get());
     }
 
     public static final class IntakeConstants {
-        // TODO: copied from frc-23, CHANGE BEFORE DEPOLOYING TO ROBOT
+        // TODO: copied from frc-23, change later
         public static final double kGearRatio = 1.0;
 
         public static final double kIntakeVoltage = 11;
@@ -133,7 +142,7 @@ public final class Constants {
     }
 
     public static final class Setpoints {
-        // TODO: i made these up, PLEASE FOR THE LOVE OF GOD CHANGE THEM BEFORE DEPLOYING TO ROBOT
+        // TODO: i made these up, change later
         public static final Rotation2d kWristGrabCube = Rotation2d.fromDegrees(0);
         public static final Rotation2d kWristShoot = Rotation2d.fromDegrees(30);
         public static final Rotation2d kWristStow = Rotation2d.fromDegrees(90);

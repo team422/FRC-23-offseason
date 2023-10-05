@@ -12,7 +12,7 @@ public interface SwerveModuleIO extends LoggedIO<SwerveModuleInputs>{
 
     @AutoLog
     public static class SwerveModuleInputs {
-        public Rotation2d turnAngle;
+        public double turnAngleRad;
         public double turnRadsPerSecond;
         public double driveDistanceMeters;
         public double driveVelocityMetersPerSecond;

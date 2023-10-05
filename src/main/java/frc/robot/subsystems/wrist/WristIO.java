@@ -7,7 +7,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 public interface WristIO extends LoggedIO<WristIO.WristInputs> {
     @AutoLog
     public static class WristInputs {
-        public Rotation2d angle;
+        public double angleRad;
         public double outputVoltage;
         public double currentAmps;
         public double wristSpeed;
@@ -23,4 +23,6 @@ public interface WristIO extends LoggedIO<WristIO.WristInputs> {
     public Rotation2d getAngle();
 
     public boolean getBrakeMode();
+
+    public double getOutputVoltage();
 }

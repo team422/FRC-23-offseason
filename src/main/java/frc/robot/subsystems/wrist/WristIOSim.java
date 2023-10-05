@@ -31,8 +31,9 @@ public class WristIOSim implements WristIO {
         m_sim.update(0.02);
         inputs.wristSpeed = getSpeed();
         inputs.brake = getBrakeMode();
-        inputs.angle = getAngle();
+        inputs.angleRad = getAngle().getRadians();
         inputs.currentAmps = m_sim.getCurrentDrawAmps();
+        inputs.outputVoltage = getOutputVoltage();
     }
 
     @Override
@@ -59,5 +60,10 @@ public class WristIOSim implements WristIO {
     @Override
     public boolean getBrakeMode() {
         return m_brakeEnabled;
+    }
+
+    @Override
+    public double getOutputVoltage() {
+        return m_voltage;
     }
 }

@@ -11,7 +11,7 @@ public class WristIOCANSparkMax implements WristIO {
     private SparkMaxAbsoluteEncoder m_encoder;
     private boolean m_brakeModeEnabled;
 
-    public WristIOCANSparkMax(int port, int wristEncoderCPR) {
+    public WristIOCANSparkMax(int port, double encoderOffset) {
         m_wristMotor = new CANSparkMax(port, CANSparkMax.MotorType.kBrushless);
         m_encoder = m_wristMotor.getAbsoluteEncoder(Type.kDutyCycle);
         m_wristMotor.setInverted(false);
@@ -19,12 +19,13 @@ public class WristIOCANSparkMax implements WristIO {
         m_brakeModeEnabled = true;
         m_encoder.setPositionConversionFactor(2 * Math.PI);
         m_encoder.setInverted(true);
+        m_encoder.setZeroOffset(encoderOffset);
     }
 
     @Override
     public void updateInputs(WristInputs inputs) {
-        inputs.angle = getAngle();
-        inputs.outputVoltage = m_wristMotor.getAppliedOutput() * m_wristMotor.getBusVoltage();
+        inputs.angleRad = getAngle().getRadians();
+        inputs.outputVoltage = getOutputVoltage();
         inputs.currentAmps = m_wristMotor.getOutputCurrent();
         inputs.wristSpeed = getSpeed();
     }
@@ -60,6 +61,11 @@ public class WristIOCANSparkMax implements WristIO {
     @Override
     public double getSpeed() {
         return m_encoder.getVelocity();
+    }
+
+    @Override
+    public double getOutputVoltage() {
+        return m_wristMotor.getAppliedOutput() * m_wristMotor.getBusVoltage();
     }
         
 }
