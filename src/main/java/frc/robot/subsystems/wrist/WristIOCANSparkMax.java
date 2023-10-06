@@ -7,15 +7,18 @@ import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 public class WristIOCANSparkMax implements WristIO {
-    private CANSparkMax m_wristMotor;
+    private CANSparkMax m_wristLeader;
+    private CANSparkMax m_wristFollower;
     private SparkMaxAbsoluteEncoder m_encoder;
     private boolean m_brakeModeEnabled;
 
-    public WristIOCANSparkMax(int port, double encoderOffset) {
-        m_wristMotor = new CANSparkMax(port, CANSparkMax.MotorType.kBrushless);
-        m_encoder = m_wristMotor.getAbsoluteEncoder(Type.kDutyCycle);
-        m_wristMotor.setInverted(false);
-        m_wristMotor.setIdleMode(IdleMode.kBrake);
+    public WristIOCANSparkMax(int leaderPort, int followerPort, double encoderOffset) {
+        m_wristLeader = new CANSparkMax(leaderPort, CANSparkMax.MotorType.kBrushless);
+        m_wristFollower = new CANSparkMax(followerPort, CANSparkMax.MotorType.kBrushless);
+        m_wristFollower.follow(m_wristLeader);
+        m_encoder = m_wristLeader.getAbsoluteEncoder(Type.kDutyCycle);
+        m_wristLeader.setInverted(false);
+        m_wristLeader.setIdleMode(IdleMode.kBrake);
         m_brakeModeEnabled = true;
         m_encoder.setPositionConversionFactor(2 * Math.PI);
         m_encoder.setInverted(true);
@@ -26,23 +29,23 @@ public class WristIOCANSparkMax implements WristIO {
     public void updateInputs(WristInputs inputs) {
         inputs.angleRad = getAngle().getRadians();
         inputs.outputVoltage = getOutputVoltage();
-        inputs.currentAmps = m_wristMotor.getOutputCurrent();
+        inputs.currentAmps = m_wristLeader.getOutputCurrent();
         inputs.wristSpeed = getSpeed();
     }
 
     @Override
     public void setVoltage(double voltage) {
-        m_wristMotor.setVoltage(voltage);
+        m_wristLeader.setVoltage(voltage);
     }
 
     @Override
     public void setBrakeMode(boolean enabled) {
         if (enabled){
-            m_wristMotor.setIdleMode(IdleMode.kBrake);
+            m_wristLeader.setIdleMode(IdleMode.kBrake);
             m_brakeModeEnabled = true;
         }
         else {
-            m_wristMotor.setIdleMode(IdleMode.kCoast);
+            m_wristLeader.setIdleMode(IdleMode.kCoast);
             m_brakeModeEnabled = false;
 
         }
@@ -65,7 +68,7 @@ public class WristIOCANSparkMax implements WristIO {
 
     @Override
     public double getOutputVoltage() {
-        return m_wristMotor.getAppliedOutput() * m_wristMotor.getBusVoltage();
+        return m_wristLeader.getAppliedOutput() * m_wristLeader.getBusVoltage();
     }
         
 }
