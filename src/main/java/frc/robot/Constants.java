@@ -110,6 +110,10 @@ public final class Constants {
     public static final class Ports {
         public static final int pigeonPort = 422;
 
+        // OI Ports
+        public static final int kDriverLeftDriveStickPort = 0;
+        public static final int kDriverRightDriveStickPort = 1;
+
         // Left Front Ports
         public static final int leftFrontDrivingMotorPort = 401;
         public static final int leftFrontTurningMotorPort = 69;
@@ -134,11 +138,6 @@ public final class Constants {
 
         public static final int intakePort = 1337;
 
-    }
-
-    public static final class OIConstants {
-        public static final int kDriverLeftDriveStickPort = 0;
-        public static final int kDriverRightDriveStickPort = 1;
     }
 
     public static final class Setpoints {

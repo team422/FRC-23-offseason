@@ -30,6 +30,7 @@ import frc.robot.util.Pigeon2Accel;
 import frc.robot.Constants.Ports;
 import frc.robot.Constants.Setpoints;
 import frc.robot.Constants.WristConstants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.commands.drive.TeleopDrive;
 import frc.robot.oi.DriverControls;
@@ -94,10 +95,10 @@ public class RobotContainer {
                     new SwerveModuleIOMK4iSparkMax(Ports.rightRearDriveMotorPort,
                             Ports.rightRearTurningMotorPort,
                             Ports.rightRearCanCoderPort) };
-            GyroIOPigeon pigeon = new GyroIOPigeon(Ports.pigeonPort, Constants.DriveConstants.pitchAngle);
+            GyroIOPigeon pigeon = new GyroIOPigeon(Ports.pigeonPort, DriveConstants.pitchAngle);
             m_drive = new Drive(pigeon,
                     new AccelerometerIOWPI(new Pigeon2Accel(Ports.pigeonPort)),
-                    Constants.DriveConstants.startPose,
+                    DriveConstants.startPose,
                     m_swerveModuleIOs);
 
             m_intake = new Intake(new IntakeIOCANSparkMax(Ports.intakePort, IntakeConstants.kGearRatio),
@@ -129,11 +130,11 @@ public class RobotContainer {
     private void configureButtonBindings() {
         
         DriverControls driverControls = new DriverControlsDualFlightStick(
-            Constants.OIConstants.kDriverLeftDriveStickPort,
-            Constants.OIConstants.kDriverRightDriveStickPort);
+            Ports.kDriverLeftDriveStickPort,
+            Ports.kDriverRightDriveStickPort);
         TeleopDrive teleopDrive = new TeleopDrive(m_drive, driverControls::getDriveX,
                 driverControls::getDriveY, driverControls::getDriveRotation,
-                Constants.DriveConstants.kDriveDeadband);
+                DriveConstants.kDriveDeadband);
         m_drive.setDefaultCommand(teleopDrive);
 
         driverControls.intakeButton().whileTrue(m_intake.intakeCommand());
