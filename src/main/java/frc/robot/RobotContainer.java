@@ -104,7 +104,7 @@ public class RobotContainer {
             m_intake = new Intake(new IntakeIOCANSparkMax(Ports.intakePort, IntakeConstants.kGearRatio),
                     IntakeConstants.kIntakeVoltage, IntakeConstants.kIntakeHoldVoltage);
 
-            m_wrist = new Wrist(new WristIOCANSparkMax(Ports.wristPort, WristConstants.kOffset),
+            m_wrist = new Wrist(new WristIOCANSparkMax(Ports.wristPortDrive, WristConstants.kOffset),
                     WristConstants.wristPIDController, WristConstants.wristFeedforward, WristConstants.kMinAngle,
                     WristConstants.kMaxAngle, WristConstants.kToleranceRad);
         } else {

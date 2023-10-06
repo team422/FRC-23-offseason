@@ -39,7 +39,7 @@ public final class Constants {
         }
 
         // wheel dims
-        public static final double kWheelDiameter = Units.inchesToMeters(3.7);
+        public static final double kWheelDiameter = Units.inchesToMeters(4);
         public static final double kWheelBase = Units.inchesToMeters(17.25);
         public static final double kTrackWidth = Units.inchesToMeters(17.25);
 
@@ -74,7 +74,7 @@ public final class Constants {
 
     public final static class WristConstants {
         // TODO: copied from frc-23, change later
-        public static final double kGearRatio = 34.8444444444;
+        public static final double kGearRatio = 1/ 0.0397;
         public static final int kWristEncoderCPR = 4096;
         public static final Rotation2d kMaxAngle = Rotation2d.fromDegrees(95);
         public static final Rotation2d kMinAngle = Rotation2d.fromDegrees(-100);
@@ -101,7 +101,7 @@ public final class Constants {
 
     public static final class IntakeConstants {
         // TODO: copied from frc-23, change later
-        public static final double kGearRatio = 1.0;
+        public static final double kGearRatio = 0.25;
 
         public static final double kIntakeVoltage = 11;
         public static final double kIntakeHoldVoltage = 3;
@@ -115,28 +115,29 @@ public final class Constants {
         public static final int kDriverRightDriveStickPort = 1;
 
         // Left Front Ports
-        public static final int leftFrontDrivingMotorPort = 401;
-        public static final int leftFrontTurningMotorPort = 69;
+        public static final int leftFrontDrivingMotorPort = 17;
+        public static final int leftFrontTurningMotorPort = 16;
         public static final int leftFrontCanCoderPort = 42;
 
         // Right Front Ports
-        public static final int rightFrontDriveMotorPort = 666;
-        public static final int rightFrontTurningMotorPort = 444116;
+        public static final int rightFrontDriveMotorPort = 10;
+        public static final int rightFrontTurningMotorPort = 11;
         public static final int rightFrontCanCoderPort = 420;
 
         // Left Rear Ports
-        public static final int leftRearDriveMotorPort = 422;
-        public static final int leftRearTurningMotorPort = 422;
+        public static final int leftRearDriveMotorPort = 1;
+        public static final int leftRearTurningMotorPort = 0;
         public static final int leftRearCanCoderPort = 422;
 
         // Right Rear Ports
-        public static final int rightRearDriveMotorPort = 422;
-        public static final int rightRearTurningMotorPort = 422;
+        public static final int rightRearDriveMotorPort = 8;
+        public static final int rightRearTurningMotorPort = 9;
         public static final int rightRearCanCoderPort = 422;
 
-        public static final int wristPort = 9982;
+        public static final int wristPortDrive = 18;
+        public static final int wristPortFollower = 19;
 
-        public static final int intakePort = 1337;
+        public static final int intakePort = 14;
 
     }
 

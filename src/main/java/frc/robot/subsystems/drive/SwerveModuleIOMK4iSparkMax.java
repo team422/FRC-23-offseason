@@ -35,7 +35,7 @@ public class SwerveModuleIOMK4iSparkMax implements SwerveModuleIO {
 
     public static class ModuleConstants {
         public static final double kDriveConversionFactor = 1 / 22.0409;
-        public static final double kTurnPositionConversionFactor = 21.428;
+        public static final double kTurnPositionConversionFactor = 21.1267606;
         public static final TunableNumber kDriveP = Constants.ModuleConstants.kDriveP;
         public static final TunableNumber kDriveI = Constants.ModuleConstants.kDriveI;
         public static final TunableNumber kDriveD = Constants.ModuleConstants.kDriveD;
