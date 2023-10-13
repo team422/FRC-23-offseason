@@ -53,7 +53,7 @@ public final class Constants {
 
         public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(kModuleTranslations);
         public static final Rotation2d pitchAngle = Rotation2d.fromDegrees(0);
-        public static final Pose2d startPose = new Pose2d(3, 5, new Rotation2d());;
+        public static final Pose2d startPose = new Pose2d(3, 5, new Rotation2d());
 
         public static final double kDriveDeadband = 0;
 
@@ -84,6 +84,7 @@ public final class Constants {
         public static final Rotation2d kMinAngle = Rotation2d.fromDegrees(-100);
         public static final double kToleranceRad = Units.degreesToRadians(2);
         public static final double kOffset = 0.0;
+        public static final double kManualMoveVolts = 2.0;
 
         // Wrist PID, currently untuned
         public static final TunableNumber kP = new TunableNumber("Wrist P", 1);
@@ -117,6 +118,7 @@ public final class Constants {
         // OI Ports
         public static final int kDriverLeftDriveStickPort = 0;
         public static final int kDriverRightDriveStickPort = 1;
+        public static final int kOperatorControllerPort = 5;
 
         // Left Front Ports
         public static final int leftFrontDrivingMotorPort = 1;

@@ -18,4 +18,8 @@ public interface DriverControls {
     public Trigger wristButtonShoot();
 
     public Trigger wristButtonStow();
+
+    public Trigger wristManualUp();
+
+    public Trigger wristManualDown();
 }

@@ -48,6 +48,7 @@ public class Pigeon2Accel implements Accelerometer {
         return getRawAccelData()[axis];
     }
 
+    @SuppressWarnings("unused") // the warning was annoying me, remove this if this method is ever used lol
     private double[] getAccelData() {
         short[] raw = getRawAccelData();
         double[] data = new double[3];

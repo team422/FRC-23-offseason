@@ -35,6 +35,8 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.commands.drive.TeleopDrive;
 import frc.robot.oi.DriverControls;
 import frc.robot.oi.DriverControlsDualFlightStick;
+import frc.robot.oi.OperatorControls;
+import frc.robot.oi.OperatorControlsXbox;
 import frc.robot.subsystems.drive.SwerveModuleIO;
 import frc.robot.subsystems.drive.SwerveModuleIOMK4iSparkMax;
 import frc.robot.subsystems.drive.SwerveModuleIOSim;
@@ -106,7 +108,7 @@ public class RobotContainer {
 
             m_wrist = new Wrist(new WristIOCANSparkMax(Ports.wristPortDrive, Ports.wristPortFollower, WristConstants.kOffset),
                     WristConstants.wristPIDController, WristConstants.wristFeedforward, WristConstants.kMinAngle,
-                    WristConstants.kMaxAngle, WristConstants.kToleranceRad);
+                    WristConstants.kMaxAngle, WristConstants.kToleranceRad, WristConstants.kManualMoveVolts);
         } else {
             m_drive = new Drive(new GyroIOPigeon(22, new Rotation2d()), new AccelerometerIOSim(), new Pose2d(),
                     new SwerveModuleIOSim(), new SwerveModuleIOSim(), new SwerveModuleIOSim(), new SwerveModuleIOSim());
@@ -115,7 +117,7 @@ public class RobotContainer {
                     IntakeConstants.kIntakeVoltage, IntakeConstants.kIntakeHoldVoltage);
 
             m_wrist = new Wrist(new WristIOSim(), WristConstants.wristPIDController, WristConstants.wristFeedforward,
-                    WristConstants.kMinAngle, WristConstants.kMaxAngle, WristConstants.kToleranceRad);
+                    WristConstants.kMinAngle, WristConstants.kMaxAngle, WristConstants.kToleranceRad, WristConstants.kManualMoveVolts);
         }
     }
 
@@ -132,6 +134,7 @@ public class RobotContainer {
         DriverControls driverControls = new DriverControlsDualFlightStick(
             Ports.kDriverLeftDriveStickPort,
             Ports.kDriverRightDriveStickPort);
+        OperatorControls operatorControls = new OperatorControlsXbox(Ports.kOperatorControllerPort);
         TeleopDrive teleopDrive = new TeleopDrive(m_drive, driverControls::getDriveX,
                 driverControls::getDriveY, driverControls::getDriveRotation,
                 DriveConstants.kDriveDeadband);
@@ -147,6 +150,12 @@ public class RobotContainer {
             driverControls.wristButtonShoot().onTrue(m_wrist.setAngleCommand(Setpoints.kWristShoot));
             driverControls.wristButtonStow().onTrue(m_wrist.setAngleCommand(Setpoints.kWristStow));
         }
+
+        driverControls.wristManualUp().whileTrue(m_wrist.manualUpCommand());
+        driverControls.wristManualDown().whileTrue(m_wrist.manualDownCommand());
+
+        operatorControls.wristManualUp().whileTrue(m_wrist.manualUpCommand());
+        operatorControls.wristManualDown().whileTrue(m_wrist.manualDownCommand());
 
     }
 

@@ -35,7 +35,7 @@ public class WristTest {
         ProfiledPIDController controller = new ProfiledPIDController(5.5, 0.08, .3, new Constraints(30, 25)); // untuned rn, stole numbers from frc-23
         ArmFeedforward feedforward = new ArmFeedforward(0.05, 0.6, 0.08);
         m_wrist = new Wrist(new WristIOSim(), controller, feedforward, Rotation2d.fromDegrees(-100), Rotation2d.fromDegrees(100),
-                DELTA);
+                DELTA, 0.5);
     }
 
     @Test

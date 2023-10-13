@@ -26,16 +26,23 @@ public class Wrist extends SubsystemBase {
     private double m_lastTime;
     private double m_lastVelocitySetpoint;
 
+    private final double kManualMoveVolts;
+
     public Wrist(WristIO io, ProfiledPIDController controller, ArmFeedforward feedforward, Rotation2d minAngle, Rotation2d maxAngle,
-            double toleranceRad) {
+            double toleranceRad, double manualMoveVolts) {
+        m_io = io;
         m_controller = controller;
         m_controller.setTolerance(toleranceRad);
-        m_io = io;
+        
         m_feedforward = feedforward;
+        
         kMaxAngle = maxAngle;
         kMinAngle = minAngle;
         m_desiredAngle = Rotation2d.fromDegrees(0);
+        
         m_inputs = new WristInputsAutoLogged();
+
+        kManualMoveVolts = manualMoveVolts;
     }
     
     @Override
@@ -54,9 +61,9 @@ public class Wrist extends SubsystemBase {
 
         double outputVoltage = pidVoltage + feedforwardVoltage;
         if (Robot.isSimulation()) {
-            m_io.setVoltage(pidVoltage);
+            setVoltage(pidVoltage);
         } else {
-            m_io.setVoltage(outputVoltage);
+            setVoltage(outputVoltage);
         }
         
         Logger.getInstance().processInputs("Wrist", m_inputs);
@@ -70,6 +77,19 @@ public class Wrist extends SubsystemBase {
     public void setAngle(Rotation2d angle) {
         m_desiredAngle = Rotation2d.fromRadians(MathUtil.clamp(angle.getRadians(), kMinAngle.getRadians(), kMaxAngle.getRadians()));
         m_controller.setGoal(m_desiredAngle.getRadians());
+    }
+
+    public void setVoltage(double voltage) {
+        m_io.setVoltage(voltage);
+    }
+
+    public void setVoltageToNotBreak(double voltage) {
+        if (m_inputs.angleRad < kMinAngle.getRadians() && voltage < 0) {
+            voltage = 0;
+        } else if (m_inputs.angleRad > kMaxAngle.getRadians() && voltage > 0) {
+            voltage = 0;
+        }
+        setVoltage(voltage);
     }
 
     public void setBrakeMode(boolean enabled) {
@@ -86,6 +106,20 @@ public class Wrist extends SubsystemBase {
 
     public Command setAngleCommand(Rotation2d angle) {
         return run(() -> setAngle(angle)).until(this::withinTolerance);
+    }
+
+    public Command manualUpCommand() {
+        return runEnd(() -> {
+            setVoltage(kManualMoveVolts);
+            setAngle(Rotation2d.fromRadians(m_inputs.angleRad));
+        }, () -> setVoltage(0));
+    }
+
+    public Command manualDownCommand() {
+        return runEnd(() -> {
+            setVoltage(-kManualMoveVolts);
+            setAngle(Rotation2d.fromRadians(m_inputs.angleRad));
+        }, () -> setVoltage(0));
     }
 
 }
