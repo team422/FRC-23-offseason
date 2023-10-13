@@ -70,7 +70,7 @@ public final class Constants {
         public static final TunableNumber kDriveD = new TunableNumber("Drive D", 0.00);
         public static final TunableNumber kDriveFF = new TunableNumber("Drive FF", 2.96);
 
-        public static final TunableNumber kTurningP = new TunableNumber("TurnP", 0.6);
+        public static final TunableNumber kTurningP = new TunableNumber("TurnP", 0.4);
         public static final TunableNumber kTurningI = new TunableNumber("Turn I", 0.00);
         public static final TunableNumber kTurningD = new TunableNumber("Turn D", 0.005);
 
@@ -121,8 +121,8 @@ public final class Constants {
         public static final int kOperatorControllerPort = 5;
 
         // Left Front Ports
-        public static final int leftFrontDrivingMotorPort = 1;
-        public static final int leftFrontTurningMotorPort = 2;
+        public static final int leftFrontDrivingMotorPort = 2;
+        public static final int leftFrontTurningMotorPort = 1;
         public static final int leftFrontCanCoderPort = 9;
 
         // Right Front Ports
@@ -133,12 +133,12 @@ public final class Constants {
         // Left Rear Ports
         public static final int leftRearDriveMotorPort = 7;
         public static final int leftRearTurningMotorPort = 8;
-        public static final int leftRearCanCoderPort = 11;
+        public static final int leftRearCanCoderPort = 12;
 
         // Right Rear Ports
         public static final int rightRearDriveMotorPort = 5;
         public static final int rightRearTurningMotorPort = 6;
-        public static final int rightRearCanCoderPort = 12;
+        public static final int rightRearCanCoderPort = 11;
 
         public static final int wristPortDrive = 13;
         public static final int wristPortFollower = 14;

@@ -57,7 +57,8 @@ public class Wrist extends SubsystemBase {
         double positionSetpoint = m_controller.getGoal().position;
         double velocitySetpoint = m_controller.getGoal().velocity;
         double accelerationSetpoint = (velocitySetpoint - m_lastVelocitySetpoint) / dt;
-        double feedforwardVoltage = m_feedforward.calculate(positionSetpoint, velocitySetpoint, accelerationSetpoint);
+        // double feedforwardVoltage = m_feedforward.calculate(positionSetpoint, velocitySetpoint, accelerationSetpoint);
+        double feedforwardVoltage = m_feedforward.calculate(positionSetpoint, velocitySetpoint);
 
         double outputVoltage = pidVoltage + feedforwardVoltage;
         if (Robot.isSimulation()) {
@@ -69,7 +70,8 @@ public class Wrist extends SubsystemBase {
         Logger.getInstance().processInputs("Wrist", m_inputs);
         Logger.getInstance().recordOutput("Wrist/SetpointDegrees", Units.radiansToDegrees(m_controller.getGoal().position));
         Logger.getInstance().recordOutput("Wrist/CurrentDegrees", Units.radiansToDegrees(m_inputs.angleRad));
-
+        Logger.getInstance().recordOutput("Wrist/FFOutputVoltage", feedforwardVoltage);
+        Logger.getInstance().recordOutput("Wrist/PIDOutputVoltage", pidVoltage);
         m_lastTime = Timer.getFPGATimestamp();
         m_lastVelocitySetpoint = velocitySetpoint;
     }

@@ -31,6 +31,8 @@ public class Drive extends SubsystemBase {
     public final GyroInputsAutoLogged m_gyroInputs;
 
     private double m_simGyroLastUpdated;
+    private boolean m_oneWheel = false;
+    private int m_oneWheelIndex = 2;
 
     /** Creates a new Drive. */
     public Drive(GyroIO gyro, AccelerometerIO accel, Pose2d startPose, SwerveModuleIO... modules) {
@@ -38,8 +40,9 @@ public class Drive extends SubsystemBase {
         m_gyro = gyro;
         m_gyroInputs = new GyroInputsAutoLogged();
         for (SwerveModuleIO module : m_modules) {
-            module.resetDistance();
-            module.syncTurningEncoder();
+            // module.resetDistance();
+            // module.syncTurningEncoder();
+            module.resetEncoders();
         }
 
         m_inputs = new SwerveModuleInputsAutoLogged[modules.length];
@@ -94,6 +97,7 @@ public class Drive extends SubsystemBase {
         Logger.getInstance().recordOutput("Drive/Pose", getPose());
         Logger.getInstance().recordOutput("Drive/ModuleStates", getModuleStates());
         Logger.getInstance().recordOutput("Drive/ModuleAbsoluteStates", getModuleAbsoluteStates());
+        
 
     }
 
@@ -133,12 +137,19 @@ public class Drive extends SubsystemBase {
         for (int i = 0; i < states.length; i++) {
             states[i] = SwerveModuleState.optimize(states[i], m_modules[i].getAngle());
         }
+        Logger.getInstance().recordOutput("Drive/DesiredModuleAbsoluteStates", states);
+
         setModuleStates(states);
     }
 
     public void setModuleStates(SwerveModuleState[] moduleStates){
-        for (int i = 0; i < moduleStates.length; i++) {
-            m_modules[i].setDesiredState(moduleStates[i]);
+        if (m_oneWheel){
+            m_modules[m_oneWheelIndex].setDesiredState(moduleStates[m_oneWheelIndex]);
+        }
+        else{
+            for (int i = 0; i < moduleStates.length; i++) {
+                m_modules[i].setDesiredState(moduleStates[i]);
+            }
         }
     }
 
