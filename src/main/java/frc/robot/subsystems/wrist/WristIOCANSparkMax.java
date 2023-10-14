@@ -7,6 +7,8 @@ import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
+import frc.robot.Constants.WristConstants;
 
 public class WristIOCANSparkMax implements WristIO {
     private CANSparkMax m_wristLeader;
@@ -14,8 +16,7 @@ public class WristIOCANSparkMax implements WristIO {
     private SparkMaxAbsoluteEncoder m_encoder;
     // private RelativeEncoder m_encoder;
     private boolean m_brakeModeEnabled;
-
-    public WristIOCANSparkMax(int leaderPort, int followerPort, double encoderOffset) {
+    public WristIOCANSparkMax(int leaderPort, int followerPort, double encoderOffset, double gearRatio ) {
         m_wristLeader = new CANSparkMax(leaderPort, CANSparkMax.MotorType.kBrushless);
         m_wristFollower = new CANSparkMax(followerPort, CANSparkMax.MotorType.kBrushless);
         m_wristFollower.follow(m_wristLeader);
@@ -23,9 +24,9 @@ public class WristIOCANSparkMax implements WristIO {
         m_wristLeader.setInverted(false);
         m_wristLeader.setIdleMode(IdleMode.kBrake);
         m_brakeModeEnabled = true;
-        m_encoder.setPositionConversionFactor(2 * Math.PI);
+        m_encoder.setPositionConversionFactor(120);
         m_encoder.setInverted(true);
-        m_encoder.setZeroOffset(encoderOffset);
+        // m_encoder.setZeroOffset(encoderOffset);
     }
 
     @Override
@@ -34,6 +35,7 @@ public class WristIOCANSparkMax implements WristIO {
         inputs.outputVoltage = getOutputVoltage();
         inputs.currentAmps = m_wristLeader.getOutputCurrent();
         inputs.wristSpeed = getSpeed();
+        // System.out.println(m_encoder.getZeroOffset());
     }
 
     @Override
@@ -56,7 +58,7 @@ public class WristIOCANSparkMax implements WristIO {
     
     @Override
     public Rotation2d getAngle() {
-        return Rotation2d.fromRadians(m_encoder.getPosition());
+        return Rotation2d.fromDegrees(m_encoder.getPosition());
     }
 
     @Override
