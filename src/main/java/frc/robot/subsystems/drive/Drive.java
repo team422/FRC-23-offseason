@@ -40,9 +40,9 @@ public class Drive extends SubsystemBase {
         m_gyro = gyro;
         m_gyroInputs = new GyroInputsAutoLogged();
         for (SwerveModuleIO module : m_modules) {
-            // module.resetDistance();
-            // module.syncTurningEncoder();
-            module.resetEncoders();
+            module.resetDistance();
+            module.syncTurningEncoder();
+            // module.resetEncoders();
         }
 
         m_inputs = new SwerveModuleInputsAutoLogged[modules.length];

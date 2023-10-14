@@ -58,9 +58,9 @@ public final class Constants {
         public static final double kDriveDeadband = 0;
 
         // currently limiting speed to 40% for start of testing so we dont break anything if ports are wrong
-        public static final double kMaxAngularSpeedMultiplier = 0.40;
+        public static final double kMaxAngularSpeedMultiplier = 1.0;
         public static final double kMaxAngularSpeedRadiansPerSecond = Units.degreesToRadians(450) * kMaxAngularSpeedMultiplier;
-        public static final double kMaxSpeedMultiplier = 0.40;
+        public static final double kMaxSpeedMultiplier = 0.80;
         public static final double kMaxSpeedMetersPerSecond = 3.85 * kMaxSpeedMultiplier;
     }
 
@@ -70,7 +70,7 @@ public final class Constants {
         public static final TunableNumber kDriveD = new TunableNumber("Drive D", 0.00);
         public static final TunableNumber kDriveFF = new TunableNumber("Drive FF", 2.96);
 
-        public static final TunableNumber kTurningP = new TunableNumber("TurnP", 0.4);
+        public static final TunableNumber kTurningP = new TunableNumber("TurnP", 0.15);
         public static final TunableNumber kTurningI = new TunableNumber("Turn I", 0.00);
         public static final TunableNumber kTurningD = new TunableNumber("Turn D", 0.005);
 
@@ -140,8 +140,8 @@ public final class Constants {
         public static final int rightRearTurningMotorPort = 6;
         public static final int rightRearCanCoderPort = 11;
 
-        public static final int wristPortDrive = 13;
-        public static final int wristPortFollower = 14;
+        public static final int wristPortDrive = 14;
+        public static final int wristPortFollower = 13;
 
         public static final int intakePort = 15;
 
