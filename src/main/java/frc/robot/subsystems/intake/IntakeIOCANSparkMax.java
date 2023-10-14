@@ -2,15 +2,19 @@ package frc.robot.subsystems.intake;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 public class IntakeIOCANSparkMax implements IntakeIO {
     private CANSparkMax m_intakeMotor;
-    private RelativeEncoder m_encoder;
-
+    // private RelativeEncoder m_encoder;
+    private SparkMaxAbsoluteEncoder m_encoder;
     public IntakeIOCANSparkMax(int port, double gearRatio) {
         m_intakeMotor = new CANSparkMax(port, CANSparkMax.MotorType.kBrushless);
-        m_encoder = m_intakeMotor.getEncoder();
+        // m_encoder = m_intakeMotor.getEncoder();
+        m_encoder = m_intakeMotor.getAbsoluteEncoder(Type.kDutyCycle);
         m_encoder.setPositionConversionFactor(gearRatio);
+        
     }
 
     @Override
@@ -27,7 +31,8 @@ public class IntakeIOCANSparkMax implements IntakeIO {
 
     @Override
     public double getSpeed() {
-        return m_encoder.getVelocity();
+        return m_encoder.getPosition();
+        // return m_encoder.getVelocity();
     }
 
     @Override

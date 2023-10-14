@@ -98,7 +98,7 @@ public final class Constants {
 
         // Wrist Feedforward, currently untuned
         public static final TunableNumber kWristks = new TunableNumber("Wrist ks", 0.05);
-        public static final TunableNumber kWristkg = new TunableNumber("Wrist kg", 0.6);
+        public static final TunableNumber kWristkg = new TunableNumber("Wrist kg", 3.0);
         public static final TunableNumber kWristkv = new TunableNumber("Wrist kv", 0.0);
         public static final ArmFeedforward wristFeedforward = new ArmFeedforward(
             kWristkg.get(), kWristkv.get(), kWristks.get());

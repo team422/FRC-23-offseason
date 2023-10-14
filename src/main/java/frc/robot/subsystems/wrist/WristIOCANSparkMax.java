@@ -1,8 +1,10 @@
 package frc.robot.subsystems.wrist;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.SparkMaxAbsoluteEncoder;
+import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import edu.wpi.first.math.geometry.Rotation2d;
 
@@ -10,6 +12,7 @@ public class WristIOCANSparkMax implements WristIO {
     private CANSparkMax m_wristLeader;
     private CANSparkMax m_wristFollower;
     private SparkMaxAbsoluteEncoder m_encoder;
+    // private RelativeEncoder m_encoder;
     private boolean m_brakeModeEnabled;
 
     public WristIOCANSparkMax(int leaderPort, int followerPort, double encoderOffset) {
