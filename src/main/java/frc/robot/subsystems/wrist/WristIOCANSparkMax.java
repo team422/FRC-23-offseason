@@ -24,7 +24,10 @@ public class WristIOCANSparkMax implements WristIO {
         m_wristLeader.setInverted(false);
         m_wristLeader.setIdleMode(IdleMode.kBrake);
         m_brakeModeEnabled = true;
-        m_encoder.setPositionConversionFactor(120);
+
+        //try 32/20, 20/32, 1/0.625, 0.625, etc. here, then change in consts.java
+        m_encoder.setPositionConversionFactor(120); 
+        
         m_encoder.setInverted(true);
         // m_encoder.setZeroOffset(encoderOffset);
     }
