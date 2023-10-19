@@ -15,7 +15,7 @@ public class WristIOSim implements WristIO {
 
     public WristIOSim() {
         DCMotor gearbox = DCMotor.getNEO(1);
-        double gearing = WristConstants.kGearRatio;
+        double gearing = 1 / 0.03;
         double jKgMetersSquared = 1;
         double armLengthMeters = Units.inchesToMeters(7.85);
         double minAngleRads = WristConstants.kMinAngle.getRadians();
