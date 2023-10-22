@@ -29,16 +29,16 @@ public class DriverControlsDualFlightStick implements DriverControls {
 
     @Override
     public Trigger intakeButton() {
-        return m_leftJoystick.button(1);
+        return new Trigger();
     }
 
     @Override
     public Trigger outtakeButton() {
-        return m_rightJoystick.button(1);
+        return new Trigger();
     }
 
     @Override
-    public Trigger wristButtonCube() {
+    public Trigger wristButtonIntake() {
         return m_leftJoystick.button(3);
     }
 

@@ -29,6 +29,10 @@ import frc.robot.util.TunableNumber;
 public final class Constants {
     public static final boolean tuningMode = true;
 
+
+    public static final class MetaConstants {
+        public static final boolean pathTuningMode = false;
+    }
     public static final class DriveConstants {
         public static final class Pigeon2AccelConstants {
             public static final double kMultiplier = 1;
@@ -62,6 +66,9 @@ public final class Constants {
         public static final double kMaxAngularSpeedRadiansPerSecond = Units.degreesToRadians(450) * kMaxAngularSpeedMultiplier;
         public static final double kMaxSpeedMultiplier = 0.80;
         public static final double kMaxSpeedMetersPerSecond = 3.85 * kMaxSpeedMultiplier;
+        public static final double kMaxSpeedMetersPerSecondAuto = 3.85 * kMaxSpeedMultiplier;
+        public static final double kMaxAccelMetersPerSecondSqAuto = 3.85 * kMaxSpeedMultiplier;
+
     }
 
     public static final class ModuleConstants {
@@ -87,9 +94,9 @@ public final class Constants {
         public static final double kManualMoveVolts = 2.0;
 
         // Wrist PID, currently untuned
-        public static final TunableNumber kP = new TunableNumber("Wrist P", 1);
-        public static final TunableNumber kI = new TunableNumber("Wrist I", 1);
-        public static final TunableNumber kD = new TunableNumber("Wrist D", 1);
+        public static final TunableNumber kP = new TunableNumber("Wrist P", .9);
+        public static final TunableNumber kI = new TunableNumber("Wrist I", 0.7);
+        public static final TunableNumber kD = new TunableNumber("Wrist D", 0.005);
         public static final TunableNumber kWristVelo = new TunableNumber("Wrist Velo", 20);
         public static final TunableNumber kWristAccel = new TunableNumber("Wrist Accel", 15.0);
         public static final ProfiledPIDController wristPIDController = new ProfiledPIDController(
@@ -98,7 +105,7 @@ public final class Constants {
 
         // Wrist Feedforward, currently untuned
         public static final TunableNumber kWristks = new TunableNumber("Wrist ks", 0.05);
-        public static final TunableNumber kWristkg = new TunableNumber("Wrist kg", 3.0);
+        public static final TunableNumber kWristkg = new TunableNumber("Wrist kg", -.2);
         public static final TunableNumber kWristkv = new TunableNumber("Wrist kv", 0.0);
         public static final ArmFeedforward wristFeedforward = new ArmFeedforward(
             kWristkg.get(), kWristkv.get(), kWristks.get());
@@ -108,8 +115,8 @@ public final class Constants {
         // TODO: copied from frc-23, change later
         public static final double kGearRatio = 0.25;
 
-        public static final double kIntakeVoltage = 11;
-        public static final double kIntakeHoldVoltage = 3;
+        public static final double kIntakeVoltage = 3;
+        public static final double kIntakeHoldVoltage = 11;
     }
 
     public static final class Ports {
@@ -142,15 +149,15 @@ public final class Constants {
 
         public static final int wristPortDrive = 14;
         public static final int wristPortFollower = 13;
-
+        
         public static final int intakePort = 15;
 
     }
 
     public static final class Setpoints {
         // TODO: i made these up, change later
-        public static final Rotation2d kWristGrabCube = Rotation2d.fromDegrees(0);
-        public static final Rotation2d kWristShoot = Rotation2d.fromDegrees(30);
+        public static final Rotation2d kWristGrabCube = Rotation2d.fromDegrees(-55);
+        public static final Rotation2d kWristShoot = Rotation2d.fromDegrees(70);
         public static final Rotation2d kWristStow = Rotation2d.fromDegrees(90);
     }
 }

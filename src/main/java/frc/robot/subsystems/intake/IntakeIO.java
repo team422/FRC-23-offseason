@@ -15,5 +15,5 @@ public interface IntakeIO extends LoggedIO<IntakeIO.IntakeInputs> {
 
     public double getSpeed();
 
-    public boolean hasGamePiece();
+    public Boolean hasGamePiece();
 }

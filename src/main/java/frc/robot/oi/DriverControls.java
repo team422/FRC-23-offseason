@@ -13,7 +13,7 @@ public interface DriverControls {
 
     public Trigger outtakeButton();
 
-    public Trigger wristButtonCube();
+    public Trigger wristButtonIntake();
 
     public Trigger wristButtonShoot();
 

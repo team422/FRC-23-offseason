@@ -223,11 +223,11 @@ public class DriveTest {
         }
 
         for (ChassisSpeeds speed : speeds) {
-            Rotation2d startAngle = m_drive.getGyroIO().getAngle();
+            Rotation2d startAngle = m_drive.getGyro().getAngle();
             m_drive.drive(speed);
             sleepCycles((int)((2 * Math.PI) / speed.omegaRadiansPerSecond * 50));
 
-            assertEquals(startAngle.getRadians(), m_drive.getGyroIO().getAngle().getRadians(), speed.omegaRadiansPerSecond);
+            assertEquals(startAngle.getRadians(), m_drive.getGyro().getAngle().getRadians(), speed.omegaRadiansPerSecond);
 
             m_drive.drive(new ChassisSpeeds(0, 0, 0));
             sleep(3);
@@ -248,7 +248,7 @@ public class DriveTest {
 
         for (ChassisSpeeds speed : speeds) {
             Pose2d startPose = m_drive.getPose();
-            Rotation2d startAngle = m_drive.getGyroIO().getAngle();
+            Rotation2d startAngle = m_drive.getGyro().getAngle();
             m_drive.drive(speed);
             sleep(2);
             m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
@@ -262,7 +262,7 @@ public class DriveTest {
             
             assertEquals(startPose.getX(), m_drive.getPose().getX(), DELTA);
             assertEquals(startPose.getY(), m_drive.getPose().getY(), DELTA);
-            assertEquals(startAngle.getRadians(), m_drive.getGyroIO().getAngle().getRadians(), DELTA);
+            assertEquals(startAngle.getRadians(), m_drive.getGyro().getAngle().getRadians(), DELTA);
         }
 
     }

@@ -9,6 +9,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
@@ -33,6 +35,7 @@ public class Drive extends SubsystemBase {
     private double m_simGyroLastUpdated;
     private boolean m_oneWheel = false;
     private int m_oneWheelIndex = 2;
+    private final double[] m_lockAngles = new double[] { 45, 315, 45, 315 };
 
     /** Creates a new Drive. */
     public Drive(GyroIO gyro, AccelerometerIO accel, Pose2d startPose, SwerveModuleIO... modules) {
@@ -92,6 +95,8 @@ public class Drive extends SubsystemBase {
             Logger.getInstance().processInputs("Swerve Module " + i, m_inputs[i]);
         }
 
+        Logger.getInstance().recordOutput("Robot/GyroPitchDrive",getGyro().getPitch().getDegrees());
+
         m_poseEstimator.update(m_gyro.getAngle(), getSwerveModulePositions());
 
         Logger.getInstance().recordOutput("Drive/Pose", getPose());
@@ -132,6 +137,18 @@ public class Drive extends SubsystemBase {
         m_poseEstimator.resetPosition(m_gyro.getAngle(), getSwerveModulePositions(), new Pose2d());
     }
 
+    public void brake(){
+        drive(new ChassisSpeeds(0, 0, 0));
+    }
+
+    public void xBrake(){
+        SwerveModuleState[] positions = new SwerveModuleState[m_modules.length];
+        for (int i = 0; i < m_modules.length; i++) {
+        m_modules[i].setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(m_lockAngles[i])));
+        }
+
+    }
+
     public void drive(ChassisSpeeds speeds){
         SwerveModuleState[] states = DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds);
         for (int i = 0; i < states.length; i++) {
@@ -153,7 +170,7 @@ public class Drive extends SubsystemBase {
         }
     }
 
-    public GyroIO getGyroIO() {
+    public GyroIO getGyro() {
         return m_gyro;
     }
 
@@ -163,5 +180,9 @@ public class Drive extends SubsystemBase {
 
     public SwerveDrivePoseEstimator getPoseEstimator(){
         return m_poseEstimator;
+    }
+
+    public Command brakeCommand(){
+        return runOnce(this::brake);
     }
 }

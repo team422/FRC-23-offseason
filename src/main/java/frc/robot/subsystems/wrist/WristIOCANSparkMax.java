@@ -12,10 +12,12 @@ public class WristIOCANSparkMax implements WristIO {
     private CANSparkMax m_wristLeader;
     private CANSparkMax m_wristFollower;
     private SparkMaxAbsoluteEncoder m_encoder;
+    private RelativeEncoder m_relativeEncoder;
     // private RelativeEncoder m_encoder;
     private boolean m_brakeModeEnabled;
 
     public WristIOCANSparkMax(int leaderPort, int followerPort, double encoderOffset) {
+        double encoderOffsetVal = 67;
         m_wristLeader = new CANSparkMax(leaderPort, CANSparkMax.MotorType.kBrushless);
         m_wristFollower = new CANSparkMax(followerPort, CANSparkMax.MotorType.kBrushless);
         m_wristFollower.follow(m_wristLeader);
@@ -23,17 +25,28 @@ public class WristIOCANSparkMax implements WristIO {
         m_wristLeader.setInverted(false);
         m_wristLeader.setIdleMode(IdleMode.kBrake);
         m_brakeModeEnabled = true;
-        m_encoder.setPositionConversionFactor(2 * Math.PI);
-        m_encoder.setInverted(true);
-        m_encoder.setZeroOffset(encoderOffset);
+        m_encoder.setPositionConversionFactor(120); 
+        m_encoder.setInverted(false);
+        m_encoder.setZeroOffset(encoderOffsetVal);
+        m_relativeEncoder = m_wristLeader.getEncoder();
+        // m_relativeEncoder.setInverted(true);
+        m_relativeEncoder.setPositionConversionFactor((15.714));
+        syncRelativeAndAbsolute(Rotation2d.fromDegrees(m_encoder.getPosition()).getDegrees());
+    }
+
+    public void syncRelativeAndAbsolute(double val){
+        m_relativeEncoder.setPosition(val);
     }
 
     @Override
     public void updateInputs(WristInputs inputs) {
         inputs.angleRad = getAngle().getRadians();
+        inputs.angleDegreeRelative = getAngle().getDegrees();
+        inputs.angleDegreeAbsolute = Rotation2d.fromDegrees(m_encoder.getPosition()).getDegrees();
         inputs.outputVoltage = getOutputVoltage();
         inputs.currentAmps = m_wristLeader.getOutputCurrent();
         inputs.wristSpeed = getSpeed();
+
     }
 
     @Override
@@ -48,7 +61,7 @@ public class WristIOCANSparkMax implements WristIO {
             m_brakeModeEnabled = true;
         }
         else {
-            m_wristLeader.setIdleMode(IdleMode.kCoast);
+            // m_wristLeader.setIdleMode(IdleMode.kCoast);
             m_brakeModeEnabled = false;
 
         }
@@ -56,7 +69,7 @@ public class WristIOCANSparkMax implements WristIO {
     
     @Override
     public Rotation2d getAngle() {
-        return Rotation2d.fromRadians(m_encoder.getPosition());
+        return Rotation2d.fromDegrees(m_relativeEncoder.getPosition());
     }
 
     @Override

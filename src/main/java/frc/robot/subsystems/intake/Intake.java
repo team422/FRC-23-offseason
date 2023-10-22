@@ -12,24 +12,37 @@ public class Intake extends SubsystemBase {
     public int m_intakeFramesGamePiece;
     private final double kIntakeVoltage;
     private final double kIntakeHoldVoltage;
+    private final double kIntakeOutVoltage;
+    private double m_voltage;
 
     public Intake(IntakeIO io, double intakeVoltage, double intakeHoldVoltage) {
         m_io = io;
         m_inputs = new IntakeInputsAutoLogged();
         kIntakeVoltage = intakeVoltage;
-        kIntakeHoldVoltage = intakeHoldVoltage;
+        kIntakeHoldVoltage = -0.2;
+        kIntakeOutVoltage = 12.0;
+        m_voltage = 0;
     }
 
     @Override
     public void periodic() {
         m_io.updateInputs(m_inputs);
-        
-        if (m_io.hasGamePiece()) {
-            m_intakeFramesGamePiece++;
-        } else {
-            m_intakeFramesGamePiece = 0;
+        if (m_io.hasGamePiece() != null){
+            if (m_io.hasGamePiece() == true) {
+                m_intakeFramesGamePiece++;
+                
+            } else if (m_io.hasGamePiece() == false) {
+                if(m_intakeFramesGamePiece > 0){
+                m_intakeFramesGamePiece--;
+                }
+            }
         }
-
+        if(m_intakeFramesGamePiece > 10){
+            setVoltage(kIntakeHoldVoltage);
+        } else{
+            setVoltage(m_voltage);
+        }
+        Logger.getInstance().recordOutput("Intake/FramesWithObject", m_intakeFramesGamePiece);
         Logger.getInstance().processInputs("Intake", m_inputs);
         Logger.getInstance().recordOutput("Intake/Current", m_inputs.intakeOutputCurrent);
         Logger.getInstance().recordOutput("Intake/Speed", m_inputs.intakeSpeed);
@@ -37,6 +50,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void setVoltage(double voltage) {
+        m_voltage = voltage;
         m_io.setVoltage(voltage);
     }
 
@@ -63,12 +77,13 @@ public class Intake extends SubsystemBase {
         );
     }
 
+
     public Command intakeCommand() {
-        return intakeAtVoltageCommand(kIntakeVoltage);
+        return intakeAtVoltageCommand(-kIntakeVoltage);
     }
 
     public Command outtakeCommand() {
-        return intakeAtVoltageCommand(-kIntakeVoltage);
+        return intakeAtVoltageCommand(kIntakeOutVoltage);
     }
 
     public Command holdCommand() {

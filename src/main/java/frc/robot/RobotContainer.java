@@ -6,6 +6,8 @@ package frc.robot;
 
 import java.io.IOException;
 
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -16,6 +18,8 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.accelerometer.AccelerometerIOSim;
 import frc.robot.subsystems.drive.accelerometer.AccelerometerIOWPI;
@@ -30,10 +34,13 @@ import frc.robot.util.Pigeon2Accel;
 import frc.robot.Constants.Ports;
 import frc.robot.Constants.Setpoints;
 import frc.robot.Constants.WristConstants;
+import frc.lib.pathplanner.PathPlannerUtil;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.commands.autonomous.AutoFactory;
 import frc.robot.commands.drive.TeleopDrive;
 import frc.robot.oi.DriverControls;
+import frc.robot.oi.DriverControlsController;
 import frc.robot.oi.DriverControlsDualFlightStick;
 import frc.robot.oi.OperatorControls;
 import frc.robot.oi.OperatorControlsXbox;
@@ -58,6 +65,9 @@ public class RobotContainer {
     private AprilTagFieldLayout m_layout;
     // private RobotState m_robotState;
 
+    private LoggedDashboardChooser<Command> m_autoChooser = new LoggedDashboardChooser<>("Auto Chooser");
+    private AutoFactory m_autoFactory;
+
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -65,6 +75,21 @@ public class RobotContainer {
         configureSubsystems();
         configureButtonBindings();
         configureAprilTags();
+        configureAuto();
+    }
+
+    public void configureAuto(){
+        m_autoChooser = new LoggedDashboardChooser<>("Auto Chooser");
+        m_autoFactory = new AutoFactory(m_drive, m_wrist, m_intake);
+
+        // Add basic autonomous commands
+        m_autoChooser.addDefaultOption("Do Nothing", Commands.none());
+        // m_autoChooser.addDefaultOption("three_wall", Commands.none());
+
+        // Add PathPlanner Auto Commands
+        PathPlannerUtil.getExistingPaths().forEach(path -> {
+            m_autoChooser.addOption(path, m_autoFactory.getAutoCommand(path));
+        });
     }
 
     public void configureAprilTags() {
@@ -131,25 +156,23 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         
-        DriverControls driverControls = new DriverControlsDualFlightStick(
-            Ports.kDriverLeftDriveStickPort,
-            Ports.kDriverRightDriveStickPort);
+        DriverControls driverControls = new DriverControlsController(4);
         OperatorControls operatorControls = new OperatorControlsXbox(Ports.kOperatorControllerPort);
         TeleopDrive teleopDrive = new TeleopDrive(m_drive, driverControls::getDriveX,
                 driverControls::getDriveY, driverControls::getDriveRotation,
                 DriveConstants.kDriveDeadband);
         m_drive.setDefaultCommand(teleopDrive);
-
+        // if driverControls.intakeButton is greater than 0.1 then run m_intake.intakeCommand()
         driverControls.intakeButton().whileTrue(m_intake.intakeCommand());
         driverControls.outtakeButton().whileTrue(m_intake.outtakeCommand());
 
-        if (Robot.isSimulation()) {
+        // if (Robot.isSimulation()) {
             // all of these are unbound in real
             // DO NOT REBIND THESE UNTIL WE HAVE A MIN ANGLE AND MAX ANGLE AND OFFSET IS SET
-            driverControls.wristButtonCube().onTrue(m_wrist.setAngleCommand(Setpoints.kWristGrabCube));
+            driverControls.wristButtonIntake().onTrue(m_wrist.setAngleCommand(Setpoints.kWristGrabCube));
             driverControls.wristButtonShoot().onTrue(m_wrist.setAngleCommand(Setpoints.kWristShoot));
             driverControls.wristButtonStow().onTrue(m_wrist.setAngleCommand(Setpoints.kWristStow));
-        }
+        // }
 
         driverControls.wristManualUp().whileTrue(m_wrist.manualUpCommand());
         driverControls.wristManualDown().whileTrue(m_wrist.manualDownCommand());
@@ -166,7 +189,7 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An ExampleCommand will run in autonomous
-        return null;
+        return m_autoChooser.get();
     }
 
     public void onEnabled() {

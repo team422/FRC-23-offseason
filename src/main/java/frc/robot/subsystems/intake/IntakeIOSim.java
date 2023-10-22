@@ -29,7 +29,7 @@ public class IntakeIOSim implements IntakeIO {
     }
 
     @Override
-    public boolean hasGamePiece() {
+    public Boolean hasGamePiece() {
         // implementation in frc-23 used robotstate and i dont like it
         return false;
     }

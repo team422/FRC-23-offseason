@@ -3,9 +3,11 @@ package frc.robot.subsystems.wrist;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
+import frc.robot.Constants.WristConstants;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -17,8 +19,8 @@ public class Wrist extends SubsystemBase {
     private final WristIO m_io;
     public final WristInputsAutoLogged m_inputs;
 
-    private final ProfiledPIDController m_controller;
-    private final ArmFeedforward m_feedforward;
+    private ProfiledPIDController m_controller;
+    private ArmFeedforward m_feedforward;
     private final Rotation2d kMinAngle;
     private final Rotation2d kMaxAngle;
     private Rotation2d m_desiredAngle;
@@ -38,7 +40,7 @@ public class Wrist extends SubsystemBase {
         
         kMaxAngle = maxAngle;
         kMinAngle = minAngle;
-        m_desiredAngle = Rotation2d.fromDegrees(0);
+        m_desiredAngle = Rotation2d.fromDegrees(67);
         
         m_inputs = new WristInputsAutoLogged();
 
@@ -47,15 +49,22 @@ public class Wrist extends SubsystemBase {
     
     @Override
     public void periodic() {
+        if(WristConstants.kP.hasChanged() || WristConstants.kI.hasChanged() || WristConstants.kD.hasChanged()){
+            m_controller = new ProfiledPIDController(WristConstants.kP.get(), WristConstants.kI.get(), WristConstants.kD.get(), new Constraints(WristConstants.kWristVelo.get(), WristConstants.kWristAccel.get()));
+        }
+        if (WristConstants.kWristkg.hasChanged() || WristConstants.kWristkv.hasChanged() || WristConstants.kWristks.hasChanged() ){
+            m_feedforward = new ArmFeedforward(WristConstants.kWristks.get(),WristConstants.kWristkg.get(), WristConstants.kWristkv.get());
+        }
         m_io.updateInputs(m_inputs);
 
         double dt = Timer.getFPGATimestamp() - m_lastTime;
 
         double currAngle = m_inputs.angleRad;
+        m_controller.setGoal(m_desiredAngle.getRadians());
         double pidVoltage = m_controller.calculate(currAngle);
 
-        double positionSetpoint = m_controller.getGoal().position;
-        double velocitySetpoint = m_controller.getGoal().velocity;
+        double positionSetpoint = Rotation2d.fromRadians(m_inputs.angleRad).plus(Rotation2d.fromDegrees(-90)).getRadians();
+        double velocitySetpoint = m_inputs.wristSpeed;
         double accelerationSetpoint = (velocitySetpoint - m_lastVelocitySetpoint) / dt;
         // double feedforwardVoltage = m_feedforward.calculate(positionSetpoint, velocitySetpoint, accelerationSetpoint);
         double feedforwardVoltage = m_feedforward.calculate(positionSetpoint, velocitySetpoint);
