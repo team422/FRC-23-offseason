@@ -7,6 +7,8 @@ import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxRelativeEncoder;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.util.Units;
+import frc.robot.Constants.WristConstants;
 
 public class WristIOCANSparkMax implements WristIO {
     private CANSparkMax m_wristLeader;
@@ -46,7 +48,7 @@ public class WristIOCANSparkMax implements WristIO {
         inputs.outputVoltage = getOutputVoltage();
         inputs.currentAmps = m_wristLeader.getOutputCurrent();
         inputs.wristSpeed = getSpeed();
-
+        // System.out.println(m_encoder.getZeroOffset());
     }
 
     @Override
