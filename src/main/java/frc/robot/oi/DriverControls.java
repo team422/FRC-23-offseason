@@ -22,4 +22,6 @@ public interface DriverControls {
     public Trigger wristManualUp();
 
     public Trigger wristManualDown();
+
+    public Trigger resetWristEncoder();
 }

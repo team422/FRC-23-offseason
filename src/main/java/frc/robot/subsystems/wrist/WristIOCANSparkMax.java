@@ -19,7 +19,6 @@ public class WristIOCANSparkMax implements WristIO {
     private boolean m_brakeModeEnabled;
 
     public WristIOCANSparkMax(int leaderPort, int followerPort, double encoderOffset) {
-        double encoderOffsetVal = 67;
         m_wristLeader = new CANSparkMax(leaderPort, CANSparkMax.MotorType.kBrushless);
         m_wristFollower = new CANSparkMax(followerPort, CANSparkMax.MotorType.kBrushless);
         m_wristFollower.follow(m_wristLeader);
@@ -29,11 +28,11 @@ public class WristIOCANSparkMax implements WristIO {
         m_brakeModeEnabled = true;
         m_encoder.setPositionConversionFactor(120); 
         m_encoder.setInverted(false);
-        m_encoder.setZeroOffset(encoderOffsetVal);
+        m_encoder.setZeroOffset(encoderOffset);
         m_relativeEncoder = m_wristLeader.getEncoder();
         // m_relativeEncoder.setInverted(true);
-        m_relativeEncoder.setPositionConversionFactor((15.714));
-        syncRelativeAndAbsolute(Rotation2d.fromDegrees(m_encoder.getPosition()).getDegrees());
+        m_relativeEncoder.setPositionConversionFactor(15.714);
+        syncRelativeAndAbsolute(m_encoder.getPosition());
     }
 
     public void syncRelativeAndAbsolute(double val){
@@ -87,6 +86,11 @@ public class WristIOCANSparkMax implements WristIO {
     @Override
     public double getOutputVoltage() {
         return m_wristLeader.getAppliedOutput() * m_wristLeader.getBusVoltage();
+    }
+
+    @Override
+    public void resetEncoder() {
+        m_encoder.setZeroOffset(getAngle().getRadians());
     }
         
 }

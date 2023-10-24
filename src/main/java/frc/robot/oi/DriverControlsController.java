@@ -66,5 +66,10 @@ public class DriverControlsController implements DriverControls {
         // TODO Auto-generated method stub
         return new Trigger();
     }
+
+    @Override
+    public Trigger resetWristEncoder() {
+        return m_controller.povUp();
+    }
     
 }

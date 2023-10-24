@@ -61,4 +61,9 @@ public class DriverControlsDualFlightStick implements DriverControls {
     public Trigger wristManualDown() {
         return m_leftJoystick.button(9);
     }
+
+    @Override
+    public Trigger resetWristEncoder() {
+        return new Trigger();
+    }
 }

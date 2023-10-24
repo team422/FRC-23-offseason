@@ -21,8 +21,8 @@
           "intakeOut"
         ],
         "executionBehavior": "parallel",
-        "waitBehavior": "minimum",
-        "waitTime": 0
+        "waitBehavior": "none",
+        "waitTime": 0.2
       }
     },
     {
@@ -52,16 +52,16 @@
     },
     {
       "anchorPoint": {
-        "x": 6.5684837845370145,
-        "y": 4.596241939011656
+        "x": 6.230496735802632,
+        "y": 4.620055957669168
       },
       "prevControl": {
-        "x": 7.055205753640675,
-        "y": 4.606215868681737
+        "x": 6.717218704906292,
+        "y": 4.630029887339249
       },
       "nextControl": {
-        "x": 6.081761815433354,
-        "y": 4.586268009341575
+        "x": 5.743774766698971,
+        "y": 4.610082027999087
       },
       "holonomicAngle": 0.5318504287843849,
       "isReversal": false,
@@ -77,24 +77,26 @@
     },
     {
       "anchorPoint": {
-        "x": 2.0436911806728024,
-        "y": 4.107064190690882
+        "x": 2.2427663175937043,
+        "y": 4.44667637426878
       },
       "prevControl": {
-        "x": 2.5169141070512535,
-        "y": 4.550990290706072
+        "x": 2.715989243972156,
+        "y": 4.890602474283969
       },
       "nextControl": {
-        "x": 1.5704682542943513,
-        "y": 3.663138090675692
+        "x": 1.7695433912152532,
+        "y": 4.002750274253589
       },
       "holonomicAngle": -179.6980380009168,
       "isReversal": false,
       "velOverride": null,
       "isLocked": false,
-      "isStopPoint": false,
+      "isStopPoint": true,
       "stopEvent": {
-        "names": [],
+        "names": [
+          "intakeOut"
+        ],
         "executionBehavior": "parallel",
         "waitBehavior": "none",
         "waitTime": 0
@@ -130,14 +132,14 @@
   "isReversed": null,
   "markers": [
     {
-      "position": 1.4600142045454554,
+      "position": 0.2666666666666394,
       "names": [
         "setpointCubeGround",
         "intakeIn"
       ]
     },
     {
-      "position": 2.1311079545454543,
+      "position": 2.2545454545454544,
       "names": [
         "cubeShoot"
       ]

@@ -166,19 +166,18 @@ public class RobotContainer {
         driverControls.intakeButton().whileTrue(m_intake.intakeCommand());
         driverControls.outtakeButton().whileTrue(m_intake.outtakeCommand());
 
-        // if (Robot.isSimulation()) {
-            // all of these are unbound in real
-            // DO NOT REBIND THESE UNTIL WE HAVE A MIN ANGLE AND MAX ANGLE AND OFFSET IS SET
-            driverControls.wristButtonIntake().onTrue(m_wrist.setAngleCommand(Setpoints.kWristGrabCube));
-            driverControls.wristButtonShoot().onTrue(m_wrist.setAngleCommand(Setpoints.kWristShoot));
-            driverControls.wristButtonStow().onTrue(m_wrist.setAngleCommand(Setpoints.kWristStow));
-        // }
+        driverControls.wristButtonIntake().onTrue(m_wrist.setAngleCommand(Setpoints.kWristGrabCube));
+        driverControls.wristButtonShoot().onTrue(m_wrist.setAngleCommand(Setpoints.kWristShoot));
+        driverControls.wristButtonStow().onTrue(m_wrist.setAngleCommand(Setpoints.kWristStow));
+        
 
         driverControls.wristManualUp().whileTrue(m_wrist.manualUpCommand());
         driverControls.wristManualDown().whileTrue(m_wrist.manualDownCommand());
 
         operatorControls.wristManualUp().whileTrue(m_wrist.manualUpCommand());
         operatorControls.wristManualDown().whileTrue(m_wrist.manualDownCommand());
+
+        driverControls.resetWristEncoder().onTrue(m_wrist.resetEncoderCommand());
 
     }
 

@@ -134,4 +134,12 @@ public class Wrist extends SubsystemBase {
         }, () -> setVoltage(0));
     }
 
+    public void resetEncoder() {
+        m_io.resetEncoder();
+    }
+
+    public Command resetEncoderCommand() {
+        return runOnce(this::resetEncoder);
+    }
+
 }

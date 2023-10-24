@@ -77,7 +77,7 @@ public final class Constants {
         public static final TunableNumber kDriveD = new TunableNumber("Drive D", 0.00);
         public static final TunableNumber kDriveFF = new TunableNumber("Drive FF", 2.96);
 
-        public static final TunableNumber kTurningP = new TunableNumber("TurnP", 0.15);
+        public static final TunableNumber kTurningP = new TunableNumber("TurnP", 0.10);
         public static final TunableNumber kTurningI = new TunableNumber("Turn I", 0.00);
         public static final TunableNumber kTurningD = new TunableNumber("Turn D", 0.005);
 
@@ -87,14 +87,14 @@ public final class Constants {
         // TODO: copied from frc-23, change later
         public static final double kGearRatio = 3;
         public static final int kWristEncoderCPR = 8192;
-        public static final Rotation2d kMaxAngle = Rotation2d.fromDegrees(95);
-        public static final Rotation2d kMinAngle = Rotation2d.fromDegrees(-100);
+        public static final Rotation2d kMaxAngle = Rotation2d.fromDegrees(80);
+        public static final Rotation2d kMinAngle = Rotation2d.fromDegrees(-89);
         public static final double kToleranceRad = Units.degreesToRadians(2);
-        public static final double kOffset = Units.degreesToRadians(28.1); //-173.51 // 111
+        public static final double kOffset = 67; //-173.51 // 111 // 28.1
         public static final double kManualMoveVolts = 2.0;
 
         // Wrist PID, currently untuned
-        public static final TunableNumber kP = new TunableNumber("Wrist P", .9);
+        public static final TunableNumber kP = new TunableNumber("Wrist P", 5);
         public static final TunableNumber kI = new TunableNumber("Wrist I", 0.7);
         public static final TunableNumber kD = new TunableNumber("Wrist D", 0.005);
         public static final TunableNumber kWristVelo = new TunableNumber("Wrist Velo", 20);
@@ -105,7 +105,7 @@ public final class Constants {
 
         // Wrist Feedforward, currently untuned
         public static final TunableNumber kWristks = new TunableNumber("Wrist ks", 0.05);
-        public static final TunableNumber kWristkg = new TunableNumber("Wrist kg", -.2);
+        public static final TunableNumber kWristkg = new TunableNumber("Wrist kg", -.4);
         public static final TunableNumber kWristkv = new TunableNumber("Wrist kv", 0.0);
         public static final ArmFeedforward wristFeedforward = new ArmFeedforward(
             kWristkg.get(), kWristkv.get(), kWristks.get());
@@ -156,7 +156,7 @@ public final class Constants {
 
     public static final class Setpoints {
         // TODO: i made these up, change later
-        public static final Rotation2d kWristGrabCube = Rotation2d.fromDegrees(-55);
+        public static final Rotation2d kWristGrabCube = Rotation2d.fromDegrees(-50);
         public static final Rotation2d kWristShoot = Rotation2d.fromDegrees(70);
         public static final Rotation2d kWristStow = Rotation2d.fromDegrees(90);
     }
