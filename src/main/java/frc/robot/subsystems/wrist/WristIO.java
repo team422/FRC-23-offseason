@@ -27,4 +27,6 @@ public interface WristIO extends LoggedIO<WristIO.WristInputs> {
     public boolean getBrakeMode();
 
     public double getOutputVoltage();
+
+    public void resetEncoder();
 }

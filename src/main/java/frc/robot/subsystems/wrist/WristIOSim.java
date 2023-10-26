@@ -66,4 +66,7 @@ public class WristIOSim implements WristIO {
     public double getOutputVoltage() {
         return m_voltage;
     }
+
+    @Override
+    public void resetEncoder() {}
 }

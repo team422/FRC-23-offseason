@@ -77,7 +77,7 @@ public final class Constants {
         public static final TunableNumber kDriveD = new TunableNumber("Drive D", 0.00);
         public static final TunableNumber kDriveFF = new TunableNumber("Drive FF", 2.96);
 
-        public static final TunableNumber kTurningP = new TunableNumber("TurnP", 0.15);
+        public static final TunableNumber kTurningP = new TunableNumber("TurnP", 0.10);
         public static final TunableNumber kTurningI = new TunableNumber("Turn I", 0.00);
         public static final TunableNumber kTurningD = new TunableNumber("Turn D", 0.005);
 
@@ -87,10 +87,10 @@ public final class Constants {
         // TODO: copied from frc-23, change later
         public static final double kGearRatio = 3;
         public static final int kWristEncoderCPR = 8192;
-        public static final Rotation2d kMaxAngle = Rotation2d.fromDegrees(95);
-        public static final Rotation2d kMinAngle = Rotation2d.fromDegrees(-100);
+        public static final Rotation2d kMaxAngle = Rotation2d.fromDegrees(80);
+        public static final Rotation2d kMinAngle = Rotation2d.fromDegrees(-89);
         public static final double kToleranceRad = Units.degreesToRadians(2);
-        public static final double kOffset = Units.degreesToRadians(28.1); //-173.51 // 111
+        public static final double kOffset = 67; //-173.51 // 111 // 28.1
         public static final double kManualMoveVolts = 2.0;
 
         // Wrist PID, currently untuned

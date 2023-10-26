@@ -70,7 +70,7 @@ public class AutoFactory extends CommandBase {
         Commands.print("cubeGround"));
     Command cubeShoot = Commands.parallel(
         m_wrist.setAngleCommand(Setpoints.kWristShoot),
-        Commands.print("cubeGround"));
+        Commands.print("cubeShoot"));
     Command stopIntake = m_intake.setVoltageCommand(0.0);
     // Command coneGround = Commands.parallel(
     //     m_elevator.setHeightCommand(Setpoints.pickUpConeGroundCommandSetpoints[0]),
@@ -130,8 +130,8 @@ public class AutoFactory extends CommandBase {
         Map.entry("cubeShoot",cubeShoot),
         Map.entry("wait", Commands.waitSeconds(.25)),
         Map.entry("intakeStop", stopIntake),
-        Map.entry("intakeIn", m_intake.setVoltageCommand(3.0)),
-        Map.entry("intakeOut", m_intake.setVoltageCommand(-12.0))
+        Map.entry("intakeIn", m_intake.setVoltageCommand(-12.0)),
+        Map.entry("intakeOut", m_intake.setVoltageCommand(3.0))
         // Map.entry("balance", balanceStation),
         // Map.entry("zeroHeading", zeroHeading),
         // Map.entry("setpointConeHighWait", autoConeHigh), Map.entry("cubeBumpFar", cubeBumpFar),

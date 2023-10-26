@@ -32,8 +32,8 @@ public class WristIOCANSparkMax implements WristIO {
         m_encoder.setZeroOffset(encoderOffsetVal);
         m_relativeEncoder = m_wristLeader.getEncoder();
         // m_relativeEncoder.setInverted(true);
-        m_relativeEncoder.setPositionConversionFactor((15.714));
-        syncRelativeAndAbsolute(Rotation2d.fromDegrees(m_encoder.getPosition()).getDegrees());
+        m_relativeEncoder.setPositionConversionFactor(15.714);
+        syncRelativeAndAbsolute(m_encoder.getPosition());
     }
 
     public void syncRelativeAndAbsolute(double val){
@@ -87,6 +87,11 @@ public class WristIOCANSparkMax implements WristIO {
     @Override
     public double getOutputVoltage() {
         return m_wristLeader.getAppliedOutput() * m_wristLeader.getBusVoltage();
+    }
+
+    @Override
+    public void resetEncoder() {
+        m_encoder.setZeroOffset(getAngle().getRadians());
     }
         
 }

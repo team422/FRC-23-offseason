@@ -183,6 +183,8 @@ public class RobotContainer {
         operatorControls.wristManualUp().whileTrue(m_wrist.manualUpCommand());
         operatorControls.wristManualDown().whileTrue(m_wrist.manualDownCommand());
 
+        driverControls.resetWristEncoder().onTrue(m_wrist.resetEncoderCommand());
+
     }
 
     /**
