@@ -38,6 +38,7 @@ import frc.lib.pathplanner.PathPlannerUtil;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.commands.autonomous.AutoFactory;
+import frc.robot.commands.autonomous.ChargeStationBalance;
 import frc.robot.commands.drive.TeleopDrive;
 import frc.robot.oi.DriverControls;
 import frc.robot.oi.DriverControlsController;
@@ -131,7 +132,7 @@ public class RobotContainer {
             m_intake = new Intake(new IntakeIOCANSparkMax(Ports.intakePort, IntakeConstants.kGearRatio),
                     IntakeConstants.kIntakeVoltage, IntakeConstants.kIntakeHoldVoltage);
 
-            m_wrist = new Wrist(new WristIOCANSparkMax(Ports.wristPortDrive, Ports.wristPortFollower, WristConstants.kOffset, WristConstants.kGearRatio),
+            m_wrist = new Wrist(new WristIOCANSparkMax(Ports.wristPortDrive, Ports.wristPortFollower, WristConstants.kOffset),
                     WristConstants.wristPIDController, WristConstants.wristFeedforward, WristConstants.kMinAngle,
                     WristConstants.kMaxAngle, WristConstants.kToleranceRad, WristConstants.kManualMoveVolts);
         } else {
@@ -165,7 +166,9 @@ public class RobotContainer {
         // if driverControls.intakeButton is greater than 0.1 then run m_intake.intakeCommand()
         driverControls.intakeButton().whileTrue(m_intake.intakeCommand());
         driverControls.outtakeButton().whileTrue(m_intake.outtakeCommand());
-
+        ChargeStationBalance m_charge = new ChargeStationBalance(m_drive);
+        driverControls.balance().whileTrue(m_charge);
+        driverControls.manualFieldReset().onTrue(m_drive.manualFieldCentricCommand());
         // if (Robot.isSimulation()) {
             // all of these are unbound in real
             // DO NOT REBIND THESE UNTIL WE HAVE A MIN ANGLE AND MAX ANGLE AND OFFSET IS SET

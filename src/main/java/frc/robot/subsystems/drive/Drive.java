@@ -185,4 +185,12 @@ public class Drive extends SubsystemBase {
     public Command brakeCommand(){
         return runOnce(this::brake);
     }
+
+    public Command manualFieldCentricCommand(){
+        return runOnce(this::manualFieldCentric);
+    }
+    public void manualFieldCentric(){
+        Pose2d oldPose = m_poseEstimator.getEstimatedPosition();
+        m_poseEstimator.resetPosition(m_gyro.getAngle(), getSwerveModulePositions(),new Pose2d(oldPose.getX(),oldPose.getY(),new Rotation2d()) );
+    }
 }

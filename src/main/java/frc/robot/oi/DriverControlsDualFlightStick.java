@@ -61,4 +61,16 @@ public class DriverControlsDualFlightStick implements DriverControls {
     public Trigger wristManualDown() {
         return m_leftJoystick.button(9);
     }
+
+    @Override
+    public Trigger manualFieldReset() {
+        // TODO Auto-generated method stub
+        return m_rightJoystick.button(7);
+    }
+
+    @Override
+    public Trigger balance() {
+        // TODO Auto-generated method stub
+        return m_rightJoystick.button(5);
+    }
 }

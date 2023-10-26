@@ -22,4 +22,8 @@ public interface DriverControls {
     public Trigger wristManualUp();
 
     public Trigger wristManualDown();
+
+    public Trigger manualFieldReset();
+
+    public Trigger balance();
 }

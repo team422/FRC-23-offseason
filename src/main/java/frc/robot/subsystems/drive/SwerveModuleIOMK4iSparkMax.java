@@ -41,7 +41,7 @@ public class SwerveModuleIOMK4iSparkMax implements SwerveModuleIO {
   private double oldVelocity;
 
   public static class ModuleConstants {
-    public static final double kDriveConversionFactor = 1 / 22.0409;
+    public static final double kDriveConversionFactor = 1/20.462;
     public static final double kTurnPositionConversionFactor = 21.428;
     public static final TunableNumber kDriveP = Constants.ModuleConstants.kDriveP;
     public static final TunableNumber kDriveI = Constants.ModuleConstants.kDriveI;
@@ -274,6 +274,7 @@ public class SwerveModuleIOMK4iSparkMax implements SwerveModuleIO {
     // inputs.driveVelocityMetersPerSecondAbs = Math.abs(getDriveVelocityMetersPerSecond());
     // inputs.turnAngleRads = getAngle().getRadians();
     inputs.turnRadsPerSecond = Units.degreesToRadians(m_driveEncoder.getVelocity());
+    inputs.driveAmps = m_driveMotor.getOutputCurrent();
     // inputs.currentAmpsDrive = m_driveMotor.getOutputCurrent();
     // inputs.voltageOutDrive = m_driveMotor.getBusVoltage();
     // inputs.currentAmpsPerVelocity = Math.abs(m_driveMotor.getOutputCurrent() / getAcceleration());

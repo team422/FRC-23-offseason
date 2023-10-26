@@ -3,12 +3,15 @@ package frc.robot.oi;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.util.EricNubControls;
 
 public class DriverControlsController implements DriverControls {
     CommandXboxController m_controller;
+    EricNubControls m_controls;
 
     public DriverControlsController(int controller_port) {
         m_controller = new CommandXboxController(controller_port);
+        m_controls = new EricNubControls();
     }
 
     @Override
@@ -18,12 +21,15 @@ public class DriverControlsController implements DriverControls {
 
     @Override
     public double getDriveX() {
-        return m_controller.getLeftY();
+        double val = m_controls.addDeadzoneScaled(m_controller.getLeftY(), 0.03);
+        return -Math.signum(val) * Math.pow(val, 2);
     }
 
     @Override
     public double getDriveRotation() {
-        return m_controller.getRightX();
+        double val = m_controls.addDeadzoneScaled(m_controller.getRightX(), 0.03);
+        return Math.signum(val) * Math.pow(val, 2);
+        
     }
 
     @Override
@@ -65,6 +71,18 @@ public class DriverControlsController implements DriverControls {
     public Trigger wristManualDown() {
         // TODO Auto-generated method stub
         return new Trigger();
+    }
+
+    @Override
+    public Trigger manualFieldReset() {
+        // TODO Auto-generated method stub
+        return m_controller.rightStick();
+    }
+
+    @Override
+    public Trigger balance() {
+        // TODO Auto-generated method stub
+        return m_controller.leftStick();
     }
     
 }

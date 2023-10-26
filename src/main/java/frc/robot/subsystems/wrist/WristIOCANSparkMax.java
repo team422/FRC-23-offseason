@@ -19,7 +19,7 @@ public class WristIOCANSparkMax implements WristIO {
     private boolean m_brakeModeEnabled;
 
     public WristIOCANSparkMax(int leaderPort, int followerPort, double encoderOffset) {
-        double encoderOffsetVal = 67;
+        double encoderOffsetVal = 120-16;
         m_wristLeader = new CANSparkMax(leaderPort, CANSparkMax.MotorType.kBrushless);
         m_wristFollower = new CANSparkMax(followerPort, CANSparkMax.MotorType.kBrushless);
         m_wristFollower.follow(m_wristLeader);
