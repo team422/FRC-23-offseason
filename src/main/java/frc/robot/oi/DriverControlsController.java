@@ -74,7 +74,6 @@ public class DriverControlsController implements DriverControls {
     }
 
     @Override
-<<<<<<< HEAD
     public Trigger manualFieldReset() {
         // TODO Auto-generated method stub
         return m_controller.rightStick();
@@ -84,10 +83,9 @@ public class DriverControlsController implements DriverControls {
     public Trigger balance() {
         // TODO Auto-generated method stub
         return m_controller.leftStick();
-=======
+    }
     public Trigger resetWristEncoder() {
         return m_controller.povUp();
->>>>>>> refs/remotes/origin/rumble-bot
     }
     
 }
