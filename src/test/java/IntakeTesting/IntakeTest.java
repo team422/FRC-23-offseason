@@ -28,7 +28,7 @@ public class IntakeTest {
     @BeforeEach
     void setup() {
         assert HAL.initialize(500, 0); // initialize the HAL, crash if failed
-        m_intake = new Intake(new IntakeIOSim(), IntakeConstants.kIntakeVoltage, IntakeConstants.kIntakeHoldVoltage);
+        m_intake = new Intake(new IntakeIOSim(), IntakeConstants.kIntakeVoltage, IntakeConstants.kIntakeHoldVoltage, IntakeConstants.kIntakeOutSlowVoltage, IntakeConstants.kIntakeOutFastVoltage);
     }
 
     @Test

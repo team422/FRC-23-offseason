@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.accelerometer.AccelerometerIOSim;
 import frc.robot.subsystems.drive.accelerometer.AccelerometerIOWPI;
@@ -130,20 +129,22 @@ public class RobotContainer {
                     m_swerveModuleIOs);
 
             m_intake = new Intake(new IntakeIOCANSparkMax(Ports.intakePort, IntakeConstants.kGearRatio),
-                    IntakeConstants.kIntakeVoltage, IntakeConstants.kIntakeHoldVoltage);
+                    IntakeConstants.kIntakeVoltage, IntakeConstants.kIntakeHoldVoltage,
+                    IntakeConstants.kIntakeOutSlowVoltage, IntakeConstants.kIntakeOutFastVoltage);
 
             m_wrist = new Wrist(new WristIOCANSparkMax(Ports.wristPortDrive, Ports.wristPortFollower, WristConstants.kOffset),
                     WristConstants.wristPIDController, WristConstants.wristFeedforward, WristConstants.kMinAngle,
-                    WristConstants.kMaxAngle, WristConstants.kToleranceRad, WristConstants.kManualMoveVolts);
+                    WristConstants.kMaxAngle, WristConstants.kToleranceRad, WristConstants.kManualMoveRad);
         } else {
             m_drive = new Drive(new GyroIOPigeon(22, new Rotation2d()), new AccelerometerIOSim(), new Pose2d(),
                     new SwerveModuleIOSim(), new SwerveModuleIOSim(), new SwerveModuleIOSim(), new SwerveModuleIOSim());
 
             m_intake = new Intake(new IntakeIOSim(),
-                    IntakeConstants.kIntakeVoltage, IntakeConstants.kIntakeHoldVoltage);
+                    IntakeConstants.kIntakeVoltage, IntakeConstants.kIntakeHoldVoltage,
+                    IntakeConstants.kIntakeOutSlowVoltage, IntakeConstants.kIntakeOutFastVoltage);
 
             m_wrist = new Wrist(new WristIOSim(), WristConstants.wristPIDController, WristConstants.wristFeedforward,
-                    WristConstants.kMinAngle, WristConstants.kMaxAngle, WristConstants.kToleranceRad, WristConstants.kManualMoveVolts);
+                    WristConstants.kMinAngle, WristConstants.kMaxAngle, WristConstants.kToleranceRad, WristConstants.kManualMoveRad);
         }
     }
 
@@ -157,7 +158,7 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
         
-        DriverControls driverControls = new DriverControlsController(4);
+        DriverControls driverControls = new DriverControlsDualFlightStick(0, 1);
         OperatorControls operatorControls = new OperatorControlsXbox(Ports.kOperatorControllerPort);
         TeleopDrive teleopDrive = new TeleopDrive(m_drive, driverControls::getDriveX,
                 driverControls::getDriveY, driverControls::getDriveRotation,
@@ -165,25 +166,20 @@ public class RobotContainer {
         m_drive.setDefaultCommand(teleopDrive);
         // if driverControls.intakeButton is greater than 0.1 then run m_intake.intakeCommand()
         driverControls.intakeButton().whileTrue(m_intake.intakeCommand());
-        driverControls.outtakeButton().whileTrue(m_intake.outtakeCommand());
-        ChargeStationBalance m_charge = new ChargeStationBalance(m_drive);
-        driverControls.balance().whileTrue(m_charge);
-        driverControls.manualFieldReset().onTrue(m_drive.manualFieldCentricCommand());
-        // if (Robot.isSimulation()) {
-            // all of these are unbound in real
-            // DO NOT REBIND THESE UNTIL WE HAVE A MIN ANGLE AND MAX ANGLE AND OFFSET IS SET
-            driverControls.wristButtonIntake().onTrue(m_wrist.setAngleCommand(Setpoints.kWristGrabCube));
-            driverControls.wristButtonShoot().onTrue(m_wrist.setAngleCommand(Setpoints.kWristShoot));
-            driverControls.wristButtonStow().onTrue(m_wrist.setAngleCommand(Setpoints.kWristStow));
-        // }
+        
+        operatorControls.outtakeSlowButton().whileTrue(m_intake.outtakeSlowCommand());
+        operatorControls.outtakeFastButton().whileTrue(m_intake.outtakeFastCommand());
 
-        driverControls.wristManualUp().whileTrue(m_wrist.manualUpCommand());
-        driverControls.wristManualDown().whileTrue(m_wrist.manualDownCommand());
+        ChargeStationBalance m_charge = new ChargeStationBalance(m_drive);
+        driverControls.balance().whileTrue(m_wrist.manualUpCommand());
+        driverControls.manualFieldReset().onTrue(m_drive.manualFieldCentricCommand());
+
+        driverControls.wristButtonIntake().onTrue(m_wrist.setAngleCommand(Setpoints.kWristGrabCube));
+        operatorControls.wristButtonShootLow().onTrue(m_wrist.setAngleCommand(Setpoints.kWristStow));
+        driverControls.wristButtonStow().onTrue(m_wrist.setAngleCommand(Setpoints.kWristShootLow));
 
         operatorControls.wristManualUp().whileTrue(m_wrist.manualUpCommand());
         operatorControls.wristManualDown().whileTrue(m_wrist.manualDownCommand());
-
-        driverControls.resetWristEncoder().onTrue(m_wrist.resetEncoderCommand());
 
     }
 

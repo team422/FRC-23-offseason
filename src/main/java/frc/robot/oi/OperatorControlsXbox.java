@@ -22,5 +22,20 @@ public class OperatorControlsXbox implements OperatorControls {
     public Trigger wristManualDown() {
         return m_controller.povDown();
     }
+
+    @Override
+    public Trigger wristButtonShootLow() {
+        return m_controller.a();
+    }
+
+    @Override
+    public Trigger outtakeSlowButton() {
+        return m_controller.leftTrigger();
+    }
+
+    @Override
+    public Trigger outtakeFastButton() {
+        return m_controller.rightTrigger();
+    }
   
 }

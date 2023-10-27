@@ -29,12 +29,7 @@ public class DriverControlsDualFlightStick implements DriverControls {
 
     @Override
     public Trigger intakeButton() {
-        return new Trigger();
-    }
-
-    @Override
-    public Trigger outtakeButton() {
-        return new Trigger();
+        return m_rightJoystick.button(1);
     }
 
     @Override
@@ -43,37 +38,17 @@ public class DriverControlsDualFlightStick implements DriverControls {
     }
 
     @Override
-    public Trigger wristButtonShoot() {
-        return m_rightJoystick.button(3);
-    }
-
-    @Override
     public Trigger wristButtonStow() {
         return m_leftJoystick.button(2);
     }
 
     @Override
-    public Trigger wristManualUp() {
-        return m_leftJoystick.button(8);
-    }
-
-    @Override
-    public Trigger wristManualDown() {
-        return m_leftJoystick.button(9);
-    }
-
-    @Override
     public Trigger manualFieldReset() {
-        // TODO Auto-generated method stub
         return m_rightJoystick.button(7);
     }
 
     @Override
     public Trigger balance() {
-        // TODO Auto-generated method stub
         return m_rightJoystick.button(5);
-    }
-    public Trigger resetWristEncoder() {
-        return new Trigger();
     }
 }

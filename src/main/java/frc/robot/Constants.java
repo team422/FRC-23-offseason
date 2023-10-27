@@ -91,7 +91,7 @@ public final class Constants {
         public static final Rotation2d kMinAngle = Rotation2d.fromDegrees(-89);
         public static final double kToleranceRad = Units.degreesToRadians(2);
         public static final double kOffset = 67; //-173.51 // 111 // 28.1
-        public static final double kManualMoveVolts = 2.0;
+        public static final double kManualMoveRad = Units.degreesToRadians(1);
 
         // Wrist PID, currently untuned
         public static final TunableNumber kP = new TunableNumber("Wrist P", 2.7);
@@ -116,7 +116,9 @@ public final class Constants {
         public static final double kGearRatio = 0.25;
 
         public static final double kIntakeVoltage = 3;
-        public static final double kIntakeHoldVoltage = 11;
+        public static final double kIntakeHoldVoltage = -0.2;
+        public static final double kIntakeOutSlowVoltage = 6;
+        public static final double kIntakeOutFastVoltage = 12;
     }
 
     public static final class Ports {
@@ -157,7 +159,7 @@ public final class Constants {
     public static final class Setpoints {
         // TODO: i made these up, change later
         public static final Rotation2d kWristGrabCube = Rotation2d.fromDegrees(-77);
-        public static final Rotation2d kWristShoot = Rotation2d.fromDegrees(70);
-        public static final Rotation2d kWristStow = Rotation2d.fromDegrees(90);
+        public static final Rotation2d kWristShootLow = Rotation2d.fromDegrees(5); // TODO: estimated, change later
+        public static final Rotation2d kWristStow = Rotation2d.fromDegrees(70);
     }
 }

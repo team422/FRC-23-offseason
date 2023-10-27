@@ -11,20 +11,11 @@ public interface DriverControls {
 
     public Trigger intakeButton();
 
-    public Trigger outtakeButton();
-
     public Trigger wristButtonIntake();
 
-    public Trigger wristButtonShoot();
-
     public Trigger wristButtonStow();
-
-    public Trigger wristManualUp();
-
-    public Trigger wristManualDown();
 
     public Trigger manualFieldReset();
 
     public Trigger balance();
-    public Trigger resetWristEncoder();
 }

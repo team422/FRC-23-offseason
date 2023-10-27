@@ -28,10 +28,10 @@ public class Wrist extends SubsystemBase {
     private double m_lastTime;
     private double m_lastVelocitySetpoint;
 
-    private final double kManualMoveVolts;
+    private final double kManualMoveRad;
 
     public Wrist(WristIO io, ProfiledPIDController controller, ArmFeedforward feedforward, Rotation2d minAngle, Rotation2d maxAngle,
-            double toleranceRad, double manualMoveVolts) {
+            double toleranceRad, double manualMoveRad) {
         m_io = io;
         m_controller = controller;
         m_controller.setTolerance(toleranceRad);
@@ -44,7 +44,7 @@ public class Wrist extends SubsystemBase {
         
         m_inputs = new WristInputsAutoLogged();
 
-        kManualMoveVolts = manualMoveVolts;
+        kManualMoveRad = manualMoveRad;
     }
     
     @Override
@@ -122,15 +122,13 @@ public class Wrist extends SubsystemBase {
 
     public Command manualUpCommand() {
         return runEnd(() -> {
-            setVoltage(kManualMoveVolts);
-            setAngle(Rotation2d.fromRadians(m_inputs.angleRad));
+            setAngle(Rotation2d.fromRadians(m_inputs.angleRad + kManualMoveRad));
         }, () -> setVoltage(0));
     }
 
     public Command manualDownCommand() {
         return runEnd(() -> {
-            setVoltage(-kManualMoveVolts);
-            setAngle(Rotation2d.fromRadians(m_inputs.angleRad));
+            setAngle(Rotation2d.fromRadians(m_inputs.angleRad - kManualMoveRad));
         }, () -> setVoltage(0));
     }
 
