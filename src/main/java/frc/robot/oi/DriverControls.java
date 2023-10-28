@@ -18,4 +18,6 @@ public interface DriverControls {
     public Trigger manualFieldReset();
 
     public Trigger balance();
+
+    public Trigger resetWristEncoder();
 }

@@ -10,6 +10,7 @@ public interface WristIO extends LoggedIO<WristIO.WristInputs> {
         public double angleRad;
         public double outputVoltage;
         public double currentAmps;
+        public double currentAmpsSecondary;
         public double wristSpeed;
         public boolean brake;
         public double angleDegreeRelative;
@@ -28,5 +29,7 @@ public interface WristIO extends LoggedIO<WristIO.WristInputs> {
 
     public double getOutputVoltage();
 
-    public void resetEncoder();
+    public void setEncoderOffset(double offset);
+
+    public void localizeEncoder();
 }

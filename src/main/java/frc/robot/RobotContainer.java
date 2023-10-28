@@ -6,6 +6,7 @@ package frc.robot;
 
 import java.io.IOException;
 
+import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
@@ -41,7 +42,6 @@ import frc.robot.commands.autonomous.ChargeStationBalance;
 import frc.robot.commands.drive.TeleopDrive;
 import frc.robot.oi.DriverControls;
 import frc.robot.oi.DriverControlsController;
-import frc.robot.oi.DriverControlsDualFlightStick;
 import frc.robot.oi.OperatorControls;
 import frc.robot.oi.OperatorControlsXbox;
 import frc.robot.subsystems.drive.SwerveModuleIO;
@@ -132,7 +132,7 @@ public class RobotContainer {
                     IntakeConstants.kIntakeVoltage, IntakeConstants.kIntakeHoldVoltage,
                     IntakeConstants.kIntakeOutSlowVoltage, IntakeConstants.kIntakeOutFastVoltage);
 
-            m_wrist = new Wrist(new WristIOCANSparkMax(Ports.wristPortDrive, Ports.wristPortFollower, WristConstants.kOffset),
+            m_wrist = new Wrist(new WristIOCANSparkMax(Ports.wristPortDrive, Ports.wristPortFollower, WristConstants.kOffset, WristConstants.kGearRatio),
                     WristConstants.wristPIDController, WristConstants.wristFeedforward, WristConstants.kMinAngle,
                     WristConstants.kMaxAngle, WristConstants.kToleranceRad, WristConstants.kManualMoveRad);
         } else {
@@ -157,8 +157,7 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-        
-        DriverControls driverControls = new DriverControlsDualFlightStick(0, 1);
+        DriverControls driverControls = new DriverControlsController(Ports.kDriverControllerPort);
         OperatorControls operatorControls = new OperatorControlsXbox(Ports.kOperatorControllerPort);
         TeleopDrive teleopDrive = new TeleopDrive(m_drive, driverControls::getDriveX,
                 driverControls::getDriveY, driverControls::getDriveRotation,
@@ -171,15 +170,19 @@ public class RobotContainer {
         operatorControls.outtakeFastButton().whileTrue(m_intake.outtakeFastCommand());
 
         ChargeStationBalance m_charge = new ChargeStationBalance(m_drive);
-        driverControls.balance().whileTrue(m_wrist.manualUpCommand());
+        driverControls.balance().whileTrue(m_charge);
         driverControls.manualFieldReset().onTrue(m_drive.manualFieldCentricCommand());
 
         driverControls.wristButtonIntake().onTrue(m_wrist.setAngleCommand(Setpoints.kWristGrabCube));
-        operatorControls.wristButtonShootLow().onTrue(m_wrist.setAngleCommand(Setpoints.kWristStow));
+        // operatorControls.wristButtonShootLow().onTrue(m_wrist.setAngleCommand(Setpoints.kWristStow));
+        // operatorControls.wristButtonShootLow().onTrue(Commands.run(() -> Logger.getInstance().recordOutput("HELP", true)));
+        // operatorControls.wristButtonShootLow().onFalse(Commands.run(() -> Logger.getInstance().recordOutput("HELP", false)));
         driverControls.wristButtonStow().onTrue(m_wrist.setAngleCommand(Setpoints.kWristShootLow));
 
-        operatorControls.wristManualUp().whileTrue(m_wrist.manualUpCommand());
-        operatorControls.wristManualDown().whileTrue(m_wrist.manualDownCommand());
+        // operatorControls.wristManualUp().whileTrue(m_wrist.manualUpCommand());
+        // operatorControls.wristManualDown().whileTrue(m_wrist.manualDownCommand());
+
+        // driverControls.resetWristEncoder().whileTrue(m_wrist.moveAndResetEncoder());
 
     }
 

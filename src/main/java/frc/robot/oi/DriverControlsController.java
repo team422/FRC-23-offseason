@@ -16,7 +16,8 @@ public class DriverControlsController implements DriverControls {
 
     @Override
     public double getDriveY() {
-        return m_controller.getLeftX();
+        double val = m_controls.addDeadzoneScaled(m_controller.getLeftX(), 0.03);
+        return -Math.signum(val) * Math.pow(val, 2);
     }
 
     @Override
@@ -56,6 +57,11 @@ public class DriverControlsController implements DriverControls {
     @Override
     public Trigger balance() {
         return m_controller.leftStick();
+    }
+
+    @Override
+    public Trigger resetWristEncoder() {
+        return m_controller.povUp();
     }
     
 }

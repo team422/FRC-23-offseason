@@ -51,4 +51,10 @@ public class DriverControlsDualFlightStick implements DriverControls {
     public Trigger balance() {
         return m_rightJoystick.button(5);
     }
+
+    @Override
+    public Trigger resetWristEncoder() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

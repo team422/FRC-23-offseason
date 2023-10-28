@@ -68,5 +68,15 @@ public class WristIOSim implements WristIO {
     }
 
     @Override
-    public void resetEncoder() {}
+    public void setEncoderOffset(double offset) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void localizeEncoder(){
+        
+    }
+
+
 }

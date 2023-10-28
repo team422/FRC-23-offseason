@@ -85,12 +85,12 @@ public final class Constants {
 
     public final static class WristConstants {
         // TODO: copied from frc-23, change later
-        public static final double kGearRatio = 3;
+        public static final double kGearRatio = 120;
         public static final int kWristEncoderCPR = 8192;
-        public static final Rotation2d kMaxAngle = Rotation2d.fromDegrees(80);
-        public static final Rotation2d kMinAngle = Rotation2d.fromDegrees(-89);
+        public static final Rotation2d kMaxAngle = Rotation2d.fromDegrees(-100);
+        public static final Rotation2d kMinAngle = Rotation2d.fromDegrees(0);
         public static final double kToleranceRad = Units.degreesToRadians(2);
-        public static final double kOffset = 67; //-173.51 // 111 // 28.1
+        public static final double kOffset = 268; //-173.51 // 111 // 28.1
         public static final double kManualMoveRad = Units.degreesToRadians(1);
 
         // Wrist PID, currently untuned
@@ -127,6 +127,7 @@ public final class Constants {
         // OI Ports
         public static final int kDriverLeftDriveStickPort = 0;
         public static final int kDriverRightDriveStickPort = 1;
+        public static final int kDriverControllerPort = 4;
         public static final int kOperatorControllerPort = 5;
 
         // Left Front Ports
@@ -157,9 +158,8 @@ public final class Constants {
     }
 
     public static final class Setpoints {
-        // TODO: i made these up, change later
-        public static final Rotation2d kWristGrabCube = Rotation2d.fromDegrees(-77);
-        public static final Rotation2d kWristShootLow = Rotation2d.fromDegrees(5); // TODO: estimated, change later
-        public static final Rotation2d kWristStow = Rotation2d.fromDegrees(70);
+        public static final Rotation2d kWristGrabCube = Rotation2d.fromDegrees(-74);
+        public static final Rotation2d kWristShootLow = Rotation2d.fromDegrees(0); // TODO: estimated, change later
+        public static final Rotation2d kWristStow = Rotation2d.fromDegrees(58);
     }
 }

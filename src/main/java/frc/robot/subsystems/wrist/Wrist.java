@@ -27,7 +27,7 @@ public class Wrist extends SubsystemBase {
 
     private double m_lastTime;
     private double m_lastVelocitySetpoint;
-
+    private boolean m_kZeroing;
     private final double kManualMoveRad;
 
     public Wrist(WristIO io, ProfiledPIDController controller, ArmFeedforward feedforward, Rotation2d minAngle, Rotation2d maxAngle,
@@ -40,8 +40,8 @@ public class Wrist extends SubsystemBase {
         
         kMaxAngle = maxAngle;
         kMinAngle = minAngle;
-        m_desiredAngle = Rotation2d.fromDegrees(67);
-        
+        m_desiredAngle = Rotation2d.fromDegrees(20);
+        m_kZeroing = false;
         m_inputs = new WristInputsAutoLogged();
 
         kManualMoveRad = manualMoveRad;
@@ -60,8 +60,8 @@ public class Wrist extends SubsystemBase {
         double dt = Timer.getFPGATimestamp() - m_lastTime;
 
         double currAngle = m_inputs.angleRad;
-        m_controller.setGoal(m_desiredAngle.getRadians());
-        double pidVoltage = m_controller.calculate(currAngle);
+
+        double pidVoltage = m_controller.calculate(currAngle,m_desiredAngle.getRadians());
 
         double positionSetpoint = Rotation2d.fromRadians(m_inputs.angleRad).plus(Rotation2d.fromDegrees(-90)).getRadians();
         double velocitySetpoint = m_inputs.wristSpeed;
@@ -70,18 +70,24 @@ public class Wrist extends SubsystemBase {
         double feedforwardVoltage = m_feedforward.calculate(positionSetpoint, velocitySetpoint);
 
         double outputVoltage = pidVoltage + feedforwardVoltage;
-        if (Robot.isSimulation()) {
-            setVoltage(pidVoltage);
+        if (!m_kZeroing){
+            if (Robot.isSimulation()) {
+                setVoltage(pidVoltage);
+            } else {
+                setVoltage(outputVoltage);
+            }
         } else {
-            setVoltage(outputVoltage);
+            setVoltage(4);
+            m_io.localizeEncoder();
         }
         
         Logger.getInstance().processInputs("Wrist", m_inputs);
-        Logger.getInstance().recordOutput("Wrist/SetpointDegrees", Units.radiansToDegrees(m_controller.getGoal().position));
+        Logger.getInstance().recordOutput("Wrist/SetpointDegrees",m_desiredAngle.getDegrees());
         Logger.getInstance().recordOutput("Wrist/CurrentDegrees", Units.radiansToDegrees(m_inputs.angleRad));
         Logger.getInstance().recordOutput("Wrist/FFOutputVoltage", feedforwardVoltage);
         Logger.getInstance().recordOutput("Wrist/PIDOutputVoltage", pidVoltage);
         Logger.getInstance().recordOutput("Wrist/angle", m_io.getAngle().getDegrees());
+        Logger.getInstance().recordOutput("Wrist/ZeroingEnabled", m_kZeroing);
         m_lastTime = Timer.getFPGATimestamp();
         m_lastVelocitySetpoint = velocitySetpoint;
     }
@@ -117,7 +123,7 @@ public class Wrist extends SubsystemBase {
     }
 
     public Command setAngleCommand(Rotation2d angle) {
-        return run(() -> setAngle(angle)).until(this::withinTolerance);
+        return runOnce(() -> setAngle(angle));
     }
 
     public Command manualUpCommand() {
@@ -132,12 +138,16 @@ public class Wrist extends SubsystemBase {
         }, () -> setVoltage(0));
     }
 
-    public void resetEncoder() {
-        m_io.resetEncoder();
+    public void resetEncoderOffset() {
+        m_io.setEncoderOffset(0.0);
     }
 
     public Command resetEncoderCommand() {
-        return runOnce(this::resetEncoder);
+        return runOnce(() -> resetEncoderOffset()).andThen(() -> m_io.setEncoderOffset(m_inputs.angleRad + Units.degreesToRadians(2)));
+    }
+
+    public Command moveAndResetEncoder() {
+        return runEnd(()->{m_kZeroing = true;}, ()->{m_kZeroing=false;});
     }
 
 }
