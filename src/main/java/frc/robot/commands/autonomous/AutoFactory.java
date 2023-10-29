@@ -39,7 +39,7 @@ public class AutoFactory extends CommandBase {
 
     // Define PathPlanner Event Map
     Command stow = Commands.parallel(
-        m_wrist.setAngleCommand(Setpoints.kWristStow),
+        m_wrist.setAngleCommand(Setpoints.kWristShootLow),
         Commands.print("stow"));
 
     // Command xBrake = m_drive.xBrakeInstantCommand();
@@ -69,7 +69,7 @@ public class AutoFactory extends CommandBase {
         m_wrist.setAngleCommand(Setpoints.kWristGrabCube),
         Commands.print("cubeGround"));
     Command cubeShoot = Commands.parallel(
-        m_wrist.setAngleCommand(Setpoints.kWristShoot),
+        m_wrist.setAngleCommand(Setpoints.kWristStow),
         Commands.print("cubeShoot"));
     Command stopIntake = m_intake.setVoltageCommand(0.0);
     // Command coneGround = Commands.parallel(

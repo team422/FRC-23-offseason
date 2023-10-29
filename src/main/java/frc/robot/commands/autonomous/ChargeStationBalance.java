@@ -31,13 +31,13 @@ public class ChargeStationBalance extends CommandBase {
     //       m_turnController.calculate(m_drive.getPose().getRotation().getRadians(), Math.PI),
     //       m_drive.getPose().getRotation()));
     // } else {
-    if (Timer.getMatchTime() < .125) {
+    if (Timer.getMatchTime() < .125 && Timer.getMatchTime() > 0) {
       m_drive.xBrake();
     } else if (Math.abs(m_drive.getGyro().getPitch().getDegrees()) < 2.5) {
       m_drive.xBrake();
     } else if (Math.abs(m_drive.getGyro().getPitch().getRadians()) < Units.degreesToRadians(11)) {
       m_drive.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
-          m_rollController.calculate(m_drive.getGyro().getPitch().getRadians(), 0) / 5, 0, 0,
+          m_rollController.calculate(-m_drive.getGyro().getPitch().getRadians(), 0) / 5, 0, 0,
           m_drive.getPose().getRotation()));
     } else {
       m_drive.drive(ChassisSpeeds.fromFieldRelativeSpeeds(
@@ -45,6 +45,7 @@ public class ChargeStationBalance extends CommandBase {
           m_drive.getPose().getRotation()));
     }
     Logger.getInstance().recordOutput("Robot/GyroPitch",m_drive.getGyro().getPitch().getDegrees());
+    Logger.getInstance().recordOutput("Robot/Timer", Timer.getMatchTime());
 
     // }
     //tells drive base to drive in the opposite direction of the roll if it is forward

@@ -15,9 +15,9 @@ public interface DriverControls {
 
     public Trigger wristButtonIntake();
 
-    public Trigger wristButtonShoot();
-
     public Trigger wristButtonStow();
+
+    public Trigger wristButtonShootLow();
 
     public Trigger wristManualUp();
 

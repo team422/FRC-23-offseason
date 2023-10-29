@@ -12,7 +12,8 @@ public class Intake extends SubsystemBase {
     public int m_intakeFramesGamePiece;
     private final double kIntakeVoltage;
     private final double kIntakeHoldVoltage;
-    private final double kIntakeOutVoltage;
+    private final double kIntakeOutFastVoltage;
+    private final double kIntakeOutSlowVoltage;
     private double m_voltage;
 
     public Intake(IntakeIO io, double intakeVoltage, double intakeHoldVoltage) {
@@ -20,7 +21,8 @@ public class Intake extends SubsystemBase {
         m_inputs = new IntakeInputsAutoLogged();
         kIntakeVoltage = intakeVoltage;
         kIntakeHoldVoltage = -0.2;
-        kIntakeOutVoltage = 12.0;
+        kIntakeOutFastVoltage = 12.0;
+        kIntakeOutSlowVoltage = 6.0;
         m_voltage = 0;
     }
 
@@ -82,8 +84,12 @@ public class Intake extends SubsystemBase {
         return intakeAtVoltageCommand(-kIntakeVoltage);
     }
 
-    public Command outtakeCommand() {
-        return intakeAtVoltageCommand(kIntakeOutVoltage);
+    public Command outtakeSlowCommand() {
+        return intakeAtVoltageCommand(kIntakeOutSlowVoltage);
+    }
+
+    public Command outtakeFastCommand() {
+        return intakeAtVoltageCommand(kIntakeOutFastVoltage);
     }
 
     public Command holdCommand() {

@@ -165,7 +165,7 @@ public class RobotContainer {
         m_drive.setDefaultCommand(teleopDrive);
         // if driverControls.intakeButton is greater than 0.1 then run m_intake.intakeCommand()
         driverControls.intakeButton().whileTrue(m_intake.intakeCommand());
-        driverControls.outtakeButton().whileTrue(m_intake.outtakeCommand());
+        driverControls.outtakeButton().whileTrue(m_intake.outtakeFastCommand());
         ChargeStationBalance m_charge = new ChargeStationBalance(m_drive);
         driverControls.balance().whileTrue(m_charge);
         driverControls.manualFieldReset().onTrue(m_drive.manualFieldCentricCommand());
@@ -173,8 +173,8 @@ public class RobotContainer {
             // all of these are unbound in real
             // DO NOT REBIND THESE UNTIL WE HAVE A MIN ANGLE AND MAX ANGLE AND OFFSET IS SET
             driverControls.wristButtonIntake().onTrue(m_wrist.setAngleCommand(Setpoints.kWristGrabCube));
-            driverControls.wristButtonShoot().onTrue(m_wrist.setAngleCommand(Setpoints.kWristShoot));
             driverControls.wristButtonStow().onTrue(m_wrist.setAngleCommand(Setpoints.kWristStow));
+            operatorControls.wristButtonShootLow().onTrue(m_wrist.setAngleCommand(Setpoints.kWristShootLow));
         // }
 
         driverControls.wristManualUp().whileTrue(m_wrist.manualUpCommand());
@@ -184,6 +184,9 @@ public class RobotContainer {
         operatorControls.wristManualDown().whileTrue(m_wrist.manualDownCommand());
 
         driverControls.resetWristEncoder().onTrue(m_wrist.resetEncoderCommand());
+
+        operatorControls.outtakeFastButton().whileTrue(m_intake.outtakeFastCommand());
+        operatorControls.outtakeSlowButton().whileTrue(m_intake.outtakeSlowCommand());
 
     }
 

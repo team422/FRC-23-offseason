@@ -65,7 +65,7 @@ public final class Constants {
         public static final double kMaxAngularSpeedMultiplier = 1.0;
         public static final double kMaxAngularSpeedRadiansPerSecond = Units.degreesToRadians(450) * kMaxAngularSpeedMultiplier;
         public static final double kMaxSpeedMultiplier = 1.00;
-        public static final double kMaxSpeedMetersPerSecond = 9 * kMaxSpeedMultiplier;
+        public static final double kMaxSpeedMetersPerSecond = 7 * kMaxSpeedMultiplier;
         public static final double kMaxSpeedMetersPerSecondAuto = 3.85 * kMaxSpeedMultiplier;
         public static final double kMaxAccelMetersPerSecondSqAuto = 3.85 * kMaxSpeedMultiplier;
 
@@ -156,8 +156,8 @@ public final class Constants {
 
     public static final class Setpoints {
         // TODO: i made these up, change later
-        public static final Rotation2d kWristGrabCube = Rotation2d.fromDegrees(-77);
-        public static final Rotation2d kWristShoot = Rotation2d.fromDegrees(70);
-        public static final Rotation2d kWristStow = Rotation2d.fromDegrees(90);
+        public static final Rotation2d kWristGrabCube = Rotation2d.fromDegrees(-71);
+        public static final Rotation2d kWristStow = Rotation2d.fromDegrees(70);
+        public static final Rotation2d kWristShootLow = Rotation2d.fromDegrees(0);
     }
 }

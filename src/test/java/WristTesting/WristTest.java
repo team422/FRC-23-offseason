@@ -38,30 +38,30 @@ public class WristTest {
                 DELTA, 0.5);
     }
 
-    // @Test
-    // public void setPointTest() {
-    //     Rotation2d[] setPointsRad = {
-    //         Rotation2d.fromDegrees(-90),
-    //         Rotation2d.fromDegrees(-60),
-    //         Rotation2d.fromDegrees(-45),
-    //         Rotation2d.fromDegrees(-20),
-    //         Rotation2d.fromDegrees(-10),
-    //         Rotation2d.fromDegrees(15),
-    //         Rotation2d.fromDegrees(30),
-    //         Rotation2d.fromDegrees(40),
-    //         Rotation2d.fromDegrees(50),
-    //         Rotation2d.fromDegrees(70),
-    //     };
+    @Test
+    public void setPointTest() {
+        Rotation2d[] setPointsRad = {
+            Rotation2d.fromDegrees(-90),
+            Rotation2d.fromDegrees(-60),
+            Rotation2d.fromDegrees(-45),
+            Rotation2d.fromDegrees(-20),
+            Rotation2d.fromDegrees(-10),
+            Rotation2d.fromDegrees(15),
+            Rotation2d.fromDegrees(30),
+            Rotation2d.fromDegrees(40),
+            Rotation2d.fromDegrees(50),
+            Rotation2d.fromDegrees(70),
+        };
 
-    //     for (Rotation2d setPoint : setPointsRad) {
-    //         m_wrist.setAngle(setPoint);
-    //         sleep(2);
-    //         // System.out.println(m_wrist.m_inputs.angle.getDegrees() + " " + setPoint.getDegrees());
-    //         assertTrue(m_wrist.withinTolerance());
-    //         m_wrist.setAngle(Rotation2d.fromDegrees(0));
-    //         sleep(2);
-    //     }
-    // }
+        for (Rotation2d setPoint : setPointsRad) {
+            m_wrist.setAngle(setPoint);
+            sleep(2);
+            // System.out.println(m_wrist.m_inputs.angle.getDegrees() + " " + setPoint.getDegrees());
+            assertTrue(m_wrist.withinTolerance());
+            m_wrist.setAngle(Rotation2d.fromDegrees(0));
+            sleep(2);
+        }
+    }
 
     @Test
     public void brakeModeTest() {

@@ -14,17 +14,17 @@ public class DriverControlsDualFlightStick implements DriverControls {
 
     @Override
     public double getDriveX() {
-        return -Math.signum(m_leftJoystick.getY()) * Math.pow(m_leftJoystick.getY(), 2);
+        return Math.signum(m_leftJoystick.getY()) * Math.pow(m_leftJoystick.getY(), 2);
     }
 
     @Override
     public double getDriveY() {
-        return -Math.signum(m_leftJoystick.getX()) * Math.pow(m_leftJoystick.getX(), 2);
+        return Math.signum(m_leftJoystick.getX()) * Math.pow(m_leftJoystick.getX(), 2);
     }
 
     @Override
     public double getDriveRotation() {
-        return -Math.signum(m_rightJoystick.getX()) * Math.pow(m_rightJoystick.getX(), 2);
+        return Math.signum(m_rightJoystick.getX()) * Math.pow(m_rightJoystick.getX(), 2);
     }
 
     @Override
@@ -43,12 +43,12 @@ public class DriverControlsDualFlightStick implements DriverControls {
     }
 
     @Override
-    public Trigger wristButtonShoot() {
+    public Trigger wristButtonStow() {
         return m_rightJoystick.button(3);
     }
 
     @Override
-    public Trigger wristButtonStow() {
+    public Trigger wristButtonShootLow() {
         return m_leftJoystick.button(2);
     }
 
