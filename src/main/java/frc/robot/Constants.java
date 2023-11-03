@@ -72,10 +72,12 @@ public final class Constants {
     }
 
     public static final class ModuleConstants {
-        public static final TunableNumber kDriveP = new TunableNumber("Drive P", 0.1);
-        public static final TunableNumber kDriveI = new TunableNumber("Drive I", 0.0);
-        public static final TunableNumber kDriveD = new TunableNumber("Drive D", 0.00);
-        public static final TunableNumber kDriveFF = new TunableNumber("Drive FF", 2.96);
+        public static final TunableNumber kDriveP = new TunableNumber("Drive P", 10.0);
+        public static final TunableNumber kDriveI = new TunableNumber("Drive I", 0.05);
+        public static final TunableNumber kDriveD = new TunableNumber("Drive D", 0.05);
+        public static final TunableNumber kDriveS = new TunableNumber("Drive kS", 0);
+        public static final TunableNumber kDriveV = new TunableNumber("Drive kV", 0);
+        public static final TunableNumber kDriveA = new TunableNumber("Drive kA", 0);
 
         public static final TunableNumber kTurningP = new TunableNumber("TurnP", 0.10);
         public static final TunableNumber kTurningI = new TunableNumber("Turn I", 0.00);
@@ -94,9 +96,9 @@ public final class Constants {
         public static final double kManualMoveVolts = 2.0;
 
         // Wrist PID, currently untuned
-        public static final TunableNumber kP = new TunableNumber("Wrist P", 2.7);
+        public static final TunableNumber kP = new TunableNumber("Wrist P", 10);
         public static final TunableNumber kI = new TunableNumber("Wrist I", 0.05);
-        public static final TunableNumber kD = new TunableNumber("Wrist D", 0.00);
+        public static final TunableNumber kD = new TunableNumber("Wrist D", 0.05); 
         public static final TunableNumber kWristVelo = new TunableNumber("Wrist Velo", 20);
         public static final TunableNumber kWristAccel = new TunableNumber("Wrist Accel", 15.0);
         public static final ProfiledPIDController wristPIDController = new ProfiledPIDController(
@@ -157,7 +159,7 @@ public final class Constants {
     public static final class Setpoints {
         // TODO: i made these up, change later
         public static final Rotation2d kWristGrabCube = Rotation2d.fromDegrees(-71);
-        public static final Rotation2d kWristStow = Rotation2d.fromDegrees(70);
+        public static final Rotation2d kWristStow = Rotation2d.fromDegrees(65);
         public static final Rotation2d kWristShootLow = Rotation2d.fromDegrees(0);
     }
 }

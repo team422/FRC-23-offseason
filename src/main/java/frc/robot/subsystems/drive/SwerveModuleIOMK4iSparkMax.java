@@ -10,6 +10,7 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -35,6 +36,8 @@ public class SwerveModuleIOMK4iSparkMax implements SwerveModuleIO {
   private final SparkMaxPIDController m_turningController;
   private final SparkMaxPIDController m_driveController;
 
+  private final SimpleMotorFeedforward m_driveFFController;
+
   private double adjustedSpeed;
   private String name;
 
@@ -48,8 +51,11 @@ public class SwerveModuleIOMK4iSparkMax implements SwerveModuleIO {
     public static final TunableNumber kDriveD = Constants.ModuleConstants.kDriveD;
     public static final TunableNumber kTurningP = Constants.ModuleConstants.kTurningP;
     public static final TunableNumber kTurningI = Constants.ModuleConstants.kTurningI;
-    public static final TunableNumber kTurningD = Constants.ModuleConstants.kTurningD;
-    // public static final TunableNumber kDriveFF = RobotContainer.robotConstants.kDriveFF;
+    public static final TunableNumber kTurningD = Constants.ModuleConstants.kTurningD;   
+
+    public static final TunableNumber kDriveS = Constants.ModuleConstants.kDriveS;
+    public static final TunableNumber kDriveV = Constants.ModuleConstants.kDriveV;
+    public static final TunableNumber kDriveA = Constants.ModuleConstants.kDriveA;
 
   }
 
@@ -100,6 +106,11 @@ public class SwerveModuleIOMK4iSparkMax implements SwerveModuleIO {
 
     m_turningController = m_turningMotor.getPIDController();
     m_driveController = m_driveMotor.getPIDController();
+    
+
+    m_driveFFController = new SimpleMotorFeedforward(ModuleConstants.kDriveS.get(),
+                                                     ModuleConstants.kDriveV.get(),
+                                                     ModuleConstants.kDriveA.get());
 
     m_driveMotor.enableVoltageCompensation(12);
     m_driveMotor.setSmartCurrentLimit(60);

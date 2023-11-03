@@ -130,8 +130,8 @@ public class AutoFactory extends CommandBase {
         Map.entry("cubeShoot",cubeShoot),
         Map.entry("wait", Commands.waitSeconds(.25)),
         Map.entry("intakeStop", stopIntake),
-        Map.entry("intakeIn", m_intake.setVoltageCommand(-12.0)),
-        Map.entry("intakeOut", m_intake.setVoltageCommand(3.0))
+        Map.entry("intakeIn", m_intake.setVoltageCommand(-3.0)),
+        Map.entry("intakeOut", m_intake.setVoltageCommand(12.0))
         // Map.entry("balance", balanceStation),
         // Map.entry("zeroHeading", zeroHeading),
         // Map.entry("setpointConeHighWait", autoConeHigh), Map.entry("cubeBumpFar", cubeBumpFar),
