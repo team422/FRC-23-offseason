@@ -2,6 +2,8 @@ package frc.robot.subsystems.drive;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -14,10 +16,12 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.ModuleConstants;
 import frc.robot.subsystems.drive.accelerometer.AccelerometerIO;
 import frc.robot.subsystems.drive.accelerometer.AccelerometerInputsAutoLogged;
 import frc.robot.subsystems.drive.gyro.GyroIO;
 import frc.robot.subsystems.drive.gyro.GyroInputsAutoLogged;
+import frc.robot.util.TunableNumber;
 
 public class Drive extends SubsystemBase {
 
@@ -36,6 +40,26 @@ public class Drive extends SubsystemBase {
     private boolean m_oneWheel = false;
     private int m_oneWheelIndex = 2;
     private final double[] m_lockAngles = new double[] { 45, 315, 45, 315 };
+
+    private final PIDController m_drivePIDController;
+    private final PIDController m_turningPIDController;
+    private final SimpleMotorFeedforward m_driveFFController;
+
+    public static class ModuleConstants {
+        public static final double kDriveConversionFactor = 1/20.462;
+        public static final double kTurnPositionConversionFactor = 21.428;
+        public static final TunableNumber kDriveP = Constants.ModuleConstants.kDriveP;
+        public static final TunableNumber kDriveI = Constants.ModuleConstants.kDriveI;
+        public static final TunableNumber kDriveD = Constants.ModuleConstants.kDriveD;
+        public static final TunableNumber kTurningP = Constants.ModuleConstants.kTurningP;
+        public static final TunableNumber kTurningI = Constants.ModuleConstants.kTurningI;
+        public static final TunableNumber kTurningD = Constants.ModuleConstants.kTurningD;   
+    
+        public static final TunableNumber kDriveS = Constants.ModuleConstants.kDriveS;
+        public static final TunableNumber kDriveV = Constants.ModuleConstants.kDriveV;
+        public static final TunableNumber kDriveA = Constants.ModuleConstants.kDriveA;
+    
+      }
 
     /** Creates a new Drive. */
     public Drive(GyroIO gyro, AccelerometerIO accel, Pose2d startPose, SwerveModuleIO... modules) {
@@ -58,6 +82,12 @@ public class Drive extends SubsystemBase {
 
         m_accel = accel;
         m_accelInputs = new AccelerometerInputsAutoLogged();
+
+        m_drivePIDController = new PIDController(ModuleConstants.kDriveP.get(), ModuleConstants.kDriveI.get(), ModuleConstants.kDriveD.get());
+        m_turningPIDController = new PIDController(ModuleConstants.kTurningP.get(), ModuleConstants.kTurningI.get(), ModuleConstants.kTurningD.get());
+        m_driveFFController = new SimpleMotorFeedforward(ModuleConstants.kDriveS.get(), ModuleConstants.kDriveV.get(), ModuleConstants.kDriveA.get());
+
+
     }
 
     public SwerveModulePosition[] getSwerveModulePositions() {
@@ -92,6 +122,7 @@ public class Drive extends SubsystemBase {
         // Update Swerve Module Inputs/Logs
         for (int i = 0; i < m_modules.length; i++) {
             m_modules[i].updateInputs(m_inputs[i]);
+            // double drivePidVoltage = m_drivePIDController.calculate(m_inputs[i]., m_inputs[i].);
             Logger.getInstance().processInputs("Swerve Module " + i, m_inputs[i]);
         }
 

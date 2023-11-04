@@ -183,15 +183,18 @@ public class SwerveModuleIOMK4iSparkMax implements SwerveModuleIO {
 
 //   @Override
   public void setVoltage(double voltageDrive, double voltageTurn) {
-    m_driveController.setReference(voltageDrive, ControlType.kVoltage);
-    m_turningController.setReference(voltageTurn, ControlType.kVoltage);
+    // m_driveController.setReference(voltageDrive, ControlType.kVoltage);
+    // m_turningController.setReference(voltageTurn, ControlType.kVoltage);
+    m_driveMotor.setVoltage(voltageDrive);
+    m_turningMotor.setVoltage(voltageTurn);
   }
 
   public void setVoltageDriveOnly(double voltageDrive, SwerveModulePosition state) {
-    m_driveController.setReference(voltageDrive, ControlType.kVoltage);
-    m_turningController.setReference(
-        state.angle.getDegrees(),
-        ControlType.kPosition);
+    // m_driveController.setReference(voltageDrive, ControlType.kVoltage);
+    // m_turningController.setReference(
+    //     state.angle.getDegrees(),
+    //     ControlType.kPosition);
+    m_driveMotor.setVoltage(voltageDrive);
   }
 
   /**
@@ -203,13 +206,15 @@ public class SwerveModuleIOMK4iSparkMax implements SwerveModuleIO {
   @Override
   public void setDesiredState(SwerveModuleState state) {
     double driveOutput = state.speedMetersPerSecond;
-    m_turningController.setReference(
-        state.angle.getDegrees(),
-        ControlType.kPosition);
+    // m_turningController.setReference(
+    //     state.angle.getDegrees(),
+    //     ControlType.kPosition);
+    
 
     adjustedSpeed = driveOutput;
-    m_driveController.setReference(driveOutput, ControlType.kVelocity, 0,
-        adjustedSpeed);
+    // m_driveController.setReference(driveOutput, ControlType.kVelocity, 0,
+    //     adjustedSpeed);
+    m_driveMotor.setVoltage(driveOutput);
     if (Constants.tuningMode) {
       // m_turningController.setP(ModuleConstants.kTurningP.get());
       // m_turningController.setI(ModuleConstants.kTurningI.get());
