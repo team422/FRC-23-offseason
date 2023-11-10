@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.subsystems.drive.accelerometer.AccelerometerIO;
@@ -54,6 +55,11 @@ public class Drive extends SubsystemBase {
         public static final TunableNumber kTurningP = Constants.ModuleConstants.kTurningP;
         public static final TunableNumber kTurningI = Constants.ModuleConstants.kTurningI;
         public static final TunableNumber kTurningD = Constants.ModuleConstants.kTurningD;   
+
+        public static final TunableNumber kTurningPSim = Constants.ModuleConstants.kTurningPSim;
+        public static final TunableNumber kTurningISim = Constants.ModuleConstants.kTurningISim;
+        public static final TunableNumber kTurningDSim = Constants.ModuleConstants.kTurningDSim;
+
     
         public static final TunableNumber kDriveS = Constants.ModuleConstants.kDriveS;
         public static final TunableNumber kDriveV = Constants.ModuleConstants.kDriveV;
@@ -82,9 +88,13 @@ public class Drive extends SubsystemBase {
 
         m_accel = accel;
         m_accelInputs = new AccelerometerInputsAutoLogged();
-
+        
+        if (Robot.isReal()) {
+            m_turningPIDController = new PIDController(ModuleConstants.kTurningP.get(), ModuleConstants.kTurningI.get(), ModuleConstants.kTurningD.get());
+        } else {
+            m_turningPIDController = new PIDController(ModuleConstants.kTurningPSim.get(), ModuleConstants.kTurningISim.get(), ModuleConstants.kTurningDSim.get());
+        }
         m_drivePIDController = new PIDController(ModuleConstants.kDriveP.get(), ModuleConstants.kDriveI.get(), ModuleConstants.kDriveD.get());
-        m_turningPIDController = new PIDController(ModuleConstants.kTurningP.get(), ModuleConstants.kTurningI.get(), ModuleConstants.kTurningD.get());
         m_driveFFController = new SimpleMotorFeedforward(ModuleConstants.kDriveS.get(), ModuleConstants.kDriveV.get(), ModuleConstants.kDriveA.get());
 
 
@@ -183,11 +193,12 @@ public class Drive extends SubsystemBase {
         SwerveModuleState[] m_currentModuleStates = getModuleStates();
         for (int i = 0; i < m_modules.length; i++) {
             double desiredSpeed = desModuleStates[i].speedMetersPerSecond;
-            double desiredAngle = desModuleStates[i].angle.getDegrees();
-            double desiredAccel = desiredSpeed - m_currentModuleStates[i].speedMetersPerSecond;
+            double desiredAngle = desModuleStates[i].angle.getRadians();
+            // double desiredAccel = desiredSpeed - m_currentModuleStates[i].speedMetersPerSecond;
+            double desiredAccel = (desiredSpeed - m_currentModuleStates[i].speedMetersPerSecond) / 0.02;
             double driveFFVoltage = m_driveFFController.calculate(desiredSpeed, desiredAccel);
             double drivePIDVoltage = m_drivePIDController.calculate(m_currentModuleStates[i].speedMetersPerSecond, desiredSpeed);
-            double turningPIDVoltage = m_turningPIDController.calculate(m_currentModuleStates[i].angle.getDegrees(), desiredAngle);
+            double turningPIDVoltage = m_turningPIDController.calculate(m_currentModuleStates[i].angle.getRadians(), desiredAngle);
             double m_voltageDrive = driveFFVoltage + drivePIDVoltage;
             double m_voltageTurn = turningPIDVoltage;
             m_modules[i].setVoltage(m_voltageDrive, m_voltageTurn);

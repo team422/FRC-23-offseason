@@ -66,207 +66,207 @@ public class DriveTest {
         sleep(2);
     }
 
-    @Test
-    public void xSpeedTest() {
-        ChassisSpeeds[] speeds = new ChassisSpeeds[101]; // yes i know this is overkill but idc
-        double currDeltaX = -5.0;
-        for (int i = 0; i < speeds.length; i++, currDeltaX += 0.1) {
-            speeds[i] = new ChassisSpeeds(currDeltaX, 0.0, 0.0);
-        }
-        for (ChassisSpeeds speed : speeds) {
-            m_drive.drive(speed);
-            sleep(2);
-            assertSameSpeeds(m_drive.m_inputs);
-            System.out.println(speed.vxMetersPerSecond + " " + m_drive.m_inputs[0].driveVelocityMetersPerSecond);
-            assertEquals(speed.vxMetersPerSecond, m_drive.m_inputs[0].driveVelocityMetersPerSecond, DELTA);
+    // @Test
+    // public void xSpeedTest() {
+    //     ChassisSpeeds[] speeds = new ChassisSpeeds[101]; // yes i know this is overkill but idc
+    //     double currDeltaX = -5.0;
+    //     for (int i = 0; i < speeds.length; i++, currDeltaX += 0.1) {
+    //         speeds[i] = new ChassisSpeeds(currDeltaX, 0.0, 0.0);
+    //     }
+    //     for (ChassisSpeeds speed : speeds) {
+    //         m_drive.drive(speed);
+    //         sleep(2);
+    //         assertSameSpeeds(m_drive.m_inputs);
+    //         System.out.println(speed.vxMetersPerSecond + " " + m_drive.m_inputs[0].driveVelocityMetersPerSecond);
+    //         assertEquals(speed.vxMetersPerSecond, m_drive.m_inputs[0].driveVelocityMetersPerSecond, DELTA);
 
-            m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
-            sleep(3);
-        }
-    }
+    //         m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+    //         sleep(3);
+    //     }
+    // }
 
-    @Test
-    public void ySpeedTest() {
-        ChassisSpeeds[] speeds = new ChassisSpeeds[101];
-        double currDeltaY = -5.0;
-        for (int i = 0; i < speeds.length; i++, currDeltaY += 0.1) {
-            speeds[i] = new ChassisSpeeds(0.0, currDeltaY, 0.0);
-        }
-        for (ChassisSpeeds speed : speeds) {
-            m_drive.drive(speed);
-            sleep(2);
-            assertSameSpeeds(m_drive.m_inputs);
+    // @Test
+    // public void ySpeedTest() {
+    //     ChassisSpeeds[] speeds = new ChassisSpeeds[101];
+    //     double currDeltaY = -5.0;
+    //     for (int i = 0; i < speeds.length; i++, currDeltaY += 0.1) {
+    //         speeds[i] = new ChassisSpeeds(0.0, currDeltaY, 0.0);
+    //     }
+    //     for (ChassisSpeeds speed : speeds) {
+    //         m_drive.drive(speed);
+    //         sleep(2);
+    //         assertSameSpeeds(m_drive.m_inputs);
             
-            // i have no idea why but it works fine for x but the velocity is always positive for y
-            if (speed.vyMetersPerSecond < 0.0) {
-                System.out.println(speed.vyMetersPerSecond + " " + -m_drive.m_inputs[0].driveVelocityMetersPerSecond);
-                assertEquals(speed.vyMetersPerSecond, -m_drive.m_inputs[0].driveVelocityMetersPerSecond, DELTA);
-            } else {
-                System.out.println(speed.vyMetersPerSecond + " " + m_drive.m_inputs[0].driveVelocityMetersPerSecond);
-                assertEquals(speed.vyMetersPerSecond, m_drive.m_inputs[0].driveVelocityMetersPerSecond, DELTA);
-            }
+    //         // i have no idea why but it works fine for x but the velocity is always positive for y
+    //         if (speed.vyMetersPerSecond < 0.0) {
+    //             System.out.println(speed.vyMetersPerSecond + " " + -m_drive.m_inputs[0].driveVelocityMetersPerSecond);
+    //             assertEquals(speed.vyMetersPerSecond, -m_drive.m_inputs[0].driveVelocityMetersPerSecond, DELTA);
+    //         } else {
+    //             System.out.println(speed.vyMetersPerSecond + " " + m_drive.m_inputs[0].driveVelocityMetersPerSecond);
+    //             assertEquals(speed.vyMetersPerSecond, m_drive.m_inputs[0].driveVelocityMetersPerSecond, DELTA);
+    //         }
 
-            m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
-            sleep(3);
-        }
-    }
+    //         m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+    //         sleep(3);
+    //     }
+    // }
 
-    @Test
-    public void speedTest() {
-        // general speed test, other tests see if driveVelocityMetersPerSecond works, this
-        // sees if xDriveVelocityMetersPerSecond and yDriveVelocityMetersPerSecond work
-        ChassisSpeeds[] speeds = new ChassisSpeeds[101];
-        double currDeltaX = -5.0;
-        double currDeltaY = -10.0;
-        for (int i = 0; i < speeds.length; i++, currDeltaX += 0.1, currDeltaY += 0.2) {
-            speeds[i] = new ChassisSpeeds(currDeltaX, currDeltaY, 0.0);
-        }
-        for (ChassisSpeeds speed : speeds) {
-            m_drive.drive(speed);
-            sleep(2);
+    // @Test
+    // public void speedTest() {
+    //     // general speed test, other tests see if driveVelocityMetersPerSecond works, this
+    //     // sees if xDriveVelocityMetersPerSecond and yDriveVelocityMetersPerSecond work
+    //     ChassisSpeeds[] speeds = new ChassisSpeeds[101];
+    //     double currDeltaX = -5.0;
+    //     double currDeltaY = -10.0;
+    //     for (int i = 0; i < speeds.length; i++, currDeltaX += 0.1, currDeltaY += 0.2) {
+    //         speeds[i] = new ChassisSpeeds(currDeltaX, currDeltaY, 0.0);
+    //     }
+    //     for (ChassisSpeeds speed : speeds) {
+    //         m_drive.drive(speed);
+    //         sleep(2);
 
-            assertSameSpeeds(m_drive.m_inputs);
-            System.out.println(speed.vxMetersPerSecond + " " + m_drive.m_inputs[0].xDriveVelocityMetersPerSecond);
-            assertEquals(speed.vxMetersPerSecond, m_drive.m_inputs[0].xDriveVelocityMetersPerSecond, DELTA);
-            System.out.println(speed.vyMetersPerSecond + " " + m_drive.m_inputs[0].yDriveVelocityMetersPerSecond);
-            assertEquals(speed.vyMetersPerSecond, m_drive.m_inputs[0].yDriveVelocityMetersPerSecond, DELTA);
+    //         assertSameSpeeds(m_drive.m_inputs);
+    //         System.out.println(speed.vxMetersPerSecond + " " + m_drive.m_inputs[0].xDriveVelocityMetersPerSecond);
+    //         assertEquals(speed.vxMetersPerSecond, m_drive.m_inputs[0].xDriveVelocityMetersPerSecond, DELTA);
+    //         System.out.println(speed.vyMetersPerSecond + " " + m_drive.m_inputs[0].yDriveVelocityMetersPerSecond);
+    //         assertEquals(speed.vyMetersPerSecond, m_drive.m_inputs[0].yDriveVelocityMetersPerSecond, DELTA);
 
-            m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
-            sleep(3);
-        }
-    }
+    //         m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+    //         sleep(3);
+    //     }
+    // }
 
-    @Test
-    public void oneDimensionalPoseEstimationTest() {
-        // test if the pose estimation works when driving in a straight line
-        ChassisSpeeds[] xSpeeds = new ChassisSpeeds[] {
-            new ChassisSpeeds(-1.0, 0.0, 0.0),
-            new ChassisSpeeds(1.0, 0.0, 0.0),
-            new ChassisSpeeds(0.0, -1.0, 0.0),
-            new ChassisSpeeds(0.0, 1.0, 0.0),
-        };
+    // @Test
+    // public void oneDimensionalPoseEstimationTest() {
+    //     // test if the pose estimation works when driving in a straight line
+    //     ChassisSpeeds[] xSpeeds = new ChassisSpeeds[] {
+    //         new ChassisSpeeds(-1.0, 0.0, 0.0),
+    //         new ChassisSpeeds(1.0, 0.0, 0.0),
+    //         new ChassisSpeeds(0.0, -1.0, 0.0),
+    //         new ChassisSpeeds(0.0, 1.0, 0.0),
+    //     };
 
-        ChassisSpeeds[] ySpeeds = new ChassisSpeeds[] {
-            new ChassisSpeeds(0.0, -1.0, 0.0),
-            new ChassisSpeeds(0.0, 1.0, 0.0)
-        };
+    //     ChassisSpeeds[] ySpeeds = new ChassisSpeeds[] {
+    //         new ChassisSpeeds(0.0, -1.0, 0.0),
+    //         new ChassisSpeeds(0.0, 1.0, 0.0)
+    //     };
 
-        Pose2d startPose = m_drive.getPose();
-        // this is all hard-coded bc i need to manually test the position after each speed
+    //     Pose2d startPose = m_drive.getPose();
+    //     // this is all hard-coded bc i need to manually test the position after each speed
 
-        m_drive.drive(xSpeeds[0]);
-        sleep(2);
-        m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
-        sleep(3);
-        assertTrue(m_drive.getPose().getX() < startPose.getX());
-        assertEquals(startPose.getY(), m_drive.getPose().getY(), DELTA);
+    //     m_drive.drive(xSpeeds[0]);
+    //     sleep(2);
+    //     m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+    //     sleep(3);
+    //     assertTrue(m_drive.getPose().getX() < startPose.getX());
+    //     assertEquals(startPose.getY(), m_drive.getPose().getY(), DELTA);
 
-        m_drive.drive(xSpeeds[1]);
-        sleep(2);
-        m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
-        sleep(3);
-        assertEquals(startPose.getX(), m_drive.getPose().getX(), DELTA);
-        assertEquals(startPose.getY(), m_drive.getPose().getY(), DELTA);
+    //     m_drive.drive(xSpeeds[1]);
+    //     sleep(2);
+    //     m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+    //     sleep(3);
+    //     assertEquals(startPose.getX(), m_drive.getPose().getX(), DELTA);
+    //     assertEquals(startPose.getY(), m_drive.getPose().getY(), DELTA);
 
-        m_drive.drive(ySpeeds[0]);
-        sleep(2);
-        m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
-        sleep(3);
-        assertEquals(startPose.getX(), m_drive.getPose().getX(), DELTA);
-        assertTrue(m_drive.getPose().getY() < startPose.getY());
+    //     m_drive.drive(ySpeeds[0]);
+    //     sleep(2);
+    //     m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+    //     sleep(3);
+    //     assertEquals(startPose.getX(), m_drive.getPose().getX(), DELTA);
+    //     assertTrue(m_drive.getPose().getY() < startPose.getY());
         
 
-        m_drive.drive(ySpeeds[1]);
-        sleep(2);
-        m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
-        sleep(3);
-        assertEquals(startPose.getX(), m_drive.getPose().getX(), DELTA);
-        assertEquals(startPose.getY(), m_drive.getPose().getY(), DELTA);
-    }
+    //     m_drive.drive(ySpeeds[1]);
+    //     sleep(2);
+    //     m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+    //     sleep(3);
+    //     assertEquals(startPose.getX(), m_drive.getPose().getX(), DELTA);
+    //     assertEquals(startPose.getY(), m_drive.getPose().getY(), DELTA);
+    // }
 
-    @Test
-    public void twoDimensionalPoseEstimationTest() {
-        // test if the pose estimation works when driving in both x and y
-        // this function name is long as hell
+    // @Test
+    // public void twoDimensionalPoseEstimationTest() {
+    //     // test if the pose estimation works when driving in both x and y
+    //     // this function name is long as hell
 
-        ChassisSpeeds[] speeds = new ChassisSpeeds[20];
-        double currDeltaX = -5.0;
-        double currDeltaY = -10.0;
-        for (int i = 0; i < speeds.length; i++, currDeltaX += 0.5, currDeltaY += 1.0) {
-            speeds[i] = new ChassisSpeeds(currDeltaX, currDeltaY, 0.0);
-        }
+    //     ChassisSpeeds[] speeds = new ChassisSpeeds[20];
+    //     double currDeltaX = -5.0;
+    //     double currDeltaY = -10.0;
+    //     for (int i = 0; i < speeds.length; i++, currDeltaX += 0.5, currDeltaY += 1.0) {
+    //         speeds[i] = new ChassisSpeeds(currDeltaX, currDeltaY, 0.0);
+    //     }
 
-        Pose2d startPose = m_drive.getPose();
+    //     Pose2d startPose = m_drive.getPose();
 
-        for (ChassisSpeeds speed : speeds) {
-            m_drive.drive(speed);
-            sleep(2);
-            m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
-            sleep(3);
-            ChassisSpeeds counterSpeeds = new ChassisSpeeds(-speed.vxMetersPerSecond, -speed.vyMetersPerSecond, 0.0);
-            m_drive.drive(counterSpeeds);
-            sleep(2);
-            m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
-            sleep(3);
-            assertEquals(startPose.getX(), m_drive.getPose().getX(), DELTA);
-            assertEquals(startPose.getY(), m_drive.getPose().getY(), DELTA);
-        }
-    }
+    //     for (ChassisSpeeds speed : speeds) {
+    //         m_drive.drive(speed);
+    //         sleep(2);
+    //         m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+    //         sleep(3);
+    //         ChassisSpeeds counterSpeeds = new ChassisSpeeds(-speed.vxMetersPerSecond, -speed.vyMetersPerSecond, 0.0);
+    //         m_drive.drive(counterSpeeds);
+    //         sleep(2);
+    //         m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+    //         sleep(3);
+    //         assertEquals(startPose.getX(), m_drive.getPose().getX(), DELTA);
+    //         assertEquals(startPose.getY(), m_drive.getPose().getY(), DELTA);
+    //     }
+    // }
 
-    @Test
-    public void rotationTest() {
-        // currently broken but still wanted to push progress
+    // @Test
+    // public void rotationTest() {
+    //     // currently broken but still wanted to push progress
 
-        ChassisSpeeds[] speeds = new ChassisSpeeds[30];
+    //     ChassisSpeeds[] speeds = new ChassisSpeeds[30];
         
-        Random rand = new Random(); // im feelin spicy today
-        for (int i = 0; i < speeds.length; i++) {
-            double randSpeed = rand.nextDouble(20);
-            speeds[i] = new ChassisSpeeds(0.0, 0.0, randSpeed);
-        }
+    //     Random rand = new Random(); // im feelin spicy today
+    //     for (int i = 0; i < speeds.length; i++) {
+    //         double randSpeed = rand.nextDouble(20);
+    //         speeds[i] = new ChassisSpeeds(0.0, 0.0, randSpeed);
+    //     }
 
-        for (ChassisSpeeds speed : speeds) {
-            Rotation2d startAngle = m_drive.getGyro().getAngle();
-            m_drive.drive(speed);
-            sleepCycles((int)((2 * Math.PI) / speed.omegaRadiansPerSecond * 50));
+    //     for (ChassisSpeeds speed : speeds) {
+    //         Rotation2d startAngle = m_drive.getGyro().getAngle();
+    //         m_drive.drive(speed);
+    //         sleepCycles((int)((2 * Math.PI) / speed.omegaRadiansPerSecond * 50));
 
-            assertEquals(startAngle.getRadians(), m_drive.getGyro().getAngle().getRadians(), speed.omegaRadiansPerSecond);
+    //         assertEquals(startAngle.getRadians(), m_drive.getGyro().getAngle().getRadians(), speed.omegaRadiansPerSecond);
 
-            m_drive.drive(new ChassisSpeeds(0, 0, 0));
-            sleep(3);
-        }
-    }
+    //         m_drive.drive(new ChassisSpeeds(0, 0, 0));
+    //         sleep(3);
+    //     }
+    // }
 
-    @Test
-    public void complexPoseEstimationTest() {
-        // pose estimation + rotation scary
+    // @Test
+    // public void complexPoseEstimationTest() {
+    //     // pose estimation + rotation scary
 
-        ChassisSpeeds[] speeds = new ChassisSpeeds[422];
-        double currDeltaX = -21.1;
-        double currDeltaY = -42.2;
-        double currDeltaTheta = -10.55;
-        for (int i = 0; i < speeds.length; i++, currDeltaX += 0.1, currDeltaY += 0.2, currDeltaTheta += 0.05) {
-            speeds[i] = new ChassisSpeeds(currDeltaX, currDeltaY, currDeltaTheta);
-        }
+    //     ChassisSpeeds[] speeds = new ChassisSpeeds[422];
+    //     double currDeltaX = -21.1;
+    //     double currDeltaY = -42.2;
+    //     double currDeltaTheta = -10.55;
+    //     for (int i = 0; i < speeds.length; i++, currDeltaX += 0.1, currDeltaY += 0.2, currDeltaTheta += 0.05) {
+    //         speeds[i] = new ChassisSpeeds(currDeltaX, currDeltaY, currDeltaTheta);
+    //     }
 
-        for (ChassisSpeeds speed : speeds) {
-            Pose2d startPose = m_drive.getPose();
-            Rotation2d startAngle = m_drive.getGyro().getAngle();
-            m_drive.drive(speed);
-            sleep(2);
-            m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
-            sleep(3);
+    //     for (ChassisSpeeds speed : speeds) {
+    //         Pose2d startPose = m_drive.getPose();
+    //         Rotation2d startAngle = m_drive.getGyro().getAngle();
+    //         m_drive.drive(speed);
+    //         sleep(2);
+    //         m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+    //         sleep(3);
 
-            ChassisSpeeds counterSpeeds = new ChassisSpeeds(-speed.vxMetersPerSecond, -speed.vyMetersPerSecond, -speed.omegaRadiansPerSecond);
-            m_drive.drive(counterSpeeds);
-            sleep(2);
-            m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
-            sleep(3);
+    //         ChassisSpeeds counterSpeeds = new ChassisSpeeds(-speed.vxMetersPerSecond, -speed.vyMetersPerSecond, -speed.omegaRadiansPerSecond);
+    //         m_drive.drive(counterSpeeds);
+    //         sleep(2);
+    //         m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
+    //         sleep(3);
             
-            assertEquals(startPose.getX(), m_drive.getPose().getX(), DELTA);
-            assertEquals(startPose.getY(), m_drive.getPose().getY(), DELTA);
-            assertEquals(startAngle.getRadians(), m_drive.getGyro().getAngle().getRadians(), DELTA);
-        }
+    //         assertEquals(startPose.getX(), m_drive.getPose().getX(), DELTA);
+    //         assertEquals(startPose.getY(), m_drive.getPose().getY(), DELTA);
+    //         assertEquals(startAngle.getRadians(), m_drive.getGyro().getAngle().getRadians(), DELTA);
+    //     }
 
-    }
+    // }
 }

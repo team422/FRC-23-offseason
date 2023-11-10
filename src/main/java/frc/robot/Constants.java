@@ -72,21 +72,26 @@ public final class Constants {
     }
 
     public static final class ModuleConstants {
-        
+
         public static final double kDriveConversionFactor = 1/20.462;
         public static final double kTurnPositionConversionFactor = 21.428;
 
         public static final TunableNumber kDriveP = new TunableNumber("Drive P", 10.0);
         public static final TunableNumber kDriveI = new TunableNumber("Drive I", 0.05);
         public static final TunableNumber kDriveD = new TunableNumber("Drive D", 0.05);
-        public static final TunableNumber kDriveS = new TunableNumber("Drive kS", 0);
-        public static final TunableNumber kDriveV = new TunableNumber("Drive kV", 0);
-        public static final TunableNumber kDriveA = new TunableNumber("Drive kA", 0);
+
+        //FF Constants from toothn't, tune
+        public static final TunableNumber kDriveS = new TunableNumber("Drive kS", 1);
+        public static final TunableNumber kDriveV = new TunableNumber("Drive kV", 3);
+        public static final TunableNumber kDriveA = new TunableNumber("Drive kA", 1.5);
 
         public static final TunableNumber kTurningP = new TunableNumber("TurnP", 0.10);
         public static final TunableNumber kTurningI = new TunableNumber("Turn I", 0.00);
         public static final TunableNumber kTurningD = new TunableNumber("Turn D", 0.005);
 
+        public static final TunableNumber kTurningPSim = new TunableNumber("TurningP Sim", 5.5);
+        public static final TunableNumber kTurningISim = new TunableNumber("Turning I Sim", 0.00);
+        public static final TunableNumber kTurningDSim = new TunableNumber("Turning D Sim", 0.00);
     }
 
     public final static class WristConstants {
