@@ -112,20 +112,15 @@ public class Drive extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // This method will be called once per scheduler run
 
+        for (int i = 0; i < m_modules.length; i++) {
+            m_modules[i].updateInputs(m_inputs[i]);
+            Logger.getInstance().processInputs("Swerve Module " + i, m_inputs[i]);
+        }
 
         // Update Gyro Inputs/Logs
         m_gyro.updateInputs(m_gyroInputs);
         Logger.getInstance().processInputs("Gyro", m_gyroInputs);
-
-        // Update Swerve Module Inputs/Logs
-        for (int i = 0; i < m_modules.length; i++) {
-            m_modules[i].updateInputs(m_inputs[i]);
-            // double drivePidVoltage = m_drivePIDController.calculate(m_inputs[i]., m_inputs[i].);
-            Logger.getInstance().processInputs("Swerve Module " + i, m_inputs[i]);
-        }
-
         Logger.getInstance().recordOutput("Robot/GyroPitchDrive",getGyro().getPitch().getDegrees());
 
         m_poseEstimator.update(m_gyro.getAngle(), getSwerveModulePositions());
@@ -175,19 +170,29 @@ public class Drive extends SubsystemBase {
     public void xBrake(){
         SwerveModuleState[] positions = new SwerveModuleState[m_modules.length];
         for (int i = 0; i < m_modules.length; i++) {
-        m_modules[i].setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(m_lockAngles[i])));
+            m_modules[i].setDesiredState(new SwerveModuleState(0, Rotation2d.fromDegrees(m_lockAngles[i])));
         }
 
     }
 
     public void drive(ChassisSpeeds speeds){
-        SwerveModuleState[] states = DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds);
-        for (int i = 0; i < states.length; i++) {
-            states[i] = SwerveModuleState.optimize(states[i], m_modules[i].getAngle());
+        SwerveModuleState[] desModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds);
+        for (int i = 0; i < desModuleStates.length; i++) {
+            desModuleStates[i] = SwerveModuleState.optimize(desModuleStates[i], m_modules[i].getAngle());
         }
-        Logger.getInstance().recordOutput("Drive/DesiredModuleAbsoluteStates", states);
-
-        setModuleStates(states);
+        SwerveModuleState[] m_currentModuleStates = getModuleStates();
+        for (int i = 0; i < m_modules.length; i++) {
+            double desiredSpeed = desModuleStates[i].speedMetersPerSecond;
+            double desiredAngle = desModuleStates[i].angle.getDegrees();
+            double desiredAccel = desiredSpeed - m_currentModuleStates[i].speedMetersPerSecond;
+            double driveFFVoltage = m_driveFFController.calculate(desiredSpeed, desiredAccel);
+            double drivePIDVoltage = m_drivePIDController.calculate(m_currentModuleStates[i].speedMetersPerSecond, desiredSpeed);
+            double turningPIDVoltage = m_turningPIDController.calculate(m_currentModuleStates[i].angle.getDegrees(), desiredAngle);
+            double m_voltageDrive = driveFFVoltage + drivePIDVoltage;
+            double m_voltageTurn = turningPIDVoltage;
+            m_modules[i].setVoltage(m_voltageDrive, m_voltageTurn);
+        }
+        
     }
 
     public void setModuleStates(SwerveModuleState[] moduleStates){

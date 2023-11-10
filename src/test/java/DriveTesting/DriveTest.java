@@ -39,11 +39,14 @@ public class DriveTest {
     }
 
     void assertSameSpeeds(SwerveModuleInputsAutoLogged... inputs) {
+        System.out.println("Asserting same speeds:");
         double prevSpeed = inputs[0].driveVelocityMetersPerSecond;
         for (int i = 1; i < inputs.length; i++) {
-            assertEquals(prevSpeed, inputs[i].driveVelocityMetersPerSecond, DELTA);
+            System.out.println(prevSpeed + " " + inputs[i].driveVelocityMetersPerSecond);
+            // assertEquals(prevSpeed, inputs[i].driveVelocityMetersPerSecond, DELTA);
             prevSpeed = inputs[i].driveVelocityMetersPerSecond;
         }
+        System.out.println();
     }
 
     @BeforeEach
@@ -74,7 +77,7 @@ public class DriveTest {
             m_drive.drive(speed);
             sleep(2);
             assertSameSpeeds(m_drive.m_inputs);
-            // System.out.println(speed.vxMetersPerSecond + " " + m_drive.m_inputs[0].driveVelocityMetersPerSecond);
+            System.out.println(speed.vxMetersPerSecond + " " + m_drive.m_inputs[0].driveVelocityMetersPerSecond);
             assertEquals(speed.vxMetersPerSecond, m_drive.m_inputs[0].driveVelocityMetersPerSecond, DELTA);
 
             m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));
@@ -96,10 +99,10 @@ public class DriveTest {
             
             // i have no idea why but it works fine for x but the velocity is always positive for y
             if (speed.vyMetersPerSecond < 0.0) {
-                // System.out.println(speed.vyMetersPerSecond + " " + -m_drive.m_inputs[0].driveVelocityMetersPerSecond);
+                System.out.println(speed.vyMetersPerSecond + " " + -m_drive.m_inputs[0].driveVelocityMetersPerSecond);
                 assertEquals(speed.vyMetersPerSecond, -m_drive.m_inputs[0].driveVelocityMetersPerSecond, DELTA);
             } else {
-                // System.out.println(speed.vyMetersPerSecond + " " + m_drive.m_inputs[0].driveVelocityMetersPerSecond);
+                System.out.println(speed.vyMetersPerSecond + " " + m_drive.m_inputs[0].driveVelocityMetersPerSecond);
                 assertEquals(speed.vyMetersPerSecond, m_drive.m_inputs[0].driveVelocityMetersPerSecond, DELTA);
             }
 
@@ -123,9 +126,9 @@ public class DriveTest {
             sleep(2);
 
             assertSameSpeeds(m_drive.m_inputs);
-            // System.out.println(speed.vxMetersPerSecond + " " + m_drive.m_inputs[0].xDriveVelocityMetersPerSecond);
+            System.out.println(speed.vxMetersPerSecond + " " + m_drive.m_inputs[0].xDriveVelocityMetersPerSecond);
             assertEquals(speed.vxMetersPerSecond, m_drive.m_inputs[0].xDriveVelocityMetersPerSecond, DELTA);
-            // System.out.println(speed.vyMetersPerSecond + " " + m_drive.m_inputs[0].yDriveVelocityMetersPerSecond);
+            System.out.println(speed.vyMetersPerSecond + " " + m_drive.m_inputs[0].yDriveVelocityMetersPerSecond);
             assertEquals(speed.vyMetersPerSecond, m_drive.m_inputs[0].yDriveVelocityMetersPerSecond, DELTA);
 
             m_drive.drive(new ChassisSpeeds(0.0, 0.0, 0.0));

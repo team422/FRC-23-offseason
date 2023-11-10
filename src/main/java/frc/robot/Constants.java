@@ -72,6 +72,10 @@ public final class Constants {
     }
 
     public static final class ModuleConstants {
+        
+        public static final double kDriveConversionFactor = 1/20.462;
+        public static final double kTurnPositionConversionFactor = 21.428;
+
         public static final TunableNumber kDriveP = new TunableNumber("Drive P", 10.0);
         public static final TunableNumber kDriveI = new TunableNumber("Drive I", 0.05);
         public static final TunableNumber kDriveD = new TunableNumber("Drive D", 0.05);
