@@ -16,19 +16,19 @@ public class DriverControlsController implements DriverControls {
 
     @Override
     public double getDriveY() {
-        double val = m_controls.addDeadzoneScaled(m_controller.getLeftX(), 0.03);
+        double val = m_controls.addDeadzoneScaled(m_controller.getLeftX(), 0.06);
         return -Math.signum(val) * Math.pow(val, 2);
     }
 
     @Override
     public double getDriveX() {
-        double val = m_controls.addDeadzoneScaled(m_controller.getLeftY(), 0.03);
+        double val = m_controls.addDeadzoneScaled(m_controller.getLeftY(), 0.06);
         return -Math.signum(val) * Math.pow(val, 2);
     }
 
     @Override
     public double getDriveRotation() {
-        double val = m_controls.addDeadzoneScaled(m_controller.getRightX(), 0.03);
+        double val = m_controls.addDeadzoneScaled(m_controller.getRightX(), 0.06);
         return -Math.signum(val) * Math.pow(val, 2);
         
     }

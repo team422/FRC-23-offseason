@@ -43,6 +43,9 @@
 
         private double oldVelocity;
 
+        private double m_curDriveVoltage;
+        private double m_curTurnVoltage;
+
         public static class ModuleConstants {
             public static final double kDriveConversionFactor = 1/20.462;
             public static final double kTurnPositionConversionFactor = 21.428;
@@ -79,7 +82,7 @@
             m_driveMotor.restoreFactoryDefaults();
             setup.setupSparkMaxSlow(m_driveMotor);
             m_driveMotor.setInverted(true);
-            m_driveMotor.setIdleMode(IdleMode.kCoast);
+            m_driveMotor.setIdleMode(IdleMode.kBrake);
             m_turningMotor = new CANSparkMax(turningMotorChannel, MotorType.kBrushless);
             m_turningMotor.restoreFactoryDefaults();
             // m_turningMotor.burnFlash();
@@ -132,6 +135,8 @@
 
             // m_currentCalculusSolver = new CalculusSolver(50);
             // m_wheelSpeedCalculusSolver = new CalculusSolver(50);
+            m_curDriveVoltage = 0.0;
+            m_curTurnVoltage = 0.0;
         }
 
         public String getName() {
@@ -183,7 +188,11 @@
         public void setVoltage(double voltageDrive, double voltageTurn) {
             // m_driveController.setReference(voltageDrive, ControlType.kVoltage);
             // m_turningController.setReference(voltageTurn, ControlType.kVoltage);
-            m_driveMotor.setVoltage(voltageDrive);
+            // System.out.println(voltageDrive + "drive voltage");
+            // System.out.println(voltageTurn + "turn voltage");
+            m_curDriveVoltage = voltageDrive;
+            m_curTurnVoltage = voltageTurn;
+            m_driveMotor.set(voltageDrive);
             m_turningMotor.setVoltage(voltageTurn);
         }
 
@@ -212,7 +221,7 @@
             adjustedSpeed = driveOutput;
             // m_driveController.setReference(driveOutput, ControlType.kVelocity, 0,
             //     adjustedSpeed);
-            m_driveMotor.setVoltage(driveOutput);
+            setVoltage(driveOutput, 0.0);
             if (Constants.tuningMode) {
             // m_turningController.setP(ModuleConstants.kTurningP.get());
             // m_turningController.setI(ModuleConstants.kTurningI.get());
@@ -293,12 +302,20 @@
             // inputs.currentAmpsDrive = m_driveMotor.getOutputCurrent();
             // inputs.voltageOutDrive = m_driveMotor.getBusVoltage();
             // inputs.currentAmpsPerVelocity = Math.abs(m_driveMotor.getOutputCurrent() / getAcceleration());
+            inputs.driveVoltage = getDriveVoltage();
+            inputs.turnVoltage = getTurnVoltage();
         }
 
-        //   @Override
-        //   public double getVoltage() {
-        //     return m_driveMotor.getBusVoltage();
-        //   }
+
+        @Override
+        public double getDriveVoltage() {
+            return m_curDriveVoltage;
+        }
+
+        @Override
+        public double getTurnVoltage() {
+            return m_curTurnVoltage;
+        }
 
         //   @Override
         //   public double getDriveCurrent() {

@@ -16,6 +16,7 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
     private DCMotorSim m_turnMotor;
 
     private double m_voltageDrive;
+    private double m_voltageTurn;
 
     private SwerveModuleState m_curState;
     private SwerveModuleState m_desState;
@@ -26,7 +27,9 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
         m_turnMotor = new DCMotorSim(DCMotor.getNEO(1), 21.428, 0.01);        
         m_curState = new SwerveModuleState();
         m_desState = new SwerveModuleState();
-        m_curPos = new SwerveModulePosition();        
+        m_curPos = new SwerveModulePosition();
+        m_voltageDrive = 0;
+        m_voltageTurn = 0;        
     }
 
     @Override
@@ -54,6 +57,9 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
 
         inputs.xDriveVelocityMetersPerSecond = Math.cos(inputs.turnAngleRad) * inputs.driveVelocityMetersPerSecond;
         inputs.yDriveVelocityMetersPerSecond = Math.sin(inputs.turnAngleRad) * inputs.driveVelocityMetersPerSecond;
+
+        inputs.driveVoltage = m_voltageDrive;
+        inputs.turnVoltage = m_voltageTurn;
         
         m_driveMotor.update(0.02);
         m_turnMotor.update(0.02);
@@ -93,7 +99,7 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
     @Override
     public void setDesiredState(SwerveModuleState state) {
         double driveOutput = state.speedMetersPerSecond;
-        m_driveMotor.setInputVoltage(driveOutput);
+        setVoltage(driveOutput, 0.0);
 
     }
 
@@ -109,8 +115,22 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
 
     @Override
     public void setVoltage(double driveVoltage, double turnVoltage) {
+        m_voltageDrive = driveVoltage;
+        m_voltageTurn = turnVoltage;
         m_driveMotor.setInputVoltage(driveVoltage);
         m_turnMotor.setInputVoltage(turnVoltage);
+    }
+
+    @Override
+    public double getDriveVoltage() {
+        // TODO: change
+        return 0.0;
+    }
+
+    @Override
+    public double getTurnVoltage() {
+        // TODO: change
+        return 0.0;
     }
     
 }

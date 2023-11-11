@@ -2,6 +2,7 @@ package frc.robot.subsystems.drive;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -42,9 +43,9 @@ public class Drive extends SubsystemBase {
     private int m_oneWheelIndex = 2;
     private final double[] m_lockAngles = new double[] { 45, 315, 45, 315 };
 
-    private final PIDController m_drivePIDController;
-    private final PIDController m_turningPIDController;
-    private final SimpleMotorFeedforward m_driveFFController;
+    private PIDController m_drivePIDController;
+    private PIDController m_turningPIDController;
+    private SimpleMotorFeedforward m_driveFFController;
 
     public static class ModuleConstants {
         public static final double kDriveConversionFactor = 1/20.462;
@@ -123,6 +124,20 @@ public class Drive extends SubsystemBase {
     @Override
     public void periodic() {
 
+        if (ModuleConstants.kDriveA.hasChanged() || ModuleConstants.kDriveS.hasChanged() || ModuleConstants.kDriveV.hasChanged()){
+            m_driveFFController = new SimpleMotorFeedforward(ModuleConstants.kDriveS.get(), ModuleConstants.kDriveV.get(), ModuleConstants.kDriveA.get());
+            System.out.println("Drive Feedforward Changed");
+        }
+        if (ModuleConstants.kDriveP.hasChanged() || ModuleConstants.kDriveI.hasChanged() || ModuleConstants.kDriveD.hasChanged()){
+            m_drivePIDController = new PIDController(ModuleConstants.kDriveP.get(), ModuleConstants.kDriveI.get(), ModuleConstants.kDriveD.get());
+            System.out.println("Drive PID Changed");
+        }
+        if (ModuleConstants.kTurningP.hasChanged() || ModuleConstants.kTurningI.hasChanged() || ModuleConstants.kTurningD.hasChanged()){
+            m_turningPIDController = new PIDController(ModuleConstants.kTurningP.get(), ModuleConstants.kTurningI.get(), ModuleConstants.kTurningD.get());
+            System.out.println("Turning PID Changed");
+        }
+
+
         for (int i = 0; i < m_modules.length; i++) {
             m_modules[i].updateInputs(m_inputs[i]);
             Logger.getInstance().processInputs("Swerve Module " + i, m_inputs[i]);
@@ -186,6 +201,8 @@ public class Drive extends SubsystemBase {
     }
 
     public void drive(ChassisSpeeds speeds){
+        double rotatationalMultiplier = 0.01;
+        speeds.omegaRadiansPerSecond *= rotatationalMultiplier;
         SwerveModuleState[] desModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(speeds);
         for (int i = 0; i < desModuleStates.length; i++) {
             desModuleStates[i] = SwerveModuleState.optimize(desModuleStates[i], m_modules[i].getAngle());
@@ -193,14 +210,18 @@ public class Drive extends SubsystemBase {
         SwerveModuleState[] m_currentModuleStates = getModuleStates();
         for (int i = 0; i < m_modules.length; i++) {
             double desiredSpeed = desModuleStates[i].speedMetersPerSecond;
-            double desiredAngle = desModuleStates[i].angle.getRadians();
+            double desiredAngle = desModuleStates[i].angle.getDegrees();
             // double desiredAccel = desiredSpeed - m_currentModuleStates[i].speedMetersPerSecond;
-            double desiredAccel = (desiredSpeed - m_currentModuleStates[i].speedMetersPerSecond) / 0.02;
-            double driveFFVoltage = m_driveFFController.calculate(desiredSpeed, desiredAccel);
+            double desiredAccel = desiredSpeed - m_currentModuleStates[i].speedMetersPerSecond;
+            // double driveFFVoltage = m_driveFFController.calculate(desiredSpeed, desiredAccel);
+            double driveFFVoltage = m_driveFFController.calculate(desiredSpeed);
             double drivePIDVoltage = m_drivePIDController.calculate(m_currentModuleStates[i].speedMetersPerSecond, desiredSpeed);
-            double turningPIDVoltage = m_turningPIDController.calculate(m_currentModuleStates[i].angle.getRadians(), desiredAngle);
+            double turningPIDVoltage = m_turningPIDController.calculate(m_currentModuleStates[i].angle.getDegrees(), desiredAngle);
+
             double m_voltageDrive = driveFFVoltage + drivePIDVoltage;
             double m_voltageTurn = turningPIDVoltage;
+
+            // System.out.println(m_voltageDrive + "ffpid drive \n" + m_voltageTurn + "pid turn");
             m_modules[i].setVoltage(m_voltageDrive, m_voltageTurn);
         }
         
@@ -241,3 +262,4 @@ public class Drive extends SubsystemBase {
         m_poseEstimator.resetPosition(m_gyro.getAngle(), getSwerveModulePositions(),new Pose2d(oldPose.getX(),oldPose.getY(),new Rotation2d()) );
     }
 }
+

@@ -20,6 +20,8 @@ public interface SwerveModuleIO extends LoggedIO<SwerveModuleInputs>{
         public double xDriveVelocityMetersPerSecond;
         public double yDriveVelocityMetersPerSecond;
         public double driveAmps;
+        public double driveVoltage;
+        public double turnVoltage;
     }
 
     public SwerveModulePosition getPosition();
@@ -39,4 +41,8 @@ public interface SwerveModuleIO extends LoggedIO<SwerveModuleInputs>{
     public SwerveModuleState getAbsoluteState();
 
     public void setVoltage(double driveVoltage, double turnVoltage);
+
+    public double getDriveVoltage();
+
+    public double getTurnVoltage();
 }
