@@ -33,8 +33,9 @@ public class WristTest {
     public void setup() {
         assert HAL.initialize(500, 0); // initialize the HAL, crash if failed
         ProfiledPIDController controller = new ProfiledPIDController(5.5, 0.08, .3, new Constraints(30, 25)); // untuned rn, stole numbers from frc-23
+        ProfiledPIDController controller2 = new ProfiledPIDController(7.5, 0.08, .3, new Constraints(30, 25));
         ArmFeedforward feedforward = new ArmFeedforward(0.05, 0.6, 0.08);
-        m_wrist = new Wrist(new WristIOSim(), controller, feedforward, Rotation2d.fromDegrees(-100), Rotation2d.fromDegrees(100),
+        m_wrist = new Wrist(new WristIOSim(), controller, controller2, feedforward, Rotation2d.fromDegrees(-100), Rotation2d.fromDegrees(100),
                 DELTA, 0.5);
     }
 

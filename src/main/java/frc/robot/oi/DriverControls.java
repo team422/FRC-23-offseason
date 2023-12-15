@@ -27,4 +27,6 @@ public interface DriverControls {
 
     public Trigger balance();
     public Trigger resetWristEncoder();
+
+    public Trigger toggleHasGamepiece();
 }

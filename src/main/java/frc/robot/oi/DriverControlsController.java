@@ -88,5 +88,10 @@ public class DriverControlsController implements DriverControls {
     public Trigger resetWristEncoder() {
         return m_controller.povUp();
     }
+
+    @Override
+    public Trigger toggleHasGamepiece() {
+        return m_controller.leftBumper();
+    }
     
 }

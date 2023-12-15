@@ -76,4 +76,10 @@ public class DriverControlsDualFlightStick implements DriverControls {
     public Trigger resetWristEncoder() {
         return new Trigger();
     }
+
+    @Override
+    public Trigger toggleHasGamepiece() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 }

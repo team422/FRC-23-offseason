@@ -99,14 +99,21 @@ public final class Constants {
         public static final double kOffset = 67; //-173.51 // 111 // 28.1
         public static final double kManualMoveVolts = 2.0;
 
-        // Wrist PID, currently untuned
         public static final TunableNumber kP = new TunableNumber("Wrist P", 10);
         public static final TunableNumber kI = new TunableNumber("Wrist I", 0.05);
         public static final TunableNumber kD = new TunableNumber("Wrist D", 0.05); 
+
+        public static final TunableNumber kGamepieceP = new TunableNumber("Wrist Game Piece P", 20);
+        public static final TunableNumber kGamepieceI = new TunableNumber("Wrist Game Piece I", 0.05);
+        public static final TunableNumber kGamepieceD = new TunableNumber("Wrist Game Piece D", 0.05);
+
         public static final TunableNumber kWristVelo = new TunableNumber("Wrist Velo", 20);
         public static final TunableNumber kWristAccel = new TunableNumber("Wrist Accel", 15.0);
         public static final ProfiledPIDController wristPIDController = new ProfiledPIDController(
             kP.get(), kI.get(), kD.get(),
+            new Constraints(kWristVelo.get(), kWristAccel.get()));
+        public static final ProfiledPIDController wristGamepiecePIDController = new ProfiledPIDController(
+            kGamepieceP.get(), kGamepieceI.get(), kGamepieceD.get(),
             new Constraints(kWristVelo.get(), kWristAccel.get()));
 
         // Wrist Feedforward, currently untuned

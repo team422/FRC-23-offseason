@@ -20,6 +20,7 @@ public class Wrist extends SubsystemBase {
     public final WristInputsAutoLogged m_inputs;
 
     private ProfiledPIDController m_controller;
+    private ProfiledPIDController m_gamepieceController;
     private ArmFeedforward m_feedforward;
     private final Rotation2d kMinAngle;
     private final Rotation2d kMaxAngle;
@@ -30,11 +31,16 @@ public class Wrist extends SubsystemBase {
 
     private final double kManualMoveVolts;
 
-    public Wrist(WristIO io, ProfiledPIDController controller, ArmFeedforward feedforward, Rotation2d minAngle, Rotation2d maxAngle,
-            double toleranceRad, double manualMoveVolts) {
+    private boolean m_hasGamepiece;
+
+    public Wrist(WristIO io, ProfiledPIDController controller, ProfiledPIDController intakeController, ArmFeedforward feedforward,
+            Rotation2d minAngle, Rotation2d maxAngle, double toleranceRad, double manualMoveVolts) {
         m_io = io;
         m_controller = controller;
         m_controller.setTolerance(toleranceRad);
+        m_gamepieceController = intakeController;
+        m_gamepieceController.setTolerance(toleranceRad);
+        m_hasGamepiece = false;
         
         m_feedforward = feedforward;
         
@@ -49,8 +55,15 @@ public class Wrist extends SubsystemBase {
     
     @Override
     public void periodic() {
-        if(WristConstants.kP.hasChanged() || WristConstants.kI.hasChanged() || WristConstants.kD.hasChanged()){
-            m_controller = new ProfiledPIDController(WristConstants.kP.get(), WristConstants.kI.get(), WristConstants.kD.get(), new Constraints(WristConstants.kWristVelo.get(), WristConstants.kWristAccel.get()));
+        if (WristConstants.kP.hasChanged() || WristConstants.kI.hasChanged() || WristConstants.kD.hasChanged()){
+            m_controller = new ProfiledPIDController(
+                WristConstants.kP.get(), WristConstants.kI.get(), WristConstants.kD.get(),
+                new Constraints(WristConstants.kWristVelo.get(), WristConstants.kWristAccel.get()));
+        }
+        if (WristConstants.kGamepieceP.hasChanged() || WristConstants.kGamepieceI.hasChanged() || WristConstants.kGamepieceI.hasChanged()) {
+            m_gamepieceController = new ProfiledPIDController(
+                WristConstants.kGamepieceP.get(), WristConstants.kGamepieceI.get(), WristConstants.kGamepieceD.get(),
+                new Constraints(WristConstants.kWristVelo.get(), WristConstants.kWristAccel.get()));
         }
         if (WristConstants.kWristkg.hasChanged() || WristConstants.kWristkv.hasChanged() || WristConstants.kWristks.hasChanged() ){
             m_feedforward = new ArmFeedforward(WristConstants.kWristks.get(),WristConstants.kWristkg.get(), WristConstants.kWristkv.get());
@@ -61,7 +74,14 @@ public class Wrist extends SubsystemBase {
 
         double currAngle = m_inputs.angleRad;
         m_controller.setGoal(m_desiredAngle.getRadians());
-        double pidVoltage = m_controller.calculate(currAngle);
+        m_gamepieceController.setGoal(m_desiredAngle.getRadians());
+        
+        double pidVoltage;
+        if (m_hasGamepiece) {
+            pidVoltage = m_gamepieceController.calculate(currAngle);
+        } else {
+            pidVoltage = m_controller.calculate(currAngle);
+        }
 
         double positionSetpoint = Rotation2d.fromRadians(m_inputs.angleRad).plus(Rotation2d.fromDegrees(-90)).getRadians();
         double velocitySetpoint = m_inputs.wristSpeed;
@@ -75,13 +95,21 @@ public class Wrist extends SubsystemBase {
         } else {
             setVoltage(outputVoltage);
         }
+
+        double curGoal;
+        if (m_hasGamepiece) {
+            curGoal = m_gamepieceController.getGoal().position;
+        } else {
+            curGoal = m_controller.getGoal().position;
+        }
         
         Logger.getInstance().processInputs("Wrist", m_inputs);
-        Logger.getInstance().recordOutput("Wrist/SetpointDegrees", Units.radiansToDegrees(m_controller.getGoal().position));
+        Logger.getInstance().recordOutput("Wrist/SetpointDegrees", Units.radiansToDegrees(curGoal));
         Logger.getInstance().recordOutput("Wrist/CurrentDegrees", Units.radiansToDegrees(m_inputs.angleRad));
         Logger.getInstance().recordOutput("Wrist/FFOutputVoltage", feedforwardVoltage);
         Logger.getInstance().recordOutput("Wrist/PIDOutputVoltage", pidVoltage);
         Logger.getInstance().recordOutput("Wrist/angle", m_io.getAngle().getDegrees());
+        Logger.getInstance().recordOutput("Wrist/hasGamepiece", m_hasGamepiece);
         m_lastTime = Timer.getFPGATimestamp();
         m_lastVelocitySetpoint = velocitySetpoint;
     }
@@ -89,6 +117,7 @@ public class Wrist extends SubsystemBase {
     public void setAngle(Rotation2d angle) {
         m_desiredAngle = Rotation2d.fromRadians(MathUtil.clamp(angle.getRadians(), kMinAngle.getRadians(), kMaxAngle.getRadians()));
         m_controller.setGoal(m_desiredAngle.getRadians());
+        m_gamepieceController.setGoal(m_desiredAngle.getRadians());
     }
 
     public void setVoltage(double voltage) {
@@ -113,7 +142,15 @@ public class Wrist extends SubsystemBase {
     }
 
     public boolean withinTolerance() {
-        return m_controller.atGoal();
+        return m_controller.atGoal() || m_gamepieceController.atGoal();
+    }
+
+    public boolean hasGamepiece() {
+        return m_hasGamepiece;
+    }
+
+    public void toggleGamepiece() {
+        m_hasGamepiece = !m_hasGamepiece;
     }
 
     public Command setAngleCommand(Rotation2d angle) {
@@ -132,6 +169,10 @@ public class Wrist extends SubsystemBase {
             setVoltage(-kManualMoveVolts);
             setAngle(Rotation2d.fromRadians(m_inputs.angleRad));
         }, () -> setVoltage(0));
+    }
+
+    public Command toggleGamepieceCommand() {
+        return runOnce(this::toggleGamepiece);
     }
 
     public void resetEncoder() {

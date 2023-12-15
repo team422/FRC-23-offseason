@@ -133,8 +133,8 @@ public class RobotContainer {
                     IntakeConstants.kIntakeVoltage, IntakeConstants.kIntakeHoldVoltage);
 
             m_wrist = new Wrist(new WristIOCANSparkMax(Ports.wristPortDrive, Ports.wristPortFollower, WristConstants.kOffset),
-                    WristConstants.wristPIDController, WristConstants.wristFeedforward, WristConstants.kMinAngle,
-                    WristConstants.kMaxAngle, WristConstants.kToleranceRad, WristConstants.kManualMoveVolts);
+                    WristConstants.wristPIDController, WristConstants.wristGamepiecePIDController, WristConstants.wristFeedforward,
+                    WristConstants.kMinAngle, WristConstants.kMaxAngle, WristConstants.kToleranceRad, WristConstants.kManualMoveVolts);
         } else {
             m_drive = new Drive(new GyroIOPigeon(22, new Rotation2d()), new AccelerometerIOSim(), new Pose2d(),
                     new SwerveModuleIOSim(), new SwerveModuleIOSim(), new SwerveModuleIOSim(), new SwerveModuleIOSim());
@@ -142,7 +142,7 @@ public class RobotContainer {
             m_intake = new Intake(new IntakeIOSim(),
                     IntakeConstants.kIntakeVoltage, IntakeConstants.kIntakeHoldVoltage);
 
-            m_wrist = new Wrist(new WristIOSim(), WristConstants.wristPIDController, WristConstants.wristFeedforward,
+            m_wrist = new Wrist(new WristIOSim(), WristConstants.wristPIDController, WristConstants.wristGamepiecePIDController, WristConstants.wristFeedforward,
                     WristConstants.kMinAngle, WristConstants.kMaxAngle, WristConstants.kToleranceRad, WristConstants.kManualMoveVolts);
         }
     }
@@ -187,6 +187,9 @@ public class RobotContainer {
 
         operatorControls.outtakeFastButton().whileTrue(m_intake.outtakeFastCommand());
         operatorControls.outtakeSlowButton().whileTrue(m_intake.outtakeSlowCommand());
+
+        driverControls.toggleHasGamepiece().onTrue(m_wrist.toggleGamepieceCommand());
+        driverControls.wristButtonIntake().whileTrue(Commands.runOnce(() -> System.out.println("he")));
 
     }
 
