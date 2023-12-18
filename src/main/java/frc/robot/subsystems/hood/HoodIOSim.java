@@ -17,7 +17,7 @@ public class HoodIOSim implements HoodIO {
         double armLengthMeters = Units.inchesToMeters(0);
         boolean simulateGravity = false;
         double minAngleRads = 0;
-        double maxAngleRads = 90;
+        double maxAngleRads = Units.degreesToRadians(90);
         m_motorSim = new SingleJointedArmSim(gearbox, gearing, jKgMetersSquared, armLengthMeters, minAngleRads, maxAngleRads, simulateGravity);
         m_voltage = 0;
     }
