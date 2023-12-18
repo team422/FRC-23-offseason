@@ -24,6 +24,8 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.accelerometer.AccelerometerIOSim;
 import frc.robot.subsystems.drive.accelerometer.AccelerometerIOWPI;
 import frc.robot.subsystems.drive.gyro.GyroIOPigeon;
+import frc.robot.subsystems.hood.HoodIOSim;
+import frc.robot.subsystems.hood.VariableHood;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.intake.IntakeIOCANSparkMax;
 import frc.robot.subsystems.intake.IntakeIOSim;
@@ -36,13 +38,13 @@ import frc.robot.Constants.Setpoints;
 import frc.robot.Constants.WristConstants;
 import frc.lib.pathplanner.PathPlannerUtil;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.HoodConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.commands.autonomous.AutoFactory;
 import frc.robot.commands.autonomous.ChargeStationBalance;
 import frc.robot.commands.drive.TeleopDrive;
 import frc.robot.oi.DriverControls;
 import frc.robot.oi.DriverControlsController;
-import frc.robot.oi.DriverControlsDualFlightStick;
 import frc.robot.oi.OperatorControls;
 import frc.robot.oi.OperatorControlsXbox;
 import frc.robot.subsystems.drive.SwerveModuleIO;
@@ -63,6 +65,7 @@ public class RobotContainer {
     private Drive m_drive;
     private Intake m_intake;
     private Wrist m_wrist;
+    private VariableHood m_hood;
     private AprilTagFieldLayout m_layout;
     // private RobotState m_robotState;
 
@@ -144,6 +147,9 @@ public class RobotContainer {
 
             m_wrist = new Wrist(new WristIOSim(), WristConstants.wristPIDController, WristConstants.wristGamepiecePIDController, WristConstants.wristFeedforward,
                     WristConstants.kMinAngle, WristConstants.kMaxAngle, WristConstants.kToleranceRad, WristConstants.kManualMoveVolts);
+
+            m_hood = new VariableHood(new HoodIOSim(), HoodConstants.hoodController,
+                                      HoodConstants.kMinAngle, HoodConstants.kMaxAngle, HoodConstants.kToleranceRad);
         }
     }
 
@@ -189,7 +195,10 @@ public class RobotContainer {
         operatorControls.outtakeSlowButton().whileTrue(m_intake.outtakeSlowCommand());
 
         driverControls.toggleHasGamepiece().onTrue(m_wrist.toggleGamepieceCommand());
-        driverControls.wristButtonIntake().whileTrue(Commands.runOnce(() -> System.out.println("he")));
+
+        operatorControls.hoodStow().onTrue(m_hood.setAngleCommand(Setpoints.kHoodStow));
+        operatorControls.hoodLow().onTrue(m_hood.setAngleCommand(Setpoints.kHoodLow));
+        operatorControls.hoodHigh().onTrue(m_hood.setAngleCommand(Setpoints.kHoodHigh));
 
     }
 

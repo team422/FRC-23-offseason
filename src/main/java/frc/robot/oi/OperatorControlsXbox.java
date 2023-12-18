@@ -37,5 +37,20 @@ public class OperatorControlsXbox implements OperatorControls {
     public Trigger wristButtonShootLow() {
         return m_controller.a();
     }
-  
+
+    @Override
+    public Trigger hoodStow() {
+        return m_controller.b();
+    }
+
+    @Override
+    public Trigger hoodLow() {
+        return m_controller.x();
+    }
+
+    @Override
+    public Trigger hoodHigh() {
+        return m_controller.y();
+    }
+    
 }

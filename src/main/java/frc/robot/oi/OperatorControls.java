@@ -13,4 +13,10 @@ public interface OperatorControls {
     public Trigger outtakeSlowButton();
 
     public Trigger wristButtonShootLow();
+
+    public Trigger hoodStow();
+
+    public Trigger hoodLow();
+
+    public Trigger hoodHigh();
 }

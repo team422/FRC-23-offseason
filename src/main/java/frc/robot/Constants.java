@@ -132,6 +132,25 @@ public final class Constants {
         public static final double kIntakeHoldVoltage = 11;
     }
 
+    public static final class HoodConstants {
+        public static final TunableNumber kP = new TunableNumber("Hood P", 10.0);
+        public static final TunableNumber kI = new TunableNumber("Hood I", 0.0);
+        public static final TunableNumber kD = new TunableNumber("Hood D", 0.0);
+        public static final TunableNumber kHoodVelo = new TunableNumber("Hood Max Velocity", 20);
+        public static final TunableNumber kHoodAccel = new TunableNumber("Hood Max Acceleration", 15);
+
+        public static final ProfiledPIDController hoodController = new ProfiledPIDController(
+            kP.get(), kI.get(), kD.get(), new Constraints(
+                kHoodVelo.get(), kHoodAccel.get()
+            )
+        );
+
+        public static final Rotation2d kMinAngle = Rotation2d.fromDegrees(0);
+        public static final Rotation2d kMaxAngle = Rotation2d.fromDegrees(90);
+
+        public static final double kToleranceRad = Units.degreesToRadians(2);
+    }
+
     public static final class Ports {
         public static final int pigeonPort = 16;
 
@@ -172,5 +191,9 @@ public final class Constants {
         public static final Rotation2d kWristGrabCube = Rotation2d.fromDegrees(-71);
         public static final Rotation2d kWristStow = Rotation2d.fromDegrees(65);
         public static final Rotation2d kWristShootLow = Rotation2d.fromDegrees(0);
+
+        public static final Rotation2d kHoodStow = Rotation2d.fromDegrees(0);
+        public static final Rotation2d kHoodLow = Rotation2d.fromDegrees(90);
+        public static final Rotation2d kHoodHigh = Rotation2d.fromDegrees(30);
     }
 }
