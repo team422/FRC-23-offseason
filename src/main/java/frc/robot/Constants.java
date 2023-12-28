@@ -151,6 +151,22 @@ public final class Constants {
         public static final double kToleranceRad = Units.degreesToRadians(2);
     }
 
+    public static final class FlywheelConstants {
+        public static final TunableNumber kP = new TunableNumber("Flywheel P", 40);
+        public static final TunableNumber kI = new TunableNumber("Flywheel I", 0);
+        public static final TunableNumber kD = new TunableNumber("Flywheel D", 0);
+        public static final TunableNumber kFlywheelVelo = new TunableNumber("Flywheel Max Velocty", 20);
+        public static final TunableNumber kFlywheelAccel = new TunableNumber("Flywheel Max Acceleration", 15);
+
+        public static final ProfiledPIDController flywheelController = new ProfiledPIDController(
+            kP.get(), kI.get(), kD.get(), new Constraints(
+                kFlywheelVelo.get(), kFlywheelAccel.get()
+            )
+        );
+
+        public static final double kToleranceMetersPerSecond = Units.inchesToMeters(2);
+    }
+
     public static final class Ports {
         public static final int pigeonPort = 16;
 
@@ -195,5 +211,7 @@ public final class Constants {
         public static final Rotation2d kHoodStow = Rotation2d.fromDegrees(0);
         public static final Rotation2d kHoodLow = Rotation2d.fromDegrees(90);
         public static final Rotation2d kHoodHigh = Rotation2d.fromDegrees(30);
+
+        public static final double kFlywheelVelocity = 10;
     }
 }

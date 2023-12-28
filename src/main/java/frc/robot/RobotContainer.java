@@ -23,6 +23,8 @@ import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.accelerometer.AccelerometerIOSim;
 import frc.robot.subsystems.drive.accelerometer.AccelerometerIOWPI;
 import frc.robot.subsystems.drive.gyro.GyroIOPigeon;
+import frc.robot.subsystems.flywheel.Flywheel;
+import frc.robot.subsystems.flywheel.FlywheelIOSim;
 import frc.robot.subsystems.hood.HoodIOSim;
 import frc.robot.subsystems.hood.VariableHood;
 import frc.robot.subsystems.intake.Intake;
@@ -37,6 +39,7 @@ import frc.robot.Constants.Setpoints;
 import frc.robot.Constants.WristConstants;
 import frc.lib.pathplanner.PathPlannerUtil;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.FlywheelConstants;
 import frc.robot.Constants.HoodConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.commands.autonomous.AutoFactory;
@@ -65,6 +68,7 @@ public class RobotContainer {
     private Intake m_intake;
     private Wrist m_wrist;
     private VariableHood m_hood;
+    private Flywheel m_flywheel;
     private AprilTagFieldLayout m_layout;
     // private RobotState m_robotState;
 
@@ -149,6 +153,8 @@ public class RobotContainer {
 
             m_hood = new VariableHood(new HoodIOSim(), HoodConstants.hoodController,
                                       HoodConstants.kMinAngle, HoodConstants.kMaxAngle, HoodConstants.kToleranceRad);
+
+            m_flywheel = new Flywheel(new FlywheelIOSim(), FlywheelConstants.flywheelController, FlywheelConstants.kToleranceMetersPerSecond);
         }
     }
 
@@ -174,13 +180,10 @@ public class RobotContainer {
         ChargeStationBalance m_charge = new ChargeStationBalance(m_drive);
         driverControls.balance().whileTrue(m_charge);
         driverControls.manualFieldReset().onTrue(m_drive.manualFieldCentricCommand());
-        // if (Robot.isSimulation()) {
-            // all of these are unbound in real
-            // DO NOT REBIND THESE UNTIL WE HAVE A MIN ANGLE AND MAX ANGLE AND OFFSET IS SET
-            driverControls.wristButtonIntake().onTrue(m_wrist.setAngleCommand(Setpoints.kWristGrabCube));
-            driverControls.wristButtonStow().onTrue(m_wrist.setAngleCommand(Setpoints.kWristStow));
-            operatorControls.wristButtonShootLow().onTrue(m_wrist.setAngleCommand(Setpoints.kWristShootLow));
-        // }
+
+        driverControls.wristButtonIntake().onTrue(m_wrist.setAngleCommand(Setpoints.kWristGrabCube));
+        driverControls.wristButtonStow().onTrue(m_wrist.setAngleCommand(Setpoints.kWristStow));
+        operatorControls.wristButtonShootLow().onTrue(m_wrist.setAngleCommand(Setpoints.kWristShootLow));
 
         driverControls.wristManualUp().whileTrue(m_wrist.manualUpCommand());
         driverControls.wristManualDown().whileTrue(m_wrist.manualDownCommand());
@@ -194,10 +197,14 @@ public class RobotContainer {
         operatorControls.outtakeSlowButton().whileTrue(m_intake.outtakeSlowCommand());
 
         driverControls.toggleHasGamepiece().onTrue(m_wrist.toggleGamepieceCommand());
+        driverControls.toggleHasGamepiece().onTrue(m_flywheel.toggleGamepieceCommand());
 
         operatorControls.hoodStow().onTrue(m_hood.setAngleCommand(Setpoints.kHoodStow));
         operatorControls.hoodLow().onTrue(m_hood.setAngleCommand(Setpoints.kHoodLow));
         operatorControls.hoodHigh().onTrue(m_hood.setAngleCommand(Setpoints.kHoodHigh));
+
+        operatorControls.flywheelStart().onTrue(m_flywheel.setDesiredVelocityCommand(Setpoints.kFlywheelVelocity));
+        operatorControls.flywheelStop().onTrue(m_flywheel.setDesiredVelocityCommand(0));
 
     }
 

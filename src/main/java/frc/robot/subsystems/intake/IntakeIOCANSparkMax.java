@@ -8,7 +8,6 @@ import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 public class IntakeIOCANSparkMax implements IntakeIO {
     private CANSparkMax m_intakeMotor;
-    // private RelativeEncoder m_encoder;
     private SparkMaxAbsoluteEncoder m_encoder;
     private double m_voltage;
     public IntakeIOCANSparkMax(int port, double gearRatio) {

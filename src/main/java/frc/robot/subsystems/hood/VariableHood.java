@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VariableHood extends SubsystemBase {
-    private HoodInputsAutoLogged m_inputs;
+    public HoodInputsAutoLogged m_inputs;
     private HoodIO m_io;
     private ProfiledPIDController m_controller;
     private final Rotation2d kMinAngle;

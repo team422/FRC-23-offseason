@@ -52,5 +52,15 @@ public class OperatorControlsXbox implements OperatorControls {
     public Trigger hoodHigh() {
         return m_controller.y();
     }
+
+    @Override
+    public Trigger flywheelStart() {
+        return m_controller.rightBumper();
+    }
+
+    @Override
+    public Trigger flywheelStop() {
+        return m_controller.leftBumper();
+    }
     
 }

@@ -19,4 +19,8 @@ public interface OperatorControls {
     public Trigger hoodLow();
 
     public Trigger hoodHigh();
+
+    public Trigger flywheelStart();
+
+    public Trigger flywheelStop();
 }
